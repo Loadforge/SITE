@@ -1,0 +1,32 @@
+name: Deploy para GitHub Pages
+
+on:
+  push:
+    branches:
+      - main 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar dependências
+        run: yarn install --frozen-lockfile
+
+      - name: Construir projeto
+        run: yarn build
+
+      - name: Configurar GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Fazer deploy
+        uses: actions/deploy-pages@v4
