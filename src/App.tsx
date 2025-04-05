@@ -1,10 +1,14 @@
 import { BrowserRouter } from "react-router-dom";
 import { Router } from "./router";
+import { ThemeProvider } from "./contexts/theme/theme";
 
 export function App() {
+  const theme: "light" | "dark" | "system" = "dark";
   return (
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
+    <ThemeProvider defaultTheme={theme}>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
