@@ -1,9 +1,11 @@
-import { Header } from "@/components";
+import { ListPageLayout } from "@/layouts";
 
 export function ListPage() {
   return (
     <div className="flex bg-background items-center gap-2 justify-center min-h-svh">
-      <Header />
+      <ListPageLayout>
+        <></>
+      </ListPageLayout>
     </div>
   );
 }
