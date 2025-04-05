@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-export function HomePage() {
+export function ListPage() {
   return (
     <div className="flex bg-background items-center gap-2 justify-center min-h-svh">
       <Button className="bg-background text-white hover:opacity-90">Background</Button>

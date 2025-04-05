@@ -3,7 +3,7 @@ import { Router } from "./router";
 import { ThemeProvider } from "./contexts/theme/theme";
 
 export function App() {
-  const theme: "light" | "dark" | "system" = "dark";
+  const theme: "light" | "dark" | "system" = "system";
   return (
     <ThemeProvider defaultTheme={theme}>
       <BrowserRouter>
