@@ -1,4 +1,5 @@
-import Logo from '../../../public/Logo.svg';
+import Logo from "../../../public/Logo.svg";
+import { SettingsPreferencesButton } from "../setings&preferrences/setings.preferences.button";
 
 export function Header() {
   return (
@@ -9,7 +10,9 @@ export function Header() {
           alt="Logo"
           className="max-h-full max-w-[90px] object-contain"
         />
-      
+      </div>
+      <div>
+        <SettingsPreferencesButton />
       </div>
     </header>
   );
