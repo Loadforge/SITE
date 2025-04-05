@@ -1,4 +1,5 @@
 import Logo from "../../../public/Logo.svg";
+import { DocsButton } from "../docs";
 import { SettingsPreferencesButton } from "../setings&preferrences/setings.preferences.button";
 
 export function Header() {
@@ -11,8 +12,9 @@ export function Header() {
           className="max-h-full max-w-[90px] object-contain"
         />
       </div>
-      <div>
+      <div className="flex items-center gap-4">
         <SettingsPreferencesButton />
+        <DocsButton/>
       </div>
     </header>
   );
