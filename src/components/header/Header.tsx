@@ -1,6 +1,7 @@
 import Logo from "../../../public/Logo.svg";
 import { DocsButton } from "../docs";
 import { SettingsPreferencesButton } from "../setings&preferrences/setings.preferences.button";
+import { StatusBadge } from "../statusbadge";
 
 export function Header() {
   return (
@@ -12,9 +13,10 @@ export function Header() {
           className="max-h-full max-w-[90px] object-contain"
         />
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-10">
         <SettingsPreferencesButton />
         <DocsButton/>
+        <StatusBadge mode="basic"/>
       </div>
     </header>
   );
