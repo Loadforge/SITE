@@ -42,6 +42,7 @@
   --sidebar-accent-foreground: #1E1E1E;
   --sidebar-border: #E0E0E0;
   --sidebar-ring: #FF4400;
+  --sidebar: oklch(0.985 0 0);
 }
 
 .dark {
@@ -82,6 +83,7 @@
   --sidebar-accent-foreground: #1E1E1E;
   --sidebar-border: #545555;
   --sidebar-ring: #FF4400;
+  --sidebar: oklch(0.205 0 0);
 }
 
 @theme inline {
@@ -129,6 +131,7 @@
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+  --color-sidebar: var(--sidebar);
 
   @keyframes accordion-down {
     from {

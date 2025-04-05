@@ -1,2 +1,3 @@
-export * from "./header"
-export * from "./ui"
+export * from "./ui";
+export * from "./header";
+export * from "./setings&preferrences";
