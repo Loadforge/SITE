@@ -1,6 +1,8 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { GripVertical, MoreVertical } from "lucide-react";
 import React from "react";
+
+import { LuGrip } from "react-icons/lu";
 import { IconType } from "react-icons/lib";
 
 interface ProjectCardProps {
@@ -10,11 +12,9 @@ interface ProjectCardProps {
 
 export function ProjectCard({ title, icon }: ProjectCardProps) {
   return (
-    <Card className="relative w-48 h-64 p-6 text-white rounded-xl shadow-md flex flex-col items-center justify-between overflow-hidden">
-      <div className="absolute top-2 left-2 text-gray-400">
-        <GripVertical size={16} />
-      </div>
-      <div className="absolute top-2 right-2 text-gray-400">
+    <Card className=" w-48 h-64 p-6 text-white rounded-xl shadow-md flex flex-col items-center justify-between overflow-hidden">
+      <div className=" w-full flex justify-between top-2 left-2 text-text">
+        <LuGrip size={16} />
         <MoreVertical size={16} />
       </div>
 
