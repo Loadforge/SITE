@@ -16,7 +16,7 @@ export function ListPage() {
   return (
     <div className="flex bg-background items-center   min-h-svh">
       <ListPageLayout>
-        <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+        <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-8">
           <NewProjectButton />
           {projects.map((project, index) => (
             <ProjectCard
