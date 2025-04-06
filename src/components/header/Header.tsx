@@ -1,6 +1,6 @@
 import Logo from "../../../public/Logo.svg";
 import { DocsButton } from "../docs";
-import { SettingsPreferencesButton } from "../setings&preferrences/setings.preferences.button";
+import { SettingsPreferencesButton } from "../setings&preferrences";
 import { StatusBadge } from "../statusbadge";
 
 export function Header() {
