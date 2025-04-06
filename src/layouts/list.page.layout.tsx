@@ -7,10 +7,9 @@ interface LayoutProps {
 
 export function ListPageLayout({ children }: LayoutProps) {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen w-full">
       <Header />
-
-      <main className="flex-1 overflow-y-auto p-4 pt-16">{children}</main>
+      <main className="flex-1 px-50  overflow-y-auto pt-16 mt-20">{children}</main>
     </div>
   );
 }
