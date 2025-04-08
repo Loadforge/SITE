@@ -1,9 +1,9 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { GripVertical, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import React from "react";
 
-import { LuGrip } from "react-icons/lu";
 import { IconType } from "react-icons/lib";
+import { LuGrip } from "react-icons/lu";
 
 interface ProjectCardProps {
   title: string;

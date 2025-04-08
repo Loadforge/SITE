@@ -14,15 +14,15 @@ const projects = [
 
 export function ListPage() {
   return (
-    <div className="flex bg-background items-center   min-h-svh">
+    <div className="flex bg-background items-center justify-between  min-h-svh">
       <ListPageLayout>
-        <div className="hidden lg:grid lg:grid-cols-4  xl:grid-cols-5 lg:gap-[10%]">
+        <div className="hidden lg:grid lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 justify-items-center gap-4 p-4">
           <NewProjectButton />
           {projects.map((project, index) => (
             <ProjectCard
               key={index}
               title={project.title}
-               icon={project.icon}
+              icon={project.icon}
             />
           ))}
         </div>
