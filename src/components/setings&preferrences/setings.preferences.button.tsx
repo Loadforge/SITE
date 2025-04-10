@@ -10,7 +10,7 @@ export function SettingsPreferencesButton() {
   return (
     <>
       <Button
-        variant="outline"
+        variant="homeButton"
         className="flex items-center gap-2"
         onClick={toggleModal}
       >
