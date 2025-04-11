@@ -1,9 +1,8 @@
 "use client";
 
-import * as React from "react";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
-import { Settings, SlidersHorizontal } from "lucide-react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import * as React from "react";
 
 function SettingsPreferencesTabs({
   className,
@@ -67,8 +66,7 @@ function SettingsPreferencesTabsContent({
 }
 
 export {
-  SettingsPreferencesTabs,
-  SettingsPreferencesTabsList,
-  SettingsPreferencesTabsTrigger,
-  SettingsPreferencesTabsContent,
+  SettingsPreferencesTabs, SettingsPreferencesTabsContent, SettingsPreferencesTabsList,
+  SettingsPreferencesTabsTrigger
 };
+
