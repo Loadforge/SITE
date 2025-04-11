@@ -25,6 +25,7 @@ export function ListPage() {
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
+              id={project.id}
               title={project.title}
               icon={project.icon}
             />
