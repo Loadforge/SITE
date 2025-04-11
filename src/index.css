@@ -142,6 +142,7 @@
     }
   }
 
+
   @keyframes accordion-up {
     from {
       height: var(--radix-accordion-content-height);
@@ -151,6 +152,20 @@
     }
   }
 }
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #FF4400;
+}
+ 
 
 @layer base {
   button:not([disabled]),
