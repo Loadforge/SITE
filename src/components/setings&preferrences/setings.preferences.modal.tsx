@@ -1,13 +1,14 @@
 "use client";
 
+import { Settings, SlidersHorizontal } from "lucide-react";
 import React from "react";
+
 import {
   SettingsPreferencesTabs,
   SettingsPreferencesTabsList,
   SettingsPreferencesTabsTrigger,
   SettingsPreferencesTabsContent,
 } from "./setings.preferences.tabs";
-import { Settings, SlidersHorizontal } from "lucide-react";
 
 export type SettingsPreferencesModalProps = {
   onClose: () => void;

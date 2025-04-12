@@ -1,5 +1,6 @@
-import { ListPage } from "@/pages";
 import { Route, Routes } from "react-router-dom";
+
+import { ListPage } from "@/pages";
 
 export const Router = () => {
   return (

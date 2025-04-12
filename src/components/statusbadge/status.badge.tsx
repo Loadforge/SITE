@@ -1,5 +1,6 @@
-import { Badge } from "../ui/badge";
 import { FaCrown, FaCircle } from "react-icons/fa";
+
+import { Badge } from "../ui/badge";
 
 interface StatusBadgeProps {
   mode: "basic" | "full";

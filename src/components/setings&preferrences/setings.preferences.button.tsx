@@ -1,6 +1,8 @@
-import { GrConfigure } from "react-icons/gr";
-import { Button } from "../ui/button";
 import { useState } from "react";
+import { GrConfigure } from "react-icons/gr";
+
+import { Button } from "../ui/button";
+
 import { SettingsPreferencesModal } from "./setings.preferences.modal";
 
 export function SettingsPreferencesButton() {

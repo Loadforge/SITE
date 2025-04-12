@@ -1,8 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import * as React from "react";
+
+import { cn } from "@/lib/utils";
 
 function SettingsPreferencesTabs({
   className,
@@ -42,7 +43,7 @@ function SettingsPreferencesTabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:bg-separators/50 data-[state=active]:text-white flex items-center gap-2 px-3 py-2 text-md font-semibold rounded-sm w-full hover:bg-background/50 transition-colors",
+        "data-[state=active]:bg-separators/50 data-[state=active]:text-white flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-sm w-full hover:bg-background/50 transition-colors",
         className
       )}
       {...props}

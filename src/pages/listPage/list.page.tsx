@@ -1,8 +1,10 @@
+import { useState } from "react";
+import { FaAutoprefixer } from "react-icons/fa";
+
+import { ProjectEntity } from "@/@entities";
 import { NewProjectButton, ProjectCard } from "@/components";
 import { ListPageLayout } from "@/layouts";
-import { FaAutoprefixer } from "react-icons/fa";
-import { ProjectEntity } from "@/@entities";
-import { useState } from "react";
+
 
 export function ListPage() {
   const [projects, setProjects] = useState<ProjectEntity[]>([]);
