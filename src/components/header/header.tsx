@@ -3,7 +3,6 @@ import { useTheme } from "@/contexts";
 import LogoDefault from "../../assets/Logo.svg";
 import LogoBlack from "../../assets/Logo_black.svg";
 
-
 import { DocsButton } from "../docs";
 import { SettingsPreferencesButton } from "../setings&preferrences";
 import { StatusBadge } from "../statusbadge";

@@ -22,6 +22,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         homeButton:
           "border border-text/25 bg-background/80  hover:opacity-80 rounded-lg  ",
+        help: " bg-separators/80  hover:opacity-80 rounded-lg  ",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
