@@ -8,8 +8,8 @@ interface StatusBadgeProps {
 export function StatusBadge({ mode }: StatusBadgeProps) {
   return (
     <Badge
-      variant={mode === "full" ? "default" : "outline"}
-      className="flex items-center w-[5rem] gap-2 px-3 py-1 text-base font-bold shadow-sm"
+      variant={mode === "full" ? "default" : "basic"}
+      className="flex items-center w-[4.5rem] gap-2  text-sm font-bold "
     >
       {mode === "full" ? (
         <>
@@ -18,7 +18,7 @@ export function StatusBadge({ mode }: StatusBadgeProps) {
         </>
       ) : (
         <>
-          <FaCircle className="text-muted-foreground text-xs" />
+          <FaCircle className="text-text text-xs" />
           Basic
         </>
       )}

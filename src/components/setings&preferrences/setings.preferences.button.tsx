@@ -14,8 +14,8 @@ export function SettingsPreferencesButton() {
         className="flex items-center gap-2"
         onClick={toggleModal}
       >
-        <GrConfigure className="text-2xl" />
-        <span className="font-bold text-xl">Settings & Preferences</span>
+        <GrConfigure className="text-xl" />
+        <span className="font-bold text-md">Settings & Preferences</span>
       </Button>
 
       <SettingsPreferencesModal onClose={toggleModal} isOpen={isOpen} />

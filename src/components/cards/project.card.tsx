@@ -19,9 +19,9 @@ export function ProjectCard({ title, icon, id }: ProjectEntity) {
   return (
     <Card
       onClick={handleNavigate}
-      className="w-48 h-64 p-6 text-white rounded-xl shadow-md flex flex-col items-center justify-between overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+      className="w-38 h-50 p-3 text-white rounded-xl shadow-md flex flex-col items-center justify-between overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
     >
-      <div className="w-full flex justify-between top-2 left-2 text-text">
+      <div className="w-full flex justify-between  text-text">
         <LuGrip size={16} className="cursor-grab" onClick={stopPropagation} />
         <MoreVertical
           size={16}
@@ -30,12 +30,14 @@ export function ProjectCard({ title, icon, id }: ProjectEntity) {
         />
       </div>
 
-      <CardContent className="flex flex-col flex-grow items-center justify-center pt-6">
-        <div className="text-8xl ">{React.createElement(icon)}</div>
+      <CardContent className="text-text">
+        <div className="text-4xl ">{React.createElement(icon)}</div>
       </CardContent>
 
       <CardFooter>
-        <span className="text-lg font-semibold text-center">{title}</span>
+        <span className=" text-text text-md font-semibold text-center">
+          {title}
+        </span>
       </CardFooter>
     </Card>
   );

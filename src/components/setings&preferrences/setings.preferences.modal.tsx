@@ -26,11 +26,11 @@ export function SettingsPreferencesModal({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full bg-background/70 flex justify-center items-start pt-16 "
+      className="fixed top-0 left-0 w-full h-full bg-background/70 flex justify-center items-start pt-14 "
       onClick={onClose}
     >
       <div
-        className="bg-background-secondary rounded-lg shadow-lg w-4/5 max-w-6xl h-[80vh] flex overflow-hidden"
+        className="bg-background-secondary rounded-lg shadow-lg w-5/8 max-w-6xl h-[75vh] flex overflow-hidden"
         onClick={handleModalClick}
       >
         <SettingsPreferencesTabs defaultValue="preferences">
@@ -46,7 +46,7 @@ export function SettingsPreferencesModal({
               </SettingsPreferencesTabsTrigger>
             </div>
 
-            <div className="text-md flex justify-center text-muted-foreground pt-6 font-bold">
+            <div className="text-sm flex justify-center text-muted-foreground pt-6 font-bold">
               Version: 1.0.0
             </div>
           </SettingsPreferencesTabsList>

@@ -25,7 +25,7 @@ function SettingsPreferencesTabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "flex flex-col justify-between bg--background-secondary  border-r text-text w-60 py-4 pt-10",
+        "flex flex-col justify-between bg--background-secondary  border-r border-separators/50 text-text w-40 py-4 pt-10",
         className
       )}
       {...props}
@@ -42,7 +42,7 @@ function SettingsPreferencesTabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:bg-separators data-[state=active]:text-white flex items-center gap-2 px-3 py-2 text-md font-semibold rounded-sm w-full hover:bg-background/50 transition-colors",
+        "data-[state=active]:bg-separators/50 data-[state=active]:text-white flex items-center gap-2 px-3 py-2 text-md font-semibold rounded-sm w-full hover:bg-background/50 transition-colors",
         className
       )}
       {...props}
