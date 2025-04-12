@@ -1,9 +1,19 @@
-import Logo from "../../../public/Logo.svg";
+import { useTheme } from "@/contexts";
+
+import LogoDefault from "../../assets/Logo.svg";
+import LogoBlack from "../../assets/Logo_black.svg";
+
+
 import { DocsButton } from "../docs";
 import { SettingsPreferencesButton } from "../setings&preferrences";
 import { StatusBadge } from "../statusbadge";
 
 export function Header() {
+  const { theme } = useTheme();
+  const Logo = theme === "light" ? LogoBlack : LogoDefault;
+
+  console.log(theme);
+
   return (
     <header className="bg-background-secondary border-b border-separators/25 text-text flex items-center lg:px-15 xl:px-30 h-14 justify-between top-0 left-0 w-full">
       <div className="flex items-end">
