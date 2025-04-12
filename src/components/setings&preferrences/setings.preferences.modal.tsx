@@ -9,6 +9,7 @@ import {
   SettingsPreferencesTabsTrigger,
   SettingsPreferencesTabsContent,
 } from "./setings.preferences.tabs";
+import { PreferencesTab } from "./tabs";
 
 export type SettingsPreferencesModalProps = {
   onClose: () => void;
@@ -27,11 +28,11 @@ export function SettingsPreferencesModal({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full bg-background/70 flex justify-center items-start pt-14 "
+      className="fixed top-0 left-0 w-full h-full bg-background/80 flex justify-center items-start pt-14 "
       onClick={onClose}
     >
       <div
-        className="bg-background-secondary rounded-lg shadow-lg w-5/8 max-w-6xl h-[75vh] flex overflow-hidden"
+        className="bg-background-secondary rounded-lg  shadow-xl w-5/8 max-w-6xl h-[75vh] flex overflow-hidden"
         onClick={handleModalClick}
       >
         <SettingsPreferencesTabs defaultValue="preferences">
@@ -53,7 +54,7 @@ export function SettingsPreferencesModal({
           </SettingsPreferencesTabsList>
 
           <SettingsPreferencesTabsContent value="preferences">
-            Conteúdo de Preferências
+            <PreferencesTab/>
           </SettingsPreferencesTabsContent>
 
           <SettingsPreferencesTabsContent value="settings">

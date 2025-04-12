@@ -12,7 +12,7 @@ function SettingsPreferencesTabs({
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      className={cn("flex flex-row h-full", className)}
+      className={cn("flex flex-row h-full w-full", className)}
       {...props}
     />
   );
