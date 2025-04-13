@@ -4,3 +4,4 @@ export * from "./setings&preferrences";
 export * from "./docs";
 export * from "./statusbadge";
 export * from "./cards";
+export * from "./help"
