@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 
 import { ProjectEntity } from "@/@entities";
+import { AppSidebar } from "@/app.sidebar";
 import { ProjectHeader } from "@/components";
-
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface Props {
   project: ProjectEntity;
@@ -11,11 +12,15 @@ interface Props {
 
 export function ProjectPageLayout({ children, project }: Props) {
   return (
-    <div className="flex flex-col h-screen w-full">
-      <ProjectHeader project={project}/>
-      <main className="flex-1 lg:px-15 xl:px-30  overflow-y-auto pt-10 ">
-        {children}
-      </main>
+    <div className="h-screen">
+      <ProjectHeader project={project} />
+      <SidebarProvider>
+      <AppSidebar />
+        <main className="flex-1 px-5  overflow-y-auto pt-5 ">
+          <SidebarTrigger/>
+          {children}
+        </main>
+      </SidebarProvider>
     </div>
   );
 }
