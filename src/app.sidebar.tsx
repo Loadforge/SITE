@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronRight, Folder, Plus } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import {
@@ -13,7 +13,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-
 const methodColors: Record<string, string> = {
   GET: "bg-blue-500",
   POST: "bg-green-500",
@@ -21,55 +20,67 @@ const methodColors: Record<string, string> = {
   DELETE: "bg-red-500",
 }
 
-const requests = [
+
+const generateRequests = () => [
   {
     title: "User",
+    id: crypto.randomUUID(), 
     items: [
-      { title: "CreateUser", method: "POST" },
-      { title: "GetUsers", method: "GET" },
+      { title: "CreateUser", method: "POST", id: crypto.randomUUID() },
+      { title: "GetUsers", method: "GET", id: crypto.randomUUID() },
     ],
   },
   {
     title: "Product",
+    id: crypto.randomUUID(), 
     items: [
-      { title: "CreateProduct", method: "POST" },
-      { title: "GetProducts", method: "GET" },
+      { title: "CreateProduct", method: "POST", id: crypto.randomUUID() },
+      { title: "GetProducts", method: "GET", id: crypto.randomUUID() },
     ],
   },
 ]
 
 export function AppSidebar() {
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
+  const [requests] = useState(generateRequests) // Inicializa uma única vez
   const navigate = useNavigate()
   const location = useLocation()
 
-  const toggleGroup = (group: string) => {
+  const toggleGroup = (groupId: string) => {
     setOpenGroups((prev) => ({
       ...prev,
-      [group]: !prev[group],
+      [groupId]: !prev[groupId],
     }))
   }
 
-  const handleRequestClick = (folder: string, requisition: string) => {
+  const handleRequestClick = (folderId: string, requisitionId: string) => {
     const searchParams = new URLSearchParams()
-    searchParams.set("folder", folder)
-    searchParams.set("requisition", requisition)
+    searchParams.set("folder", folderId) 
+    searchParams.set("requisition", requisitionId) 
 
     const newUrl = `${location.pathname}?${searchParams.toString()}`
     navigate(newUrl)
   }
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const folder = params.get("folder")
+    if (folder) {
+      setOpenGroups((prev) => ({ ...prev, [folder]: true }))
+    }
+  }, [location.search])
+
   return (
     <Sidebar className="mt-14 h-[calc(100vh-3.5rem)]">
       <SidebarContent>
         {requests.map((group) => (
-          <SidebarGroup key={group.title}>
+          <SidebarGroup key={group.id}>
             <SidebarGroupLabel
-              onClick={() => toggleGroup(group.title)}
+              onClick={() => toggleGroup(group.id)}
               className="flex items-center justify-between cursor-pointer px-2"
             >
               <div className="flex items-center gap-2">
-                {openGroups[group.title] ? (
+                {openGroups[group.id] ? (
                   <ChevronDown size={16} />
                 ) : (
                   <ChevronRight size={16} />
@@ -80,14 +91,14 @@ export function AppSidebar() {
               <Plus size={14} className="opacity-60 hover:opacity-100" />
             </SidebarGroupLabel>
 
-            {openGroups[group.title] && (
+            {openGroups[group.id] && (
               <SidebarGroupContent className="ml-6">
                 <SidebarMenu>
-                  {group.items.map((item, i) => (
-                    <SidebarMenuItem key={i}>
+                  {group.items.map((item) => (
+                    <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton
                         onClick={() =>
-                          handleRequestClick(group.title, item.title)
+                          handleRequestClick(group.id, item.id) 
                         }
                         className="flex items-center gap-2 text-sm"
                       >
