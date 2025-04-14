@@ -64,7 +64,7 @@ export function AppSidebar({ project }: Props) {
       <SidebarContent>
         {project.requests && (
           <SidebarGroup>
-            <SidebarGroupContent className="ml-4">
+            <SidebarGroupContent >
               <SidebarMenu>
                 {project.requests?.map((item) => (
                   <SidebarMenuItem key={item.id}>
