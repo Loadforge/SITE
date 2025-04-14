@@ -23,7 +23,9 @@ const buttonVariants = cva(
         homeButton:
           "border border-text/25 bg-background/80  hover:opacity-80 rounded-lg  ",
         help: " bg-separators/30  hover:opacity-80 rounded-lg  ",
+        sidebarTrigger: " hover:text-primary/50 ",
       },
+      
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
