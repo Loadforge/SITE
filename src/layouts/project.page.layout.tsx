@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
 
 import { ProjectEntity } from "@/@entities";
-import { AppSidebar } from "@/app.sidebar";
-import { ProjectHeader, Separator } from "@/components";
+import { AppSidebar, ProjectHeader, Separator } from "@/components";
 import { BreadCrumbs } from "@/components/breadcrumb/breadcrumb";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
@@ -19,7 +18,7 @@ export function ProjectPageLayout({ children, project }: Props) {
     <div className="h-screen">
       <ProjectHeader project={project} />
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar project={project} />
         <main className="flex-1 px-2  overflow-y-auto pt-3 ">
           <div className="flex items-center gap-2 ">
             <SidebarTrigger />
