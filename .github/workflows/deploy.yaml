@@ -1,32 +1,38 @@
-name: Deploy para GitHub Pages
+name: Build and Deploy
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Instalar dependências
-        run: yarn install --frozen-lockfile
-
-      - name: Construir projeto
-        run: yarn build
-
-      - name: Configurar GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
-          path: dist
+          node-version: 20
+          cache: 'npm'
 
-      - name: Fazer deploy
-        uses: actions/deploy-pages@v4
+      - name: Install dependencies
+        run: npm i --force
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to HostGator via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /public_html/
