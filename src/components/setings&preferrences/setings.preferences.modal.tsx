@@ -48,8 +48,8 @@ export function SettingsPreferencesModal({
               </SettingsPreferencesTabsTrigger>
             </div>
 
-            <div className="text-sm flex justify-center text-muted-foreground pt-6 font-bold">
-              Version: 1.0.0
+            <div className="text-sm flex justify-center text-muted-foreground pt-6 ">
+              Version: 0.0.2
             </div>
           </SettingsPreferencesTabsList>
 
