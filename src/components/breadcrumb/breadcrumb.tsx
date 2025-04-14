@@ -4,14 +4,13 @@ import { useLocation } from "react-router-dom";
 import { ProjectEntity } from "@/@entities";
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
+  BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-import { Separator } from "../ui";
 
 interface Props {
   project: ProjectEntity;
@@ -37,10 +36,7 @@ export function BreadCrumbs({ project }: Props) {
 
   return (
     <div className="flex items-center">
-      <Separator
-        orientation="vertical"
-        className="h-6 w-[1px] bg-separators mr-2"
-      />
+  
 
       <Breadcrumb className="hidden md:block">
         <BreadcrumbList>

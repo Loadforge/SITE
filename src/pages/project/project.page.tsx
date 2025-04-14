@@ -13,7 +13,7 @@ export function ProjectPage() {
     if (id) {
       const fetchedProject: ProjectEntity = {
         id: id,
-        title: "New Project",
+        title: "Project 1",
         icon: FaIceCream,
         description: "Projeto exemplo com pastas e requisições",
         createdAt: new Date().toISOString(),
@@ -61,7 +61,7 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout project={project}>
-      <div className="p-4 text-muted-foreground">Conteúdo do projeto vai aqui</div>
+      <div className="text-muted-foreground">Conteúdo do projeto vai aqui</div>
     </ProjectPageLayout>
   );
 }
