@@ -6,3 +6,6 @@ export * from "./statusbadge";
 export * from "./cards";
 export * from "./help"
 export * from "./breadcrumb"
+export * from "./sidebar"
+
+

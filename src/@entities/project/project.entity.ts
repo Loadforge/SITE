@@ -9,7 +9,7 @@ export type RequestEntity = {
 export type FolderEntity = {
   id: string;
   title: string;
-  requests: RequestEntity[];
+  requests?: RequestEntity[];
 };
 
 export type ProjectEntity = {
@@ -19,7 +19,8 @@ export type ProjectEntity = {
   description?: string;
   createdAt: string;
   updatedAt: string;
-  folders: FolderEntity[];
+  requests?: RequestEntity[]
+  folders?: FolderEntity[];
 };
 
 export type ProjectCardEntity = Pick<ProjectEntity, "id" | "title" | "icon">;

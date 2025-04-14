@@ -12,12 +12,26 @@ export function ProjectPage() {
   useEffect(() => {
     if (id) {
       const fetchedProject: ProjectEntity = {
-        id: id,
+        id,
         title: "Project 1",
         icon: FaIceCream,
-        description: "Projeto exemplo com pastas e requisições",
+        description: "Projeto exemplo com pastas e requisições soltas",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+
+        requests: [
+          {
+            id: crypto.randomUUID(),
+            title: "Buscar configurações",
+            method: "GET",
+          },
+          {
+            id: crypto.randomUUID(),
+            title: "Atualizar sistema",
+            method: "PUT",
+          },
+        ],
+
         folders: [
           {
             id: crypto.randomUUID(),
@@ -53,15 +67,16 @@ export function ProjectPage() {
           },
         ],
       };
+
       setProject(fetchedProject);
     }
   }, [id]);
 
- 
-
   return (
     <ProjectPageLayout project={project}>
-      <div className="text-muted-foreground">Conteúdo do projeto vai aqui</div>
+      <div className="text-muted-foreground">
+        Conteúdo do projeto vai aqui
+      </div>
     </ProjectPageLayout>
   );
 }
