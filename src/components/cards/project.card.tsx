@@ -3,10 +3,10 @@ import React from "react";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
-import { ProjectEntity } from "@/@entities";
+import { ProjectCardEntity } from "@/@entities";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
-export function ProjectCard({ title, icon, id }: ProjectEntity) {
+export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
