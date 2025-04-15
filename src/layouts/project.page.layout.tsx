@@ -20,7 +20,7 @@ export function ProjectPageLayout({ children, project }: Props) {
       <SidebarProvider>
         <AppSidebar project={project} />
         <main className="flex-1 px-2  overflow-y-auto pt-3 ">
-          <div className="flex items-center gap-2 ">
+          <div className="flex items-center gap-2 border-b pb-3 ">
             <SidebarTrigger />
             <Separator
               orientation="vertical"
@@ -28,7 +28,7 @@ export function ProjectPageLayout({ children, project }: Props) {
             />
             <BreadCrumbs project={project} />
           </div>
-          <div className="p-4">{children}</div>
+          <div className="p-8">{children}</div>
         </main>
       </SidebarProvider>
     </div>

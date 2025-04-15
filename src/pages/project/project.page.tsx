@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaIceCream } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { ProjectEntity } from "@/@entities";
+import { SetUrl } from "@/components/setUrl/seturl";
 import { ProjectPageLayout } from "@/layouts";
 
 export function ProjectPage() {
-  const { id } = useParams<{ id: string }>();
+  const location = useLocation()
+  const { id } = location.state || null;
   const [project, setProject] = useState<ProjectEntity | null>(null);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export function ProjectPage() {
   return (
     <ProjectPageLayout project={project}>
       <div className="text-muted-foreground">
-        Conteúdo do projeto vai aqui
+        <SetUrl/>
       </div>
     </ProjectPageLayout>
   );

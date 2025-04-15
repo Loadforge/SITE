@@ -10,7 +10,7 @@ export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/project/${id}`);
+    navigate("/project",{state:{id: id}});
   };
 
   const stopPropagation = (e: React.MouseEvent) => {

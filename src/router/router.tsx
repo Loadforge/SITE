@@ -6,7 +6,7 @@ export const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<ListPage />} />
-      <Route path="/project/:id" element={<ProjectPage />} />
+      <Route path="/project/" element={<ProjectPage />} />
     </Routes>
   );
 };
