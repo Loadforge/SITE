@@ -12,6 +12,7 @@ import {
   HeadersReq,
   NotReqSelected,
   ParamsReq,
+  ResponseSheet,
   Tabs,
   TabsContent,
   TabsList,
@@ -160,6 +161,7 @@ export function ProjectPage() {
           </Tabs>
         </div>
       )}
+      <ResponseSheet>Teste</ResponseSheet>
     </ProjectPageLayout>
   );
 }
