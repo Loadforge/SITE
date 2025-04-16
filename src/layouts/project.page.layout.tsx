@@ -23,7 +23,7 @@ export function ProjectPageLayout({ children, project, setSelectedFolder,setSele
       <ProjectHeader project={project} />
       <SidebarProvider>
         <AppSidebar project={project} setSelectedFolder={setSelectedFolder} setSelectedRequest={setSelectedRequest} />
-        <main className="flex-1 px-2  overflow-y-auto pt-3 ">
+        <main className="flex-1 px-2  overflow-y-hidden pt-3 ">
           <div className="flex items-center gap-2 ">
             <SidebarTrigger />
             <Separator
@@ -32,7 +32,7 @@ export function ProjectPageLayout({ children, project, setSelectedFolder,setSele
             />
             <BreadCrumbs project={project} setSelectedFolder={setSelectedFolder} setselectedRequest={setSelectedRequest} selectedFolder={selectedFolder} selectedRequest={selectedRequest} />
           </div>
-          <div className="p-8">{children}</div>
+          <div className="p-8 h-full w-full">{children}</div>
         </main>
       </SidebarProvider>
     </div>

@@ -3,7 +3,7 @@ import { FaIceCream } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
-import { SetUrl } from "@/components/setUrl/seturl";
+import { NotReqSelected } from "@/components";
 import { ProjectPageLayout } from "@/layouts";
 
 export function ProjectPage() {
@@ -83,15 +83,15 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
-      project={project}
-      setSelectedFolder={setSelectedFolder}
-      setSelectedRequest={setSelectedRequest}
-      selectedRequest={selectedRequest}
-      selectedFolder={selectedFolder}
-    >
-      <div className="text-muted-foreground">
-        <SetUrl />
-      </div>
-    </ProjectPageLayout>
+  project={project}
+  setSelectedFolder={setSelectedFolder}
+  setSelectedRequest={setSelectedRequest}
+  selectedRequest={selectedRequest}
+  selectedFolder={selectedFolder}
+>
+  {!selectedRequest && (
+    <NotReqSelected/>
+  )}
+</ProjectPageLayout>
   );
 }
