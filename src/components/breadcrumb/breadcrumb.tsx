@@ -1,89 +1,58 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
 
-import { ProjectEntity } from "@/@entities";
+import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
 interface Props {
   project: ProjectEntity;
+  setselectedRequest: (request: RequestEntity | null) => void;
+  setSelectedFolder: (folder: FolderEntity | null) => void;
+  selectedFolder: FolderEntity | null;
+  selectedRequest: RequestEntity | null;
 }
 
-export function BreadCrumbs({ project }: Props) {
-  const location = useLocation();
-
-  const pathSegments = location.pathname
-    .split("/")
-    .filter((segment) => segment);
-
-  const queryParams = new URLSearchParams(location.search);
-  const folderId = queryParams.get("folder");
-  const requisitionId = queryParams.get("requisition");
-
-  const folder = project.folders?.find((f) => f.id === folderId);
-
-  const requisition =
-    folder?.requests?.find((r) => r.id === requisitionId) ||
-    project.requests?.find((r) => r.id === requisitionId);
-
-  const baseSegments = pathSegments.slice(2);
-
-  const fullPaths = baseSegments.map((_, index) => {
-    const path = "/" + pathSegments.slice(0, index + 3).join("/");
-    return {
-      path,
-      label: baseSegments[index],
-    };
-  });
-
-  const extraParams: { label: string; path: string }[] = [];
-
-  if (folder) {
-    extraParams.push({
-      label: folder.title,
-      path: `${location.pathname}?folder=${folder.id}`,
-    });
-  }
-
-  if (requisition) {
-    extraParams.push({
-      label: requisition.title,
-      path: `${location.pathname}?folder=${folder?.id}&requisition=${requisition.id}`,
-    });
-  }
-
+export function BreadCrumbs({
+  project,
+  selectedFolder,
+  selectedRequest,
+  setSelectedFolder,
+  setselectedRequest,
+}: Props) {
   return (
     <div className="flex items-center">
       <Breadcrumb className="hidden md:block">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/projects">{project.title}</BreadcrumbLink>
+            <BreadcrumbLink
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedFolder(null);
+                setselectedRequest(null);
+              }}
+            >
+              {project.title}
+            </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
 
-          {fullPaths.map((segment, index) => (
-            <React.Fragment key={index}>
-              <BreadcrumbItem>
-                <BreadcrumbLink href={segment.path}>{segment.label}</BreadcrumbLink>
-              </BreadcrumbItem>
+          {selectedFolder && (
+            <>
               <BreadcrumbSeparator />
-            </React.Fragment>
-          ))}
+              <BreadcrumbItem>{selectedFolder.title}</BreadcrumbItem>
+            </>
+          )}
 
-          {extraParams.map((param, index) => (
-            <React.Fragment key={`param-${index}`}>
-              <BreadcrumbItem>
-                <BreadcrumbPage>{param.label}</BreadcrumbPage>
-              </BreadcrumbItem>
-              {index !== extraParams.length - 1 && <BreadcrumbSeparator />}
-            </React.Fragment>
-          ))}
+          {selectedRequest && (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>{selectedRequest.title}</BreadcrumbItem>
+            </>
+          )}
         </BreadcrumbList>
       </Breadcrumb>
     </div>
