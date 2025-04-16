@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-export function ResponseSheet({ children }: { children: React.ReactNode }) {
+export function ResponseSheet() {
   const panelRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(300);
 
@@ -15,7 +15,7 @@ export function ResponseSheet({ children }: { children: React.ReactNode }) {
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizing.current || !panelRef.current) return;
     const newHeight = window.innerHeight - e.clientY;
-    if (newHeight >= 150 && newHeight <= 600) setHeight(newHeight);
+    if (newHeight >= 30 && newHeight <= 600) setHeight(newHeight);
   };
 
   const handleMouseUp = () => {
@@ -27,14 +27,14 @@ export function ResponseSheet({ children }: { children: React.ReactNode }) {
   return (
     <div
       ref={panelRef}
-      className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800"
+      className=" bottom-0 left-0 right-0 bg-background"
       style={{ height }}
     >
       <div
-        className="h-2 cursor-ns-resize bg-zinc-700 hover:bg-zinc-600"
+        className="h-0.5 cursor-ns-resize bg-separators hover:bg-primary/50"
         onMouseDown={handleMouseDown}
       />
-      <div className="h-full overflow-auto p-4 text-white">{children}</div>
+      Teste
     </div>
   );
 }
