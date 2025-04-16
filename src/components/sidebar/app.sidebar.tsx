@@ -1,20 +1,27 @@
-import { ProjectEntity } from "@/@entities";
-import {
-  Sidebar,
-  SidebarContent
-} from "@/components/ui/sidebar";
+import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
+import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 
-import { NavMain } from "./nav.main";
+import { Navigation } from "./navigation";
 
 interface Props {
   project: ProjectEntity;
+  setSelectedRequest: (requestId: RequestEntity | null) => void;
+  setSelectedFolder: (folderId: FolderEntity | null) => void;
 }
 
-export function AppSidebar({ project }: Props) {
+export function AppSidebar({
+  project,
+  setSelectedFolder,
+  setSelectedRequest,
+}: Props) {
   return (
     <Sidebar className="mt-14 h-[calc(100vh-3.5rem)]">
       <SidebarContent>
-        <NavMain project={{folders:project.folders, requests:project.requests}}/>
+        <Navigation
+          project={{ folders: project.folders, requests: project.requests }}
+          setSelectedFolder={setSelectedFolder}
+          setSelectedRequest={setSelectedRequest}
+        />
       </SidebarContent>
     </Sidebar>
   );

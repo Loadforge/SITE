@@ -12,7 +12,7 @@ export type FolderEntity = {
   requests?: RequestEntity[];
 };
 
-export type NavProjectEntity = {
+export type NavigationProjectEntity = {
   folders?: FolderEntity[];
   requests?: RequestEntity[];
 };

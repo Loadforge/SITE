@@ -2,7 +2,7 @@
 
 import { ChevronRight, FolderPlus, Plus } from "lucide-react"
 
-import { NavProjectEntity } from "@/@entities"
+import { FolderEntity, NavigationProjectEntity, RequestEntity } from "@/@entities"
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,10 +20,13 @@ import {
 } from "@/components/ui/sidebar"
 
 interface Props {
-  project: NavProjectEntity
+  project: NavigationProjectEntity
+  setSelectedRequest: (request: RequestEntity | null) => void
+  setSelectedFolder: (folder: FolderEntity | null) => void
 }
 
-export function NavMain({ project }: Props) {
+export function Navigation({ project, setSelectedFolder, setSelectedRequest }: Props) {
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="flex items-center justify-between">
@@ -39,9 +42,7 @@ export function NavMain({ project }: Props) {
             <SidebarMenuSubItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuSubButton>
-                  <span className="flex items-center gap-2">
-                    {folder.title}
-                  </span>
+                  <span className="flex items-center gap-2">{folder.title}</span>
                   <div className="ml-auto flex items-center gap-1">
                     <button className="text-text hover:text-primary">
                       <FolderPlus size={14} />
@@ -50,13 +51,19 @@ export function NavMain({ project }: Props) {
                   </div>
                 </SidebarMenuSubButton>
               </CollapsibleTrigger>
+
               <CollapsibleContent>
                 <SidebarMenuSub className="pl-4">
                   {folder.requests?.map((req, idx) => (
                     <SidebarMenuSubItem key={idx}>
                       <SidebarMenuSubButton asChild>
                         <a
-                          href={`/requests/${req.id}`}
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setSelectedRequest(req)
+                            setSelectedFolder(folder)
+                          }}
                           className="flex items-center gap-2"
                         >
                           <span>{req.title}</span>
@@ -73,7 +80,15 @@ export function NavMain({ project }: Props) {
         {project.requests?.map((req, index) => (
           <SidebarMenuItem key={index}>
             <SidebarMenuButton asChild>
-              <a href={`/requests/${req.id}`} className="flex items-center gap-2">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setSelectedRequest(req)
+                  setSelectedFolder(null)
+                }}
+                className="flex items-center gap-2"
+              >
                 <span>{req.title}</span>
               </a>
             </SidebarMenuButton>
@@ -83,4 +98,3 @@ export function NavMain({ project }: Props) {
     </SidebarGroup>
   )
 }
-
