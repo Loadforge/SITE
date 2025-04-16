@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaIceCream } from "react-icons/fa";
-import { FaHistory } from "react-icons/fa";
+import { FaHistory, FaIceCream } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
@@ -105,7 +104,7 @@ export function ProjectPage() {
       {!selectedRequest ? (
         <NotReqSelected />
       ) : (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-4">
           <SetUrl />
           <Tabs>
             <TabsList className="flex ">
@@ -130,29 +129,30 @@ export function ProjectPage() {
               <TabsTrigger
                 value="history"
                 className="ml-auto px-4 py-2 text-sm font-semibold"
-              ><div className="flex items-center gap-2">
-                <FaHistory />
-                History
+              >
+                <div className="flex items-center gap-2">
+                  <FaHistory />
+                  History
                 </div>
               </TabsTrigger>
             </TabsList>
             <TabsContent value="params">
-              <ParamsReq/>
+              <ParamsReq />
             </TabsContent>
             <TabsContent value="auth">
-            <AuthReq/>
+              <AuthReq />
             </TabsContent>
             <TabsContent value="headers">
-              <HeadersReq/>
+              <HeadersReq />
             </TabsContent>
             <TabsContent value="body">
-              <BodyReq/>
+              <BodyReq />
             </TabsContent>
             <TabsContent value="advanced">
-              <AdvancedReq/>
+              <AdvancedReq />
             </TabsContent>
             <TabsContent value="docs">
-              <DocsReq/>
+              <DocsReq />
             </TabsContent>
             <TabsContent value="history">
               <div className="">Histórico da requisição</div>

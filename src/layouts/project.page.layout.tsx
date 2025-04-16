@@ -32,7 +32,7 @@ export function ProjectPageLayout({ children, project, setSelectedFolder,setSele
             />
             <BreadCrumbs project={project} setSelectedFolder={setSelectedFolder} setselectedRequest={setSelectedRequest} selectedFolder={selectedFolder} selectedRequest={selectedRequest} />
           </div>
-          <div className="p-8 h-full w-full">{children}</div>
+          <div className="p-4 h-full w-full">{children}</div>
         </main>
       </SidebarProvider>
     </div>
