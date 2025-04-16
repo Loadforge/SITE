@@ -24,7 +24,7 @@ export function ProjectPageLayout({ children, project, setSelectedFolder,setSele
       <SidebarProvider>
         <AppSidebar project={project} setSelectedFolder={setSelectedFolder} setSelectedRequest={setSelectedRequest} />
         <main className="flex-1 px-2  overflow-y-auto pt-3 ">
-          <div className="flex items-center gap-2 border-b pb-3 ">
+          <div className="flex items-center gap-2 ">
             <SidebarTrigger />
             <Separator
               orientation="vertical"
