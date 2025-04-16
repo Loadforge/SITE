@@ -12,6 +12,11 @@ export type FolderEntity = {
   requests?: RequestEntity[];
 };
 
+export type NavProjectEntity = {
+  folders?: FolderEntity[];
+  requests?: RequestEntity[];
+};
+
 export type ProjectEntity = {
   id: string;
   title: string;
@@ -19,7 +24,7 @@ export type ProjectEntity = {
   description?: string;
   createdAt: string;
   updatedAt: string;
-  requests?: RequestEntity[]
+  requests?: RequestEntity[];
   folders?: FolderEntity[];
 };
 
