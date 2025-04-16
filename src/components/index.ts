@@ -7,5 +7,6 @@ export * from "./cards";
 export * from "./help"
 export * from "./breadcrumb"
 export * from "./sidebar"
+export * from "./project"
 
 
