@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
 import { NotReqSelected } from "@/components";
 import { ProjectPageLayout } from "@/layouts";
+import { SetUrl } from "@/components/setUrl/seturl";
 
 export function ProjectPage() {
   const location = useLocation();
@@ -83,15 +84,17 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
-  project={project}
-  setSelectedFolder={setSelectedFolder}
-  setSelectedRequest={setSelectedRequest}
-  selectedRequest={selectedRequest}
-  selectedFolder={selectedFolder}
->
-  {!selectedRequest && (
-    <NotReqSelected/>
-  )}
-</ProjectPageLayout>
+      project={project}
+      setSelectedFolder={setSelectedFolder}
+      setSelectedRequest={setSelectedRequest}
+      selectedRequest={selectedRequest}
+      selectedFolder={selectedFolder}
+    >
+      {!selectedRequest ? (
+      <NotReqSelected />
+      ) : (
+      <SetUrl/>
+      )}
+    </ProjectPageLayout>
   );
 }
