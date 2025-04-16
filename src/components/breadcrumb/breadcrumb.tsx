@@ -1,4 +1,3 @@
-
 import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
 import {
   Breadcrumb,
@@ -48,10 +47,10 @@ export function BreadCrumbs({
           )}
 
           {selectedRequest && (
-            <>
+            <div className="font-bold flex gap-2">
               <BreadcrumbSeparator />
               <BreadcrumbItem>{selectedRequest.title}</BreadcrumbItem>
-            </>
+            </div>
           )}
         </BreadcrumbList>
       </Breadcrumb>
