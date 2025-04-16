@@ -1,11 +1,24 @@
 import { useEffect, useState } from "react";
 import { FaIceCream } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
-import { NotReqSelected } from "@/components";
-import { ProjectPageLayout } from "@/layouts";
+import {
+  AdvancedReq,
+  AuthReq,
+  BodyReq,
+  DocsReq,
+  HeadersReq,
+  NotReqSelected,
+  ParamsReq,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components";
 import { SetUrl } from "@/components/setUrl/seturl";
+import { ProjectPageLayout } from "@/layouts";
 
 export function ProjectPage() {
   const location = useLocation();
@@ -17,7 +30,6 @@ export function ProjectPage() {
   const [selectedFolder, setSelectedFolder] = useState<FolderEntity | null>(
     null
   );
-
 
   useEffect(() => {
     if (id) {
@@ -91,9 +103,62 @@ export function ProjectPage() {
       selectedFolder={selectedFolder}
     >
       {!selectedRequest ? (
-      <NotReqSelected />
+        <NotReqSelected />
       ) : (
-      <SetUrl/>
+        <div className="flex flex-col gap-8">
+          <SetUrl />
+          <Tabs>
+            <TabsList className="flex ">
+              <TabsTrigger value="params" className="px-4 py-2 text-sm">
+                Params
+              </TabsTrigger>
+              <TabsTrigger value="auth" className="px-4 py-2 text-sm">
+                Auth
+              </TabsTrigger>
+              <TabsTrigger value="headers" className="px-4 py-2 text-sm">
+                Headers
+              </TabsTrigger>
+              <TabsTrigger value="body" className="px-4 py-2 text-sm ">
+                Body
+              </TabsTrigger>
+              <TabsTrigger value="advanced" className="px-4 py-2 text-sm">
+                Advanced
+              </TabsTrigger>
+              <TabsTrigger value="docs" className="px-4 py-2 text-sm">
+                Docs
+              </TabsTrigger>
+              <TabsTrigger
+                value="history"
+                className="ml-auto px-4 py-2 text-sm font-semibold"
+              ><div className="flex items-center gap-2">
+                <FaHistory />
+                History
+                </div>
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="params">
+              <ParamsReq/>
+            </TabsContent>
+            <TabsContent value="auth">
+            <AuthReq/>
+            </TabsContent>
+            <TabsContent value="headers">
+              <HeadersReq/>
+            </TabsContent>
+            <TabsContent value="body">
+              <BodyReq/>
+            </TabsContent>
+            <TabsContent value="advanced">
+              <AdvancedReq/>
+            </TabsContent>
+            <TabsContent value="docs">
+              <DocsReq/>
+            </TabsContent>
+            <TabsContent value="history">
+              <div className="">Histórico da requisição</div>
+            </TabsContent>
+          </Tabs>
+        </div>
       )}
     </ProjectPageLayout>
   );
