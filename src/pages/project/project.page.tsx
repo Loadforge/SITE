@@ -2,14 +2,21 @@ import { useEffect, useState } from "react";
 import { FaIceCream } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-import { ProjectEntity } from "@/@entities";
+import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { ProjectPageLayout } from "@/layouts";
 
 export function ProjectPage() {
-  const location = useLocation()
+  const location = useLocation();
   const { id } = location.state || null;
   const [project, setProject] = useState<ProjectEntity | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<RequestEntity | null>(
+    null
+  );
+  const [selectedFolder, setSelectedFolder] = useState<FolderEntity | null>(
+    null
+  );
+
 
   useEffect(() => {
     if (id) {
@@ -75,9 +82,15 @@ export function ProjectPage() {
   }, [id]);
 
   return (
-    <ProjectPageLayout project={project}>
+    <ProjectPageLayout
+      project={project}
+      setSelectedFolder={setSelectedFolder}
+      setSelectedRequest={setSelectedRequest}
+      selectedRequest={selectedRequest}
+      selectedFolder={selectedFolder}
+    >
       <div className="text-muted-foreground">
-        <SetUrl/>
+        <SetUrl />
       </div>
     </ProjectPageLayout>
   );
