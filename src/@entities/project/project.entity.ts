@@ -3,7 +3,8 @@ import { IconType } from "react-icons/lib";
 export type RequestEntity = {
   id: string;
   title: string;
-  method: "GET" | "POST" | "PUT" | "DELETE";
+  url?: string;
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 };
 
 export type FolderEntity = {
