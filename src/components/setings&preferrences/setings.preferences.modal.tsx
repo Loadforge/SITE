@@ -10,6 +10,7 @@ import {
   SettingsPreferencesTabsContent,
 } from "./setings.preferences.tabs";
 import { PreferencesTab } from "./tabs";
+import { SettingsTab } from "./tabs";
 
 export type SettingsPreferencesModalProps = {
   onClose: () => void;
@@ -58,7 +59,7 @@ export function SettingsPreferencesModal({
           </SettingsPreferencesTabsContent>
 
           <SettingsPreferencesTabsContent value="settings">
-            Conteúdo de Configurações
+            <SettingsTab/>
           </SettingsPreferencesTabsContent>
         </SettingsPreferencesTabs>
       </div>
