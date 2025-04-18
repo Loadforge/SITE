@@ -105,7 +105,7 @@ export function ProjectPage() {
         <NotReqSelected />
       ) : (
         <div className="flex flex-col gap-4">
-          <SetUrl />
+          <SetUrl selectedRequest={selectedRequest}  />
           <Tabs>
             <TabsList className="flex ">
               <TabsTrigger value="params" className="px-4 py-2 text-sm">
