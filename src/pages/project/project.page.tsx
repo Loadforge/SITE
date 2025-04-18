@@ -105,30 +105,18 @@ export function ProjectPage() {
         <NotReqSelected />
       ) : (
         <div className="flex flex-col gap-4">
-          <SetUrl selectedRequest={selectedRequest}  />
+          <SetUrl selectedRequest={selectedRequest} />
           <Tabs>
             <TabsList className="flex ">
-              <TabsTrigger value="params" className="px-4 py-2 text-sm">
-                Params
-              </TabsTrigger>
-              <TabsTrigger value="auth" className="px-4 py-2 text-sm">
-                Auth
-              </TabsTrigger>
-              <TabsTrigger value="headers" className="px-4 py-2 text-sm">
-                Headers
-              </TabsTrigger>
-              <TabsTrigger value="body" className="px-4 py-2 text-sm ">
-                Body
-              </TabsTrigger>
-              <TabsTrigger value="advanced" className="px-4 py-2 text-sm">
-                Advanced
-              </TabsTrigger>
-              <TabsTrigger value="docs" className="px-4 py-2 text-sm">
-                Docs
-              </TabsTrigger>
+              <TabsTrigger value="params">Params</TabsTrigger>
+              <TabsTrigger value="auth">Auth</TabsTrigger>
+              <TabsTrigger value="headers">Headers</TabsTrigger>
+              <TabsTrigger value="body">Body</TabsTrigger>
+              <TabsTrigger value="advanced">Advanced</TabsTrigger>
+              <TabsTrigger value="docs">Docs</TabsTrigger>
               <TabsTrigger
                 value="history"
-                className="ml-auto px-4 py-2 text-sm font-semibold"
+                className="ml-auto  text-sm font-semibold"
               >
                 <div className="flex items-center gap-2">
                   <FaHistory />
