@@ -8,8 +8,8 @@ import { useTheme } from "@/contexts";
 import LogoDefault from "../../assets/Logo.svg";
 import LogoBlack from "../../assets/Logo_black.svg";
 
-import { HelpButton } from "../help";
 import { BugButton } from "../bugButton";
+import { HelpButton } from "../help";
 
 interface Props {
   project: ProjectEntity;
