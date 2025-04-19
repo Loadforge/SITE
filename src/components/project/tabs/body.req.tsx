@@ -54,7 +54,7 @@ export function BodyReq() {
   };
 
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4  ">
       <Select
         value={format}
         onValueChange={(value:string) => handleFormatChange(value as "json" | "xml")}

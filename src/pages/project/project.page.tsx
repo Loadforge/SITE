@@ -16,6 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
+import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { ProjectPageLayout } from "@/layouts";
 
@@ -146,6 +147,7 @@ export function ProjectPage() {
               <div className="">Histórico da requisição</div>
             </TabsContent>
           </Tabs>
+          <ResponseSheet />
         </div>
       )}
     </ProjectPageLayout>
