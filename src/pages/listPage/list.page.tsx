@@ -2,9 +2,12 @@ import { useState } from "react";
 import { FaAutoprefixer } from "react-icons/fa";
 
 import { ProjectCardEntity } from "@/@entities";
-import { NewProjectButton, ProjectCard } from "@/components";
+import {
+  ImportProjectButton,
+  NewProjectButton,
+  ProjectCard,
+} from "@/components";
 import { ListPageLayout } from "@/layouts";
-
 
 export function ListPage() {
   const [projects, setProjects] = useState<ProjectCardEntity[]>([]);
@@ -12,7 +15,7 @@ export function ListPage() {
   const handleAddProject = () => {
     const nextNumber = projects.length + 1;
     const newProject: ProjectCardEntity = {
-      id: crypto.randomUUID(), 
+      id: crypto.randomUUID(),
       title: `Project ${nextNumber}`,
       icon: FaAutoprefixer,
     };
@@ -24,6 +27,8 @@ export function ListPage() {
       <ListPageLayout>
         <div className="hidden lg:grid lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 justify-items-center gap-10 p-4">
           <NewProjectButton onClick={handleAddProject} />
+          <ImportProjectButton />
+
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
