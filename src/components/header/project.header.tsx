@@ -9,6 +9,7 @@ import LogoDefault from "../../assets/Logo.svg";
 import LogoBlack from "../../assets/Logo_black.svg";
 
 import { HelpButton } from "../help";
+import { BugButton } from "../bugButton";
 
 interface Props {
   project: ProjectEntity;
@@ -38,12 +39,13 @@ export function ProjectHeader({ project }: Props) {
         <span className="text-lg font-bold">{project.title}</span>
       </div>
       <div className="flex gap-10">
-      <HelpButton />
-      <img
-        src={Logo}
-        alt="Logo"
-        className="max-h-full max-w-[70px] object-contain"
-      />
+        <BugButton />
+        <HelpButton />
+        <img
+          src={Logo}
+          alt="Logo"
+          className="max-h-full max-w-[70px] object-contain"
+        />
       </div>
     </header>
   );
