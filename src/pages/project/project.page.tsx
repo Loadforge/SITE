@@ -104,7 +104,7 @@ export function ProjectPage() {
       {!selectedRequest ? (
         <NotReqSelected />
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 ">
           <SetUrl selectedRequest={selectedRequest} />
           <Tabs defaultValue="body">
             <TabsList className="flex ">

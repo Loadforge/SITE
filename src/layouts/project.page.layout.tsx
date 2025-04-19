@@ -23,7 +23,7 @@ export function ProjectPageLayout({ children, project, setSelectedFolder,setSele
       <ProjectHeader project={project} />
       <SidebarProvider>
         <AppSidebar project={project} setSelectedFolder={setSelectedFolder} setSelectedRequest={setSelectedRequest} />
-        <main className="flex-1 px-2  overflow-y-hidden pt-3 ">
+        <main className="flex-1 px-2  overflow-y-auto pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">
             <SidebarTrigger />
             <Separator
