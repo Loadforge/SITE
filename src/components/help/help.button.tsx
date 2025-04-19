@@ -8,7 +8,7 @@ export function HelpButton() {
   return (
     <>
       <Button
-        variant="help"
+        variant="homeButton"
         className="flex items-center gap-1"
       >
         <IoIosHelpCircle className="text-xl" />
