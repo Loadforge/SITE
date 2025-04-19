@@ -106,7 +106,7 @@ export function ProjectPage() {
       ) : (
         <div className="flex flex-col gap-4">
           <SetUrl selectedRequest={selectedRequest} />
-          <Tabs>
+          <Tabs defaultValue="body">
             <TabsList className="flex ">
               <TabsTrigger value="params">Params</TabsTrigger>
               <TabsTrigger value="auth">Auth</TabsTrigger>

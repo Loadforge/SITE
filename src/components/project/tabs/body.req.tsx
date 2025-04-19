@@ -75,7 +75,7 @@ export function BodyReq() {
 
       <CodeMirror
         value={content}
-        height="224px"
+        height="240px"
         theme={theme == "dark" ? "dark" : "light"}
 
         extensions={[format === "json" ? json() : xml()]}
