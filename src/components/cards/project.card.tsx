@@ -12,27 +12,33 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
+type Props = ProjectCardEntity & {
+  listeners?: React.SVGAttributes<SVGElement>;
+  attributes?: React.SVGAttributes<SVGElement>;
+};
+
+export function ProjectCard({ id, title, icon, listeners, attributes }: Props) {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate("/project", { state: { id: id } });
+    navigate("/project", { state: { id } });
   };
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: React.MouseEvent<SVGElement>) => {
     e.stopPropagation();
   };
-
   return (
     <Card
       onClick={handleNavigate}
       className="select-none w-38 h-50 p-3 text-white rounded-xl shadow-md flex flex-col items-center justify-between overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
     >
-      <div className="w-full flex justify-between  text-text">
+      <div className="w-full flex justify-between text-text">
         <LuGrip
           size={16}
+          onClick={(e) => (e as React.MouseEvent<SVGElement>).stopPropagation()}
           className="cursor-grab hover:text-primary/80 transition-colors duration-200 ease-in-out"
-          onClick={stopPropagation}
+          {...listeners}
+          {...attributes}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -52,11 +58,11 @@ export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
       </div>
 
       <CardContent className="text-text">
-        <div className="text-4xl ">{React.createElement(icon)}</div>
+        <div className="text-4xl">{React.createElement(icon)}</div>
       </CardContent>
 
       <CardFooter>
-        <span className=" text-text text-md font-semibold text-center">
+        <span className="text-text text-md font-semibold text-center">
           {title}
         </span>
       </CardFooter>
