@@ -1,8 +1,9 @@
-import { useState } from "react";
-import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import { xml } from "@codemirror/lang-xml";
+import CodeMirror from "@uiw/react-codemirror";
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
+import { useState } from "react";
+
 import {
   Select,
   SelectContent,
@@ -17,7 +18,7 @@ export function BodyReq() {
   const [format, setFormat] = useState<"json" | "xml">("json");
   const [content, setContent] = useState<string>("{}");
   const [error, setError] = useState<string | null>(null);
-  const {theme} = useTheme();
+  const {resolvedTheme} = useTheme();
 
   const parser = new XMLParser();
   const builder = new XMLBuilder({
@@ -53,7 +54,7 @@ export function BodyReq() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 ">
       <Select
         value={format}
         onValueChange={(value:string) => handleFormatChange(value as "json" | "xml")}
@@ -76,7 +77,7 @@ export function BodyReq() {
       <CodeMirror
         value={content}
         height="240px"
-        theme={theme == "dark" ? "dark" : "light"}
+        theme={resolvedTheme == "dark" ? "dark" : "light"}
 
         extensions={[format === "json" ? json() : xml()]}
         onChange={(value) => handleContentChange(value)}
