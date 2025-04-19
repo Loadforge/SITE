@@ -2,6 +2,7 @@ import { MoreVertical } from "lucide-react";
 import React from "react";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 import { ProjectCardEntity } from "@/@entities";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -24,11 +25,21 @@ export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
     >
       <div className="w-full flex justify-between  text-text">
         <LuGrip size={16} className="cursor-grab" onClick={stopPropagation} />
-        <MoreVertical
-          size={16}
-          onClick={stopPropagation}
-          className="cursor-pointer"
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <MoreVertical
+              size={16}
+              onClick={stopPropagation}
+              className="cursor-pointer"
+            />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+            <DropdownMenuItem>Excluir</DropdownMenuItem>
+            <DropdownMenuItem>Duplicar</DropdownMenuItem>
+            <DropdownMenuItem>Exportar</DropdownMenuItem>
+            <DropdownMenuItem>Renomear</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <CardContent className="text-text">
