@@ -2,16 +2,21 @@ import { MoreVertical } from "lucide-react";
 import React from "react";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 import { ProjectCardEntity } from "@/@entities";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate("/project",{state:{id: id}});
+    navigate("/project", { state: { id: id } });
   };
 
   const stopPropagation = (e: React.MouseEvent) => {
@@ -24,16 +29,20 @@ export function ProjectCard({ title, icon, id }: ProjectCardEntity) {
       className="select-none w-38 h-50 p-3 text-white rounded-xl shadow-md flex flex-col items-center justify-between overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
     >
       <div className="w-full flex justify-between  text-text">
-        <LuGrip size={16} className="cursor-grab" onClick={stopPropagation} />
+        <LuGrip
+          size={16}
+          className="cursor-grab hover:text-primary/80 transition-colors duration-200 ease-in-out"
+          onClick={stopPropagation}
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <MoreVertical
               size={16}
               onClick={stopPropagation}
-              className="cursor-pointer"
+              className="cursor-pointer hover:text-primary/80 transition-colors duration-200 ease-in-out"
             />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
             <DropdownMenuItem>Excluir</DropdownMenuItem>
             <DropdownMenuItem>Duplicar</DropdownMenuItem>
             <DropdownMenuItem>Exportar</DropdownMenuItem>
