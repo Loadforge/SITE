@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-
-import { RequestEntity } from "@/@entities";
 import {
   Select,
   SelectContent,
@@ -9,31 +6,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useProjectStore } from "@/stores/project.store";
+
 import { Button, Input } from "../ui";
 
-interface Props {
-  selectedRequest: RequestEntity;
-}
+export function SetUrl() {
+  const { selectedRequest, setSelectedRequest } = useProjectStore();
 
-export function SetUrl({ selectedRequest }: Props) {
-  const [method, setMethod] = useState(selectedRequest.method || "GET");
-  const [url, setUrl] = useState(selectedRequest.url || "");
+  if (!selectedRequest) {
+    return null;
+  }
 
   const handleSend = () => {
-    console.log("Method:", method);
-    console.log("URL:", url);
+    console.log("Method:", selectedRequest?.method);
+    console.log("URL:", selectedRequest?.url);
   };
-  useEffect(() => {
-    setMethod(selectedRequest.method || "GET");
-    setUrl(selectedRequest.url || "");
-  }, [selectedRequest]);
 
   return (
     <div className="flex items-center w-full">
       <Select
-        value={method}
+        value={selectedRequest?.method || "GET"}
         onValueChange={(value: string) =>
-          setMethod(value as "GET" | "POST" | "PUT" | "DELETE" | "PATCH")
+          setSelectedRequest({
+            ...selectedRequest,
+            method: value as "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+          })
         }
       >
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
@@ -49,12 +46,18 @@ export function SetUrl({ selectedRequest }: Props) {
       </Select>
 
       <Input
-        className="rounded-l-none w-5xl mr-5 border-separators/50"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        placeholder="Enter URL"
+        className="rounded-l-none w-5xl mr-5 border-separators/50 placeholder:text-text/50"
+        value={selectedRequest?.url || ""}
+        onChange={(e) =>
+          setSelectedRequest({
+            ...selectedRequest,
+            url: e.target.value,
+          })
+        }
+        placeholder="https://"
       />
-      <Button className="w-25 font-bold text-xl " onClick={handleSend}>
+
+      <Button className="w-25 font-bold text-xl" onClick={handleSend}>
         Send
       </Button>
     </div>
