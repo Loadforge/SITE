@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FaHistory, FaIceCream } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
+import { ProjectEntity } from "@/@entities";
 import {
   AdvancedReq,
   AuthReq,
@@ -20,96 +20,98 @@ import {
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { ProjectPageLayout } from "@/layouts";
+import { useProjectStore } from "@/stores/project.store";
 
 export function ProjectPage() {
   const location = useLocation();
-  const { id } = location.state || null;
-  const [project, setProject] = useState<ProjectEntity | null>(null);
-  const [selectedRequest, setSelectedRequest] = useState<RequestEntity | null>(
-    null
-  );
-  const [selectedFolder, setSelectedFolder] = useState<FolderEntity | null>(
-    null
-  );
+  const { id } = location.state || {};
 
-  useEffect(() => {
-    if (id) {
-      const fetchedProject: ProjectEntity = {
-        id,
-        title: "Project 1",
-        icon: FaIceCream,
-        description: "Projeto exemplo com pastas e requisições soltas",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+  const {
+    selectedRequest,
+    setProject,
+  } = useProjectStore();
 
+
+  const mockProject: ProjectEntity = {
+    id: crypto.randomUUID(),
+    title: "Project 1",
+    icon: FaIceCream,
+    description: "Projeto exemplo com pastas e requisições soltas",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    requests: [
+      {
+        id: crypto.randomUUID(),
+        title: "Buscar configurações",
+        method: "GET",
+        url: "https://minhaapi.com/configuracoes",
+      },
+      {
+        id: crypto.randomUUID(),
+        title: "Atualizar sistema",
+        method: "PUT",
+        url: "https://minhaapi.com/sistema",
+      },
+    ],
+    folders: [
+      {
+        id: crypto.randomUUID(),
+        title: "Usuários",
         requests: [
           {
             id: crypto.randomUUID(),
-            title: "Buscar configurações",
+            title: "Buscar todos usuários",
             method: "GET",
+            url: "https://minhaapi.com/usuarios",
           },
           {
             id: crypto.randomUUID(),
-            title: "Atualizar sistema",
-            method: "PUT",
+            title: "Criar novo usuário",
+            method: "POST",
+            url: "https://minhaapi.com/usuarios",
           },
         ],
-
-        folders: [
+      },
+      {
+        id: crypto.randomUUID(),
+        title: "Produtos",
+        requests: [
           {
             id: crypto.randomUUID(),
-            title: "Usuários",
-            requests: [
-              {
-                id: crypto.randomUUID(),
-                title: "Buscar todos usuários",
-                method: "GET",
-              },
-              {
-                id: crypto.randomUUID(),
-                title: "Criar novo usuário",
-                method: "POST",
-              },
-            ],
+            title: "Listar produtos",
+            method: "GET",
+            url: "https://minhaapi.com/produtos",
           },
           {
             id: crypto.randomUUID(),
-            title: "Produtos",
-            requests: [
-              {
-                id: crypto.randomUUID(),
-                title: "Listar produtos",
-                method: "GET",
-              },
-              {
-                id: crypto.randomUUID(),
-                title: "Deletar produto",
-                method: "DELETE",
-              },
-            ],
+            title: "Deletar produto",
+            method: "DELETE",
+            url: "https://minhaapi.com/produtos/:id",
           },
         ],
-      };
+      },
+    ],
+  };
 
-      setProject(fetchedProject);
+  useEffect(() => {
+    if (id) {
+      setProject(mockProject);
     }
   }, [id]);
 
   return (
     <ProjectPageLayout
-      project={project}
-      setSelectedFolder={setSelectedFolder}
-      setSelectedRequest={setSelectedRequest}
-      selectedRequest={selectedRequest}
-      selectedFolder={selectedFolder}
+
     >
       {!selectedRequest ? (
         <NotReqSelected />
       ) : (
-        <div className="flex flex-col gap-4  ">
-          <SetUrl selectedRequest={selectedRequest} />
+        
+        <div className="flex flex-col gap-4 ">
+          <SetUrl/>
+
           <Tabs defaultValue="body">
-            <TabsList className="flex ">
+            <TabsList className="flex">
               <TabsTrigger value="params">Params</TabsTrigger>
               <TabsTrigger value="auth">Auth</TabsTrigger>
               <TabsTrigger value="headers">Headers</TabsTrigger>
@@ -118,7 +120,7 @@ export function ProjectPage() {
               <TabsTrigger value="docs">Docs</TabsTrigger>
               <TabsTrigger
                 value="history"
-                className="ml-auto  text-sm font-semibold"
+                className="ml-auto text-sm font-semibold"
               >
                 <div className="flex items-center gap-2">
                   <FaHistory />
@@ -126,6 +128,7 @@ export function ProjectPage() {
                 </div>
               </TabsTrigger>
             </TabsList>
+
             <TabsContent value="params">
               <ParamsReq />
             </TabsContent>

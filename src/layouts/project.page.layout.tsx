@@ -1,27 +1,17 @@
 import { ReactNode } from "react";
 
-import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
 import { AppSidebar, ProjectHeader, Separator } from "@/components";
 import { BreadCrumbs } from "@/components/breadcrumb/breadcrumb";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useProjectStore } from "@/stores/project.store";
 
 interface Props {
-  project: ProjectEntity | null;
   children: ReactNode;
-  setSelectedRequest: (requestId: RequestEntity | null) => void;
-  setSelectedFolder: (folderId: FolderEntity | null) => void;
-  selectedRequest: RequestEntity | null;
-  selectedFolder: FolderEntity | null;
 }
 
-export function ProjectPageLayout({
-  children,
-  project,
-  setSelectedFolder,
-  setSelectedRequest,
-  selectedFolder,
-  selectedRequest,
-}: Props) {
+export function ProjectPageLayout({ children }: Props) {
+  const { project } = useProjectStore();
+
   if (!project) {
     return <div>Projeto não encontrado</div>;
   }
@@ -29,11 +19,7 @@ export function ProjectPageLayout({
     <div className="h-screen">
       <ProjectHeader project={project} />
       <SidebarProvider>
-        <AppSidebar
-          project={project}
-          setSelectedFolder={setSelectedFolder}
-          setSelectedRequest={setSelectedRequest}
-        />
+        <AppSidebar />
         <main className="flex-1 px-2  overflow-y-hidden pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">
             <SidebarTrigger />
@@ -41,13 +27,7 @@ export function ProjectPageLayout({
               orientation="vertical"
               className="h-6 w-[1px] bg-separators mr-2"
             />
-            <BreadCrumbs
-              project={project}
-              setSelectedFolder={setSelectedFolder}
-              setselectedRequest={setSelectedRequest}
-              selectedFolder={selectedFolder}
-              selectedRequest={selectedRequest}
-            />
+            <BreadCrumbs />
           </div>
           <div className="p-4 h-full w-full">{children}</div>
         </main>

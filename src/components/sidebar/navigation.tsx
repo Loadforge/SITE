@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
-import { ChevronRight, FolderPlus, Plus } from "lucide-react"
+import { ChevronRight, FolderPlus, Plus } from "lucide-react";
 
-import { FolderEntity, NavigationProjectEntity, RequestEntity } from "@/@entities"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,15 +16,15 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useProjectStore } from "@/stores/project.store";
 
-interface Props {
-  project: NavigationProjectEntity
-  setSelectedRequest: (request: RequestEntity | null) => void
-  setSelectedFolder: (folder: FolderEntity | null) => void
-}
-
-export function Navigation({ project, setSelectedFolder, setSelectedRequest }: Props) {
+export function Navigation() {
+  const {
+    project,
+    setSelectedFolder,
+    setSelectedRequest
+  } = useProjectStore();
 
   return (
     <SidebarGroup>
@@ -37,12 +36,14 @@ export function Navigation({ project, setSelectedFolder, setSelectedRequest }: P
       </SidebarGroupLabel>
 
       <SidebarMenu>
-        {project.folders?.map((folder, index) => (
+        {project?.folders?.map((folder, index) => (
           <Collapsible key={index} asChild className="group/collapsible">
             <SidebarMenuSubItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuSubButton>
-                  <span className="flex items-center gap-2">{folder.title}</span>
+                  <span className="flex items-center gap-2">
+                    {folder.title}
+                  </span>
                   <div className="ml-auto flex items-center gap-1">
                     <button className="text-text hover:text-primary">
                       <FolderPlus size={14} />
@@ -60,9 +61,9 @@ export function Navigation({ project, setSelectedFolder, setSelectedRequest }: P
                         <a
                           href="#"
                           onClick={(e) => {
-                            e.preventDefault()
-                            setSelectedRequest(req)
-                            setSelectedFolder(folder)
+                            e.preventDefault();
+                            setSelectedRequest(req);
+                            setSelectedFolder(folder);
                           }}
                           className="flex items-center gap-2"
                         >
@@ -77,15 +78,15 @@ export function Navigation({ project, setSelectedFolder, setSelectedRequest }: P
           </Collapsible>
         ))}
 
-        {project.requests?.map((req, index) => (
+        {project?.requests?.map((req, index) => (
           <SidebarMenuItem key={index}>
             <SidebarMenuButton asChild>
               <a
                 href="#"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setSelectedRequest(req)
-                  setSelectedFolder(null)
+                  e.preventDefault();
+                  setSelectedRequest(req);
+                  setSelectedFolder(null);
                 }}
                 className="flex items-center gap-2"
               >
@@ -96,5 +97,5 @@ export function Navigation({ project, setSelectedFolder, setSelectedRequest }: P
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
