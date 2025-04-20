@@ -1,3 +1,9 @@
+import { useEffect, useState } from "react";
+
+import { toast } from "sonner";
+
+import { RequestEntity } from "@/@entities";
+
 import {
   Select,
   SelectContent,
@@ -34,6 +40,11 @@ export function SetUrl() {
   const handleSend = () => {
     console.log("Method:", selectedRequest.method);
     console.log("URL:", selectedRequest.url);
+    if (!url) {
+      toast.error("Please enter a URL");
+      return;}
+    console.log("Method:", method);
+    console.log("URL:", url);
   };
 
   return (
