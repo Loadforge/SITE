@@ -39,13 +39,15 @@ export function ResponseSheet({ response }: ResponseSheetProps) {
         >
           <span className="ml-2 text-xs">Response</span>
           {height === 30 ? (
-            <IoIosArrowDown size={14} />
-          ) : (
             <IoIosArrowUp size={14} />
+            
+          ) : (
+            <IoIosArrowDown size={14} />
+
           )}
         </button>
 
-        <div className="h-0.5 cursor-ns-resize bg-separators hover:bg-primary/50" />
+        <div className="h-0.5  bg-separators/25" />
         {height > 30 && (
           <div className="p-4">{response ? <></> : <NotResponse />}</div>
         )}

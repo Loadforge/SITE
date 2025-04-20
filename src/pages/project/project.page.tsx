@@ -9,6 +9,7 @@ import {
   BodyReq,
   DocsReq,
   HeadersReq,
+  InDevelopment,
   NotReqSelected,
   ParamsReq,
   Tabs,
@@ -105,7 +106,7 @@ export function ProjectPage() {
       {!selectedRequest ? (
         <NotReqSelected />
       ) : (
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-4  ">
           <SetUrl selectedRequest={selectedRequest} />
           <Tabs defaultValue="body">
             <TabsList className="flex ">
@@ -144,7 +145,7 @@ export function ProjectPage() {
               <DocsReq />
             </TabsContent>
             <TabsContent value="history">
-              <div className="">Histórico da requisição</div>
+              <InDevelopment/>
             </TabsContent>
           </Tabs>
           <ResponseSheet />
