@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { toast } from "sonner";
+
 import { RequestEntity } from "@/@entities";
 import {
   Select,
@@ -8,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 
 import { Button, Input } from "../ui";
 
@@ -20,6 +23,9 @@ export function SetUrl({ selectedRequest }: Props) {
   const [url, setUrl] = useState(selectedRequest.url || "");
 
   const handleSend = () => {
+    if (!url) {
+      toast.error("Please enter a URL");
+      return;}
     console.log("Method:", method);
     console.log("URL:", url);
   };
