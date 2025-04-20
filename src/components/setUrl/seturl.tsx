@@ -11,27 +11,36 @@ import { useProjectStore } from "@/stores/project.store";
 import { Button, Input } from "../ui";
 
 export function SetUrl() {
-  const { selectedRequest, setSelectedRequest } = useProjectStore();
+  const {
+    selectedRequest,
+    setSelectedRequest,
+    updateRequest,
+  } = useProjectStore();
 
-  if (!selectedRequest) {
-    return null;
-  }
+  if (!selectedRequest) return null;
+
+  const handleMethodChange = (method: string) => {
+    const updated = { ...selectedRequest, method: method  as "GET" | "POST" | "PUT" | "DELETE" | "PATCH" };
+    setSelectedRequest(updated);
+    updateRequest(updated);
+  };
+
+  const handleUrlChange = (url: string) => {
+    const updated = { ...selectedRequest, url };
+    setSelectedRequest(updated);
+    updateRequest(updated);
+  };
 
   const handleSend = () => {
-    console.log("Method:", selectedRequest?.method);
-    console.log("URL:", selectedRequest?.url);
+    console.log("Method:", selectedRequest.method);
+    console.log("URL:", selectedRequest.url);
   };
 
   return (
     <div className="flex items-center w-full">
       <Select
-        value={selectedRequest?.method || "GET"}
-        onValueChange={(value: string) =>
-          setSelectedRequest({
-            ...selectedRequest,
-            method: value as "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
-          })
-        }
+        value={selectedRequest.method}
+        onValueChange={handleMethodChange}
       >
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
           <SelectValue />
@@ -47,13 +56,8 @@ export function SetUrl() {
 
       <Input
         className="rounded-l-none w-5xl mr-5 border-separators/50 placeholder:text-text/50"
-        value={selectedRequest?.url || ""}
-        onChange={(e) =>
-          setSelectedRequest({
-            ...selectedRequest,
-            url: e.target.value,
-          })
-        }
+        value={selectedRequest.url}
+        onChange={(e) => handleUrlChange(e.target.value)}
         placeholder="https://"
       />
 

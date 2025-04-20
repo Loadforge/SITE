@@ -23,7 +23,7 @@ export function Navigation() {
   const {
     project,
     setSelectedFolder,
-    setSelectedRequest,
+    setSelectedRequest
   } = useProjectStore();
 
   return (

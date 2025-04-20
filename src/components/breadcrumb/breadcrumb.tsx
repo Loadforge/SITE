@@ -12,8 +12,7 @@ export function BreadCrumbs() {
     project,
     selectedRequest,
     selectedFolder,
-    setSelectedFolder,
-    setSelectedRequest
+    resetSelections,
   } = useProjectStore();
   return (
     <div className="flex items-center">
@@ -24,8 +23,7 @@ export function BreadCrumbs() {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setSelectedFolder(null);
-                setSelectedRequest(null);
+                resetSelections();
               }}
             >
               {project?.title}
