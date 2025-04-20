@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { RequestEntity } from "@/@entities";
+
 import {
   Select,
   SelectContent,
@@ -11,36 +12,46 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useProjectStore } from "@/stores/project.store";
 
 import { Button, Input } from "../ui";
 
-interface Props {
-  selectedRequest: RequestEntity;
-}
+export function SetUrl() {
+  const {
+    selectedRequest,
+    setSelectedRequest,
+    updateRequest,
+  } = useProjectStore();
 
-export function SetUrl({ selectedRequest }: Props) {
-  const [method, setMethod] = useState(selectedRequest.method || "GET");
-  const [url, setUrl] = useState(selectedRequest.url || "");
+  if (!selectedRequest) return null;
+
+  const handleMethodChange = (method: string) => {
+    const updated = { ...selectedRequest, method: method  as "GET" | "POST" | "PUT" | "DELETE" | "PATCH" };
+    setSelectedRequest(updated);
+    updateRequest(updated);
+  };
+
+  const handleUrlChange = (url: string) => {
+    const updated = { ...selectedRequest, url };
+    setSelectedRequest(updated);
+    updateRequest(updated);
+  };
 
   const handleSend = () => {
+    console.log("Method:", selectedRequest.method);
+    console.log("URL:", selectedRequest.url);
     if (!url) {
       toast.error("Please enter a URL");
       return;}
     console.log("Method:", method);
     console.log("URL:", url);
   };
-  useEffect(() => {
-    setMethod(selectedRequest.method || "GET");
-    setUrl(selectedRequest.url || "");
-  }, [selectedRequest]);
 
   return (
     <div className="flex items-center w-full">
       <Select
-        value={method}
-        onValueChange={(value: string) =>
-          setMethod(value as "GET" | "POST" | "PUT" | "DELETE" | "PATCH")
-        }
+        value={selectedRequest.method}
+        onValueChange={handleMethodChange}
       >
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
           <SelectValue />
@@ -55,12 +66,13 @@ export function SetUrl({ selectedRequest }: Props) {
       </Select>
 
       <Input
-        className="rounded-l-none w-5xl mr-5 border-separators/50"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        placeholder="Enter URL"
+        className="rounded-l-none w-5xl mr-5 border-separators/50 placeholder:text-text/50"
+        value={selectedRequest.url}
+        onChange={(e) => handleUrlChange(e.target.value)}
+        placeholder="https://"
       />
-      <Button className="w-25 font-bold text-xl " onClick={handleSend}>
+
+      <Button className="w-25 font-bold text-xl" onClick={handleSend}>
         Send
       </Button>
     </div>

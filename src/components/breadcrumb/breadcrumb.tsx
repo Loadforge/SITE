@@ -1,4 +1,3 @@
-import { FolderEntity, ProjectEntity, RequestEntity } from "@/@entities";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,22 +5,15 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useProjectStore } from "@/stores/project.store";
 
-interface Props {
-  project: ProjectEntity;
-  setselectedRequest: (request: RequestEntity | null) => void;
-  setSelectedFolder: (folder: FolderEntity | null) => void;
-  selectedFolder: FolderEntity | null;
-  selectedRequest: RequestEntity | null;
-}
-
-export function BreadCrumbs({
-  project,
-  selectedFolder,
-  selectedRequest,
-  setSelectedFolder,
-  setselectedRequest,
-}: Props) {
+export function BreadCrumbs() {
+  const {
+    project,
+    selectedRequest,
+    selectedFolder,
+    resetSelections,
+  } = useProjectStore();
   return (
     <div className="flex items-center">
       <Breadcrumb className="hidden md:block">
@@ -31,11 +23,10 @@ export function BreadCrumbs({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setSelectedFolder(null);
-                setselectedRequest(null);
+                resetSelections();
               }}
             >
-              {project.title}
+              {project?.title}
             </BreadcrumbLink>
           </BreadcrumbItem>
 
