@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react";
-
 import { toast } from "sonner";
-
-import { RequestEntity } from "@/@entities";
 
 import {
   Select,
@@ -17,16 +13,16 @@ import { useProjectStore } from "@/stores/project.store";
 import { Button, Input } from "../ui";
 
 export function SetUrl() {
-  const {
-    selectedRequest,
-    setSelectedRequest,
-    updateRequest,
-  } = useProjectStore();
+  const { selectedRequest, setSelectedRequest, updateRequest } =
+    useProjectStore();
 
   if (!selectedRequest) return null;
 
   const handleMethodChange = (method: string) => {
-    const updated = { ...selectedRequest, method: method  as "GET" | "POST" | "PUT" | "DELETE" | "PATCH" };
+    const updated = {
+      ...selectedRequest,
+      method: method as "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+    };
     setSelectedRequest(updated);
     updateRequest(updated);
   };
@@ -38,21 +34,19 @@ export function SetUrl() {
   };
 
   const handleSend = () => {
+    if (!selectedRequest.url) {
+      toast.error("Please enter a URL");
+      return;
+    }
     console.log("Method:", selectedRequest.method);
     console.log("URL:", selectedRequest.url);
-    if (!url) {
-      toast.error("Please enter a URL");
-      return;}
-    console.log("Method:", method);
-    console.log("URL:", url);
+    
+    
   };
 
   return (
     <div className="flex items-center w-full">
-      <Select
-        value={selectedRequest.method}
-        onValueChange={handleMethodChange}
-      >
+      <Select value={selectedRequest.method} onValueChange={handleMethodChange}>
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
           <SelectValue />
         </SelectTrigger>
