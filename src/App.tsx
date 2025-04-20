@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-        
+
 import { BrowserRouter } from "react-router-dom";
 
+import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/theme/theme";
 import { Router } from "./router";
 
@@ -41,6 +42,12 @@ export function App() {
           </div>
         )}
         <Router />
+        <Toaster
+          position="bottom-left"
+          duration={5000}
+          theme={theme}
+          closeButton
+        />
       </BrowserRouter>
     </ThemeProvider>
   );
