@@ -45,12 +45,16 @@ export function ProjectPage() {
         title: "Buscar configurações",
         method: "GET",
         url: "https://minhaapi.com/configuracoes",
+        body: {type: "json", content: "{}"},
+
       },
       {
         id: crypto.randomUUID(),
         title: "Atualizar sistema",
         method: "PUT",
         url: "https://minhaapi.com/sistema",
+        body: {type: "json", content: "{}"},
+        
       },
     ],
     folders: [
@@ -63,12 +67,15 @@ export function ProjectPage() {
             title: "Buscar todos usuários",
             method: "GET",
             url: "https://minhaapi.com/usuarios",
+            body: {type: "json", content: "{}"},
           },
           {
             id: crypto.randomUUID(),
             title: "Criar novo usuário",
             method: "POST",
             url: "https://minhaapi.com/usuarios",
+            body: {type: "json", content: "{}"},
+
           },
         ],
       },
@@ -81,12 +88,16 @@ export function ProjectPage() {
             title: "Listar produtos",
             method: "GET",
             url: "https://minhaapi.com/produtos",
+            body: {type: "json", content: "{}"},
+
           },
           {
             id: crypto.randomUUID(),
             title: "Deletar produto",
             method: "DELETE",
             url: "https://minhaapi.com/produtos/:id",
+            body: {type: "json", content: "{}"},
+
           },
         ],
       },

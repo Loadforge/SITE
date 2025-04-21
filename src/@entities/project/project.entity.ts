@@ -1,8 +1,8 @@
 import { IconType } from "react-icons/lib";
 
 export type RequestBody = {
-  type: "json" | "form-data" | "x-www-form-urlencoded" | "raw" | "none";
-  content: unknown;
+  type: "json" | "xml" | "none";
+  content?: string;
 };
 
 export type RequestDocs = {
@@ -37,8 +37,8 @@ export type RequestResponse = {
   statusText: string;
   body: unknown;
   headers: Record<string, string>;
-  duration: number; 
-  timestamp: string; 
+  duration: number;
+  timestamp: string;
 };
 
 export type RequestHistoryEntry = {
@@ -50,10 +50,10 @@ export type RequestHistoryEntry = {
 export type RequestEntity = {
   id: string;
   title: string;
-  url?: string;
-  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  /*body?: RequestBody;
-  docs?: RequestDocs;
+  url: string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  body: RequestBody;
+  /*docs?: RequestDocs;
   params?: RequestParams;
   auth?: RequestAuth;
   headers?: RequestHeader[];
