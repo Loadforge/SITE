@@ -74,4 +74,12 @@ export type ProjectEntity = {
   folders?: FolderEntity[];
 };
 
+export type WorkspaceEntity = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  projects?: ProjectEntity[];
+};
+
 export type ProjectCardEntity = Pick<ProjectEntity, "id" | "title" | "icon">;
