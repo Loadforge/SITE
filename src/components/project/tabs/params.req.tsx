@@ -22,7 +22,7 @@ type QueryParam = {
 
 export function ParamsReq() {
   const [queryParams, setQueryParams] = useState<QueryParam[]>([]);
-  const [editingParamId, setEditingParamId] = useState<string | null>(null);
+  const [, setEditingParamId] = useState<string | null>(null);
   const nameInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
   const valueInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
