@@ -41,11 +41,6 @@ export type RequestResponse = {
   timestamp: string;
 };
 
-export type RequestHistoryEntry = {
-  request: Omit<RequestEntity, "history" | "response">;
-  response: RequestResponse | null;
-  timestamp: string;
-};
 
 export type RequestEntity = {
   id: string;
@@ -57,8 +52,8 @@ export type RequestEntity = {
   params?: RequestParams;
   auth?: RequestAuth;
   headers?: RequestHeader[];
-  response?: RequestResponse;
-  history?: RequestHistoryEntry[];*/
+  response?: RequestResponse;*/
+
 };
 
 export type FolderEntity = {
@@ -67,10 +62,6 @@ export type FolderEntity = {
   requests?: RequestEntity[];
 };
 
-export type NavigationProjectEntity = {
-  folders?: FolderEntity[];
-  requests?: RequestEntity[];
-};
 
 export type ProjectEntity = {
   id: string;

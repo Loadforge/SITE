@@ -45,7 +45,7 @@ export function SettingsPreferencesModal({
               </SettingsPreferencesTabsTrigger>
               <SettingsPreferencesTabsTrigger value="settings">
                 <Settings className="size-4" />
-                Settings
+                API Connect
               </SettingsPreferencesTabsTrigger>
             </div>
 
