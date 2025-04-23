@@ -131,7 +131,8 @@ const handleAddParam = () => {
   };
 
   return (
-    <div className="overflow-hidden space-y-4">
+    <div className="space-y-4">
+    <div className="overflow-y-auto max-h-75">
     <Table>
           <TableHeader>
             <TableRow>
@@ -257,12 +258,14 @@ const handleAddParam = () => {
             ))}
           </TableBody>
         </Table>
-
+    </div>
       <div className="flex justify-start">
         <Button onClick={handleAddParam} size="sm">
           <Plus className="h-4 w-4" /> New
         </Button>
       </div>
-    </div>
+      </div>
+      
+    
   );
 }

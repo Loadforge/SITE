@@ -121,8 +121,8 @@ export function ParamsReq() {
         <Label className="mb-1">URL Preview</Label>
         {buildUrlPreview(queryParams)}
       </div>
-
-      <div className="overflow-hidden">
+      
+      <div className="overflow-y-auto max-h-65">
         <Table>
           <TableHeader>
             <TableRow>
