@@ -1,4 +1,9 @@
+import { Trash2, Plus, Pencil } from "lucide-react";
 import { useState, KeyboardEvent, useRef } from "react";
+
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/index";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableHeader,
@@ -7,10 +12,6 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/index";
-import { Input } from "@/components/ui/input";
-import { Trash2, Plus, Pencil } from "lucide-react";
 
 type QueryParam = {
   id: string;
@@ -132,7 +133,7 @@ const handleAddParam = () => {
 
   return (
     <div className="space-y-4">
-    <div className="overflow-y-auto max-h-75">
+    <div className="overflow-y-auto max-h-[40vh]">
     <Table>
           <TableHeader>
             <TableRow>
