@@ -1,4 +1,9 @@
+import { Trash2, Plus, Pencil } from "lucide-react";
 import { useState, KeyboardEvent, useRef } from "react";
+
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button, Label } from "@/components/ui/index";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableHeader,
@@ -7,10 +12,6 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button, Label } from "@/components/ui/index";
-import { Input } from "@/components/ui/input";
-import { Trash2, Plus, Pencil } from "lucide-react";
 
 type QueryParam = {
   id: string;
@@ -121,8 +122,8 @@ export function ParamsReq() {
         <Label className="mb-1">URL Preview</Label>
         {buildUrlPreview(queryParams)}
       </div>
-
-      <div className="overflow-hidden">
+      
+      <div className="overflow-y-auto max-h-[30vh]">
         <Table>
           <TableHeader>
             <TableRow>
@@ -231,7 +232,7 @@ export function ParamsReq() {
         </Table>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-start">
         <Button onClick={handleAddParam} size="sm">
           <Plus className="h-4 w-4" /> New
         </Button>

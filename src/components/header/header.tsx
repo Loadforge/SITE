@@ -7,7 +7,6 @@ import { BugButton } from "../bugButton";
 import { DocsButton } from "../docs";
 import { SettingsPreferencesButton } from "../setings&preferrences";
 import { StatusBadge } from "../statusbadge";
-import { WorkspaceButton } from "../workspaceButton";
 
 export function Header() {
   const { theme } = useTheme();
@@ -23,7 +22,6 @@ export function Header() {
         />
       </div>
       <div className="flex items-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
-        <WorkspaceButton />
         <BugButton />
         <SettingsPreferencesButton />
         <DocsButton />
