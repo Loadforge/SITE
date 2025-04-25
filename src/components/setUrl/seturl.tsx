@@ -60,7 +60,7 @@ export function SetUrl() {
       </Select>
 
       <Input
-        className="rounded-l-none w-5xl mr-5 border-separators/50 placeholder:text-text/50"
+        className="rounded-l-none w-full mr-5 border-separators/50 placeholder:text-text/50"
         value={selectedRequest.url}
         onChange={(e) => handleUrlChange(e.target.value)}
         placeholder="https://"
