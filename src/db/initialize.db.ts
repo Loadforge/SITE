@@ -5,9 +5,6 @@ export async function openDb() {
     upgrade(db) {
       db.createObjectStore("project", { keyPath: "id" });
 
-      const folderStore = db.createObjectStore("folder", { keyPath: "id" });
-      folderStore.createIndex("projectIndex", "projectId");
-
       const requestStore = db.createObjectStore("request", { keyPath: "id" });
       requestStore.createIndex("projectIndex", "projectId");
 

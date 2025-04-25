@@ -1,12 +1,13 @@
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
+  arrayMove,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FaAutoprefixer } from "react-icons/fa";
+
+import { toast } from "sonner";
 
 import { ProjectCardEntity } from "@/@entities";
 import {
@@ -15,19 +16,32 @@ import {
   SortableCard,
 } from "@/components";
 import { ListPageLayout } from "@/layouts";
+import { ProjectService } from "@/services/project/project.service";
+
 
 export function ListPage() {
   const [projects, setProjects] = useState<ProjectCardEntity[]>([]);
+  
 
   const handleAddProject = () => {
-    const nextNumber = projects.length + 1;
-    const newProject: ProjectCardEntity = {
-      id: crypto.randomUUID(),
-      title: `Project ${nextNumber}`,
-      icon: FaAutoprefixer,
-    };
-    setProjects((prev) => [...prev, newProject]);
+    ProjectService.create()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error("Erro ao adicionar o projeto:", error);
+        toast.error("Erro ao adicionar o projeto. Tente novamente!");
+      });
   };
+
+  useEffect(() => {
+    ProjectService.getAll()
+      .then((data) => {
+        setProjects(data);
+      })
+      .catch((error) => {
+        console.error("Erro ao carregar os projetos:", error);
+      });
+  }, [handleAddProject]);
 
   const handleDragEnd = (event: import("@dnd-kit/core").DragEndEvent) => {
     const { active, over } = event;
@@ -43,8 +57,14 @@ export function ListPage() {
   return (
     <div className="flex bg-background items-center justify-between min-h-svh">
       <ListPageLayout>
-        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={projects.map((p) => p.id)} strategy={rectSortingStrategy}>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={projects.map((p) => p.id)}
+            strategy={rectSortingStrategy}
+          >
             <div className="hidden lg:grid lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 justify-items-center gap-10 p-4">
               <NewProjectButton onClick={handleAddProject} />
               <ImportProjectButton />
