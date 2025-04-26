@@ -2,20 +2,22 @@
 
 import { Plus } from "lucide-react";
 
+
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Request } from "@/db/types/request.type";
 import { useProjectStore } from "@/stores/project.store";
+interface Props {
+  requests: Request[];
+}
 
-export function Navigation() {
-  const {
-    project,
-    setSelectedRequest
-  } = useProjectStore();
+export function Navigation({ requests }: Props) {
+  const { setSelectedRequest } = useProjectStore();
 
   return (
     <SidebarGroup>
@@ -27,9 +29,7 @@ export function Navigation() {
       </SidebarGroupLabel>
 
       <SidebarMenu>
-        
-
-        {project?.requests?.map((req, index) => (
+        {requests?.map((req, index) => (
           <SidebarMenuItem key={index}>
             <SidebarMenuButton asChild>
               <a
