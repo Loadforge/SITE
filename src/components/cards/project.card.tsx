@@ -1,5 +1,6 @@
 import { MoreVertical } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import * as FaIcons from "react-icons/fa";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
@@ -13,12 +14,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type Props = ProjectCardEntity & {
+  onClick: (id: string) => void;
   listeners?: React.SVGAttributes<SVGElement>;
   attributes?: React.SVGAttributes<SVGElement>;
 };
 
-export function ProjectCard({ id, title, icon, listeners, attributes }: Props) {
+export function ProjectCard({
+  id,
+  title,
+  icon,
+  listeners,
+  attributes,
+  onClick,
+}: Props) {
   const navigate = useNavigate();
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (icon && typeof icon === "string" && icon in FaIcons) {
+      setIconComponent(() => FaIcons[icon as keyof typeof FaIcons]);
+    }
+  }, [icon]);
 
   const handleNavigate = () => {
     navigate("/project", { state: { id } });
@@ -27,6 +45,7 @@ export function ProjectCard({ id, title, icon, listeners, attributes }: Props) {
   const stopPropagation = (e: React.MouseEvent<SVGElement>) => {
     e.stopPropagation();
   };
+
   return (
     <Card
       onClick={handleNavigate}
@@ -49,7 +68,15 @@ export function ProjectCard({ id, title, icon, listeners, attributes }: Props) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Excluir</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onClick(id);
+              }}
+            >
+              Excluir
+            </DropdownMenuItem>
             <DropdownMenuItem>Duplicar</DropdownMenuItem>
             <DropdownMenuItem>Exportar</DropdownMenuItem>
             <DropdownMenuItem>Renomear</DropdownMenuItem>
@@ -58,7 +85,9 @@ export function ProjectCard({ id, title, icon, listeners, attributes }: Props) {
       </div>
 
       <CardContent className="text-text">
-        <div className="text-4xl">{React.createElement(icon)}</div>
+        <div className="text-4xl">
+          {IconComponent ? React.createElement(IconComponent) : null}
+        </div>
       </CardContent>
 
       <CardFooter>

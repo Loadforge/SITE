@@ -5,19 +5,15 @@ import { ProjectCardEntity } from "@/@entities";
 
 import { ProjectCard } from "./project.card";
 
+type Props = ProjectCardEntity & {
+  onClick: (id: string) => void;
+};
 
-type Props = ProjectCardEntity;
-
-export function SortableCard(props: Props) {
-  const {
-    setNodeRef,
-    transform,
-    transition,
-    attributes,
-    listeners,
-  } = useSortable({
-    id: props.id,
-  });
+export function SortableCard({ onClick, ...props }: Props) {
+  const { setNodeRef, transform, transition, attributes, listeners } =
+    useSortable({
+      id: props.id,
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -26,7 +22,12 @@ export function SortableCard(props: Props) {
 
   return (
     <div ref={setNodeRef} style={style}>
-      <ProjectCard {...props} attributes={attributes} listeners={listeners} />
+      <ProjectCard
+        {...props}
+        attributes={attributes}
+        listeners={listeners}
+        onClick={onClick}
+      />
     </div>
   );
 }

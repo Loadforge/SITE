@@ -6,7 +6,6 @@ import {
 } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
 
-
 import { toast } from "sonner";
 
 import { ProjectCardEntity } from "@/@entities";
@@ -18,21 +17,30 @@ import {
 import { ListPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 
-
 export function ListPage() {
   const [projects, setProjects] = useState<ProjectCardEntity[]>([]);
-  
 
   const handleAddProject = () => {
     ProjectService.create()
-      .then(() => {
-      })
+      .then(() => {})
       .catch((error) => {
         console.error("Erro ao adicionar o projeto:", error);
         toast.error("Erro ao adicionar o projeto. Tente novamente!");
       });
   };
 
+  const handleDelete = (id: string, event?: React.MouseEvent) => {
+    event?.preventDefault();
+
+    ProjectService.delete(id)
+      .then(() => {
+        setProjects(projects.filter((project) => project.id !== id));
+        toast.success("Projeto Excluido com Sucesso");
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir o projeto:", error);
+      });
+  };
   useEffect(() => {
     ProjectService.getAll()
       .then((data) => {
@@ -41,7 +49,7 @@ export function ListPage() {
       .catch((error) => {
         console.error("Erro ao carregar os projetos:", error);
       });
-  }, [handleAddProject]);
+  }, [handleAddProject, handleDelete]);
 
   const handleDragEnd = (event: import("@dnd-kit/core").DragEndEvent) => {
     const { active, over } = event;
@@ -69,7 +77,11 @@ export function ListPage() {
               <NewProjectButton onClick={handleAddProject} />
               <ImportProjectButton />
               {projects.map((project) => (
-                <SortableCard key={project.id} {...project} />
+                <SortableCard
+                  key={project.id}
+                  {...project}
+                  onClick={handleDelete}
+                />
               ))}
             </div>
           </SortableContext>
