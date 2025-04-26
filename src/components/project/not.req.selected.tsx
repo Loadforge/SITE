@@ -1,8 +1,11 @@
 import Logo from "../../assets/Logo_black.svg";
 
 import { Button } from "../ui";
+interface Props {
+  handleCreateRequest: () => void;
+}
 
-export function NotReqSelected() {
+export function NotReqSelected({handleCreateRequest}:Props) {
   return (
     <div className="relative flex items-center  w-full h-full select-none ">
       <img
@@ -16,7 +19,7 @@ export function NotReqSelected() {
         <p className="mt-2 mb-4 text-text/50">
           Selecione uma requisição ou crie uma nova para começar a trabalhar.
         </p>
-        <Button>Criar nova requisição</Button>
+        <Button onClick={handleCreateRequest}>Criar nova requisição</Button>
       </div>
     </div>
   );

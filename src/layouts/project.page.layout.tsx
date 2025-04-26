@@ -4,14 +4,16 @@ import { AppSidebar, ProjectHeader, Separator } from "@/components";
 import { BreadCrumbs } from "@/components/breadcrumb/breadcrumb";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Project } from "@/db/types";
+import { Request } from "@/db/types/request.type";
 import { useProjectStore } from "@/stores/project.store";
 
 interface Props {
   children: ReactNode;
   dbproject: Partial<Project>;
+  requests: Request[];
 }
 
-export function ProjectPageLayout({ children, dbproject }: Props) {
+export function ProjectPageLayout({ children, dbproject, requests }: Props) {
   const { project } = useProjectStore();
 
   if (!project) {
@@ -21,7 +23,7 @@ export function ProjectPageLayout({ children, dbproject }: Props) {
     <div className="h-screen">
       <ProjectHeader project={dbproject} />
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar requests={requests} />
         <main className="flex-1 px-2  overflow-y-hidden pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">
             <SidebarTrigger />

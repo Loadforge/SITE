@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaHistory, FaIceCream } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
@@ -19,12 +19,16 @@ import {
 } from "@/components";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
+import { Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
+import { RequestService } from "@/services/request/request.service";
 import { useProjectStore } from "@/stores/project.store";
 
 export function ProjectPage() {
+  const [requests, setRequests] = useState<Request[]>([]);
+
   const location = useLocation();
-  const { id, title, icon } = location.state || {};
+  const { id: projectId, title, icon } = location.state || {};
 
   const { selectedRequest, setProject } = useProjectStore();
 
@@ -50,19 +54,32 @@ export function ProjectPage() {
         body: { type: "json", content: "{}" },
       },
     ],
-    
   };
+  function handleCreateRequest() {
+    if (!projectId) return;
 
+    RequestService.create(projectId).then(() => {
+      RequestService.getByProjectId(projectId).then(setRequests);
+    });
+  }
   useEffect(() => {
-    if (id) {
+    if (projectId) {
       setProject(mockProject);
     }
-  }, [id]);
+  }, [projectId]);
+  useEffect(() => {
+    if (projectId) {
+      RequestService.getByProjectId(projectId).then(setRequests);
+    }
+  }, [projectId, handleCreateRequest]);
 
   return (
-    <ProjectPageLayout dbproject={{id:id,title:title, icon:icon}}>
+    <ProjectPageLayout
+      requests={requests}
+      dbproject={{ id: projectId, title: title, icon: icon }}
+    >
       {!selectedRequest ? (
-        <NotReqSelected />
+        <NotReqSelected handleCreateRequest={handleCreateRequest} />
       ) : (
         <div className="flex flex-col gap-4 ">
           <SetUrl />
