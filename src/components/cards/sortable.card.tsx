@@ -7,9 +7,10 @@ import { ProjectCard } from "./project.card";
 
 type Props = ProjectCardEntity & {
   onClick: (id: string) => void;
+  onRename: (id: string, newTitle: string) => void;
 };
 
-export function SortableCard({ onClick, ...props }: Props) {
+export function SortableCard({ onClick, onRename, ...props }: Props) {
   const { setNodeRef, transform, transition, attributes, listeners } =
     useSortable({
       id: props.id,
@@ -27,6 +28,7 @@ export function SortableCard({ onClick, ...props }: Props) {
         attributes={attributes}
         listeners={listeners}
         onClick={onClick}
+        onRename={onRename}
       />
     </div>
   );

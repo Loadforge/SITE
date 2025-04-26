@@ -8,17 +8,18 @@ import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
 
-import { ProjectCardEntity } from "@/@entities";
 import {
   ImportProjectButton,
   NewProjectButton,
   SortableCard,
 } from "@/components";
+import { Project } from "@/db/types";
 import { ListPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 
+
 export function ListPage() {
-  const [projects, setProjects] = useState<ProjectCardEntity[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
 
   const handleAddProject = () => {
     ProjectService.create()
@@ -39,6 +40,25 @@ export function ListPage() {
       })
       .catch((error) => {
         console.error("Erro ao excluir o projeto:", error);
+      });
+  };
+  const handleRename = (id: string, newTitle: string) => {
+    const updatedProject = projects.find((p) => p.id === id);
+  
+    if (!updatedProject) return;
+  
+    const renamedProject = { ...updatedProject, title: newTitle };
+  
+    ProjectService.update(renamedProject)
+      .then(() => {
+        setProjects((prev) =>
+          prev.map((p) => (p.id === id ? renamedProject : p))
+        );
+        toast.success("Projeto renomeado com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao renomear o projeto:", error);
+        toast.error("Erro ao renomear o projeto. Tente novamente!");
       });
   };
   useEffect(() => {
@@ -81,6 +101,7 @@ export function ListPage() {
                   key={project.id}
                   {...project}
                   onClick={handleDelete}
+                  onRename={handleRename}
                 />
               ))}
             </div>
