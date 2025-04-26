@@ -29,7 +29,7 @@ export function SettingsPreferencesModal({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full bg-background/80 flex justify-center items-start pt-14 "
+      className="fixed top-0 left-0 w-full h-full bg-background/80 flex justify-center items-start pt-14 z-10 "
       onClick={onClose}
     >
       <div
