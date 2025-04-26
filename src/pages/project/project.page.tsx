@@ -24,19 +24,14 @@ import { useProjectStore } from "@/stores/project.store";
 
 export function ProjectPage() {
   const location = useLocation();
-  const { id } = location.state || {};
+  const { id, title, icon } = location.state || {};
 
-  const {
-    selectedRequest,
-    setProject,
-  } = useProjectStore();
-
+  const { selectedRequest, setProject } = useProjectStore();
 
   const mockProject: ProjectEntity = {
     id: crypto.randomUUID(),
     title: "Project 1",
     icon: FaIceCream,
-    description: "Projeto exemplo com pastas e requisições soltas",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     requests: [
@@ -45,63 +40,17 @@ export function ProjectPage() {
         title: "Buscar configurações",
         method: "GET",
         url: "https://minhaapi.com/configuracoes",
-        body: {type: "json", content: "{}"},
-
+        body: { type: "json", content: "{}" },
       },
       {
         id: crypto.randomUUID(),
         title: "Atualizar sistema",
         method: "PUT",
         url: "https://minhaapi.com/sistema",
-        body: {type: "json", content: "{}"},
-        
+        body: { type: "json", content: "{}" },
       },
     ],
-    folders: [
-      {
-        id: crypto.randomUUID(),
-        title: "Usuários",
-        requests: [
-          {
-            id: crypto.randomUUID(),
-            title: "Buscar todos usuários",
-            method: "GET",
-            url: "https://minhaapi.com/usuarios",
-            body: {type: "json", content: "{}"},
-          },
-          {
-            id: crypto.randomUUID(),
-            title: "Criar novo usuário",
-            method: "POST",
-            url: "https://minhaapi.com/usuarios",
-            body: {type: "json", content: "{}"},
-
-          },
-        ],
-      },
-      {
-        id: crypto.randomUUID(),
-        title: "Produtos",
-        requests: [
-          {
-            id: crypto.randomUUID(),
-            title: "Listar produtos",
-            method: "GET",
-            url: "https://minhaapi.com/produtos",
-            body: {type: "json", content: "{}"},
-
-          },
-          {
-            id: crypto.randomUUID(),
-            title: "Deletar produto",
-            method: "DELETE",
-            url: "https://minhaapi.com/produtos/:id",
-            body: {type: "json", content: "{}"},
-
-          },
-        ],
-      },
-    ],
+    
   };
 
   useEffect(() => {
@@ -111,15 +60,12 @@ export function ProjectPage() {
   }, [id]);
 
   return (
-    <ProjectPageLayout
-
-    >
+    <ProjectPageLayout dbproject={{id:id,title:title, icon:icon}}>
       {!selectedRequest ? (
         <NotReqSelected />
       ) : (
-        
         <div className="flex flex-col gap-4 ">
-          <SetUrl/>
+          <SetUrl />
 
           <Tabs defaultValue="body">
             <TabsList className="flex">
@@ -159,7 +105,7 @@ export function ProjectPage() {
               <DocsReq />
             </TabsContent>
             <TabsContent value="history">
-              <InDevelopment/>
+              <InDevelopment />
             </TabsContent>
           </Tabs>
           <ResponseSheet />

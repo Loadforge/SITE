@@ -41,7 +41,7 @@ export function ProjectCard({
   }, [icon]);
 
   const handleNavigate = () => {
-    navigate("/project", { state: { id } });
+    navigate("/project", { state: { id, title, icon } });
   };
 
   const stopPropagation = (e: React.MouseEvent<SVGElement>) => {
