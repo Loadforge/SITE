@@ -1,5 +1,5 @@
 import { MoreVertical } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import * as FaIcons from "react-icons/fa";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -31,8 +31,9 @@ export function ProjectCard({
 }: Props) {
   const navigate = useNavigate();
   const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
-  const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (icon && typeof icon === "string" && icon in FaIcons) {
@@ -40,18 +41,30 @@ export function ProjectCard({
     }
   }, [icon]);
 
+  useEffect(() => {
+    if (isRenaming && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isRenaming]);
+
   const handleNavigate = () => {
-    navigate("/project", { state: { id, title, icon } });
+    if (!isRenaming) {
+      navigate("/project", { state: { id, title, icon } });
+    }
   };
 
   const stopPropagation = (e: React.MouseEvent<SVGElement>) => {
     e.stopPropagation();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      onRename(id, newTitle);
-      setIsRenameOpen(false);
+      onRename(id, newTitle.trim() || title); 
+      setIsRenaming(false);
+    } else if (e.key === "Escape") {
+      setNewTitle(title); 
+      setIsRenaming(false);
     }
   };
 
@@ -92,7 +105,7 @@ export function ProjectCard({
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                setIsRenameOpen(true);
+                setIsRenaming(true);
               }}
             >
               Renomear
@@ -107,48 +120,22 @@ export function ProjectCard({
         </div>
       </CardContent>
 
-      <CardFooter>
-        <span className="text-text text-md font-semibold text-center">
-          {title}
-        </span>
-      </CardFooter>
-
-      {isRenameOpen && (
-        <div
-          className="absolute top-0 left-0 w-full h-full bg-black/60  flex items-center justify-center "
-          onClick={() => setIsRenameOpen(false)}
-        >
-          <div
-            className="bg-background rounded-xl p-4 w-64 shadow-lg"
+      <CardFooter className="flex justify-center w-full">
+        {isRenaming ? (
+          <input
+            ref={inputRef}
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onKeyDown={handleKeyDown}
             onClick={(e) => e.stopPropagation()}
-          >
-            <input
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="w-full p-2 rounded-md border border-border text-sm bg-muted text-text mb-3"
-              autoFocus
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                className="px-3 py-1 text-sm bg-muted text-text rounded-md hover:bg-muted/80"
-                onClick={() => setIsRenameOpen(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                className="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90"
-                onClick={() => {
-                  onRename(id, newTitle);
-                  setIsRenameOpen(false);
-                }}
-              >
-                Salvar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            className="text-text text-md font-semibold bg-transparent border-b border-primary focus:outline-none text-center w-full"
+          />
+        ) : (
+          <span className="text-text text-md font-semibold text-center">
+            {title}
+          </span>
+        )}
+      </CardFooter>
     </Card>
   );
 }
