@@ -30,9 +30,7 @@ export function ProjectCard({
   onRename,
 }: Props) {
   const navigate = useNavigate();
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
-    null
-  );
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
   const [isRenameOpen, setIsRenameOpen] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
 
@@ -78,7 +76,7 @@ export function ProjectCard({
               className="cursor-pointer hover:text-primary/80 transition-colors duration-200 ease-in-out"
             />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="start" className="z-10">
             <DropdownMenuItem
               onClick={(event) => {
                 event.preventDefault();
@@ -117,16 +115,13 @@ export function ProjectCard({
 
       {isRenameOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+          className="fixed top-0 left-0 w-full h-full bg-black/60  flex items-center justify-center "
           onClick={() => setIsRenameOpen(false)}
         >
           <div
             className="bg-background rounded-xl p-4 w-64 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-bold mb-2 text-center text-text">
-              Renomear Projeto
-            </h2>
             <input
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
