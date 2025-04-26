@@ -115,7 +115,7 @@ export function ProjectCard({
 
       {isRenameOpen && (
         <div
-          className="fixed top-0 left-0 w-full h-full bg-black/60  flex items-center justify-center "
+          className="absolute top-0 left-0 w-full h-full bg-black/60  flex items-center justify-center "
           onClick={() => setIsRenameOpen(false)}
         >
           <div
