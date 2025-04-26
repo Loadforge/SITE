@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/theme/theme";
+import { openDb } from "./db/initialize.db";
 import { Router } from "./router";
 
 export function App() {
@@ -11,17 +12,24 @@ export function App() {
   const theme: "light" | "dark" | "system" = "system";
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024);
+    const init = async () => {
+      await openDb(); 
+
+      const checkScreenSize = () => {
+        setIsMobile(window.innerWidth < 1024);
+      };
+
+      checkScreenSize();
+
+      window.addEventListener("resize", checkScreenSize);
+
+      return () => {
+        window.removeEventListener("resize", checkScreenSize);
+      };
     };
 
-    checkScreenSize();
+    init(); 
 
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => {
-      window.removeEventListener("resize", checkScreenSize);
-    };
   }, []);
 
   return (
