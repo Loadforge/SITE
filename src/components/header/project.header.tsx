@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import * as FaIcons from "react-icons/fa";
+
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
-import { ProjectEntity } from "@/@entities";
 import { useTheme } from "@/contexts";
+
+import { Project } from "@/db/types";
 
 import LogoDefault from "../../assets/Logo.svg";
 import LogoBlack from "../../assets/Logo_black.svg";
@@ -12,13 +15,20 @@ import { BugButton } from "../bugButton";
 import { HelpButton } from "../help";
 
 interface Props {
-  project: ProjectEntity;
+  project: Partial<Project>;
 }
 
 export function ProjectHeader({ project }: Props) {
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
   const { theme } = useTheme();
   const navigate = useNavigate();
   const Logo = theme === "light" ? LogoBlack : LogoDefault;
+
+  useEffect(() => {
+    if (project.icon && typeof project.icon === "string" && project.icon in FaIcons) {
+      setIconComponent(() => FaIcons[project.icon as keyof typeof FaIcons]);
+    }
+  }, [project.icon]);
 
   const handleBackToHome = () => {
     navigate("/");
@@ -34,7 +44,7 @@ export function ProjectHeader({ project }: Props) {
           <IoIosArrowBack className="text-text" />
         </button>
         <span className="text-2xl text-text">
-          {React.createElement(project.icon)}
+          {IconComponent ? React.createElement(IconComponent) : null}
         </span>
         <span className="text-lg font-bold">{project.title}</span>
       </div>

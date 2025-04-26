@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa";
 import { Card } from "@/components/ui/card";
 
 interface NewProjectButtonProps {
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 export function NewProjectButton({ onClick }: NewProjectButtonProps) {
