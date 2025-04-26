@@ -6,13 +6,15 @@ import { Navigation } from "./navigation";
 
 interface Props {
   requests: Request[];
+  handleCreateRequest: () => void;
+
 }
 
-export function AppSidebar({ requests }: Props) {
+export function AppSidebar({ requests, handleCreateRequest }: Props) {
   return (
     <Sidebar className="mt-14 h-[calc(100vh-3.5rem)]">
       <SidebarContent>
-        <Navigation requests={requests} />
+        <Navigation requests={requests} handleCreateRequest={handleCreateRequest}  />
       </SidebarContent>
     </Sidebar>
   );

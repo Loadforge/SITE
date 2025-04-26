@@ -14,9 +14,11 @@ import { Request } from "@/db/types/request.type";
 import { useProjectStore } from "@/stores/project.store";
 interface Props {
   requests: Request[];
+  handleCreateRequest: () => void;
+
 }
 
-export function Navigation({ requests }: Props) {
+export function Navigation({ requests, handleCreateRequest }: Props) {
   const { setSelectedRequest } = useProjectStore();
 
   return (
@@ -24,7 +26,7 @@ export function Navigation({ requests }: Props) {
       <SidebarGroupLabel className="flex items-center justify-between">
         Requests
         <button className="text-muted-foreground hover:text-white">
-          <Plus size={16} />
+          <Plus onClick={handleCreateRequest} size={16} />
         </button>
       </SidebarGroupLabel>
 

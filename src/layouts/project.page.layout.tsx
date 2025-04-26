@@ -11,9 +11,12 @@ interface Props {
   children: ReactNode;
   dbproject: Partial<Project>;
   requests: Request[];
+  handleCreateRequest: () => void;
+
+
 }
 
-export function ProjectPageLayout({ children, dbproject, requests }: Props) {
+export function ProjectPageLayout({ children, dbproject, requests, handleCreateRequest }: Props) {
   const { project } = useProjectStore();
 
   if (!project) {
@@ -23,7 +26,7 @@ export function ProjectPageLayout({ children, dbproject, requests }: Props) {
     <div className="h-screen">
       <ProjectHeader project={dbproject} />
       <SidebarProvider>
-        <AppSidebar requests={requests} />
+        <AppSidebar requests={requests} handleCreateRequest={handleCreateRequest} />
         <main className="flex-1 px-2  overflow-y-hidden pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">
             <SidebarTrigger />

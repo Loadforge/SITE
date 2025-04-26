@@ -75,6 +75,7 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
+      handleCreateRequest={handleCreateRequest}
       requests={requests}
       dbproject={{ id: projectId, title: title, icon: icon }}
     >
