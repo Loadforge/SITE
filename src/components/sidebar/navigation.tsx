@@ -32,8 +32,8 @@ export function Navigation({ requests, handleCreateRequest }: Props) {
 
       <SidebarMenu>
         {requests?.map((req, index) => (
-          <SidebarMenuItem key={index}>
-            <SidebarMenuButton asChild>
+          <SidebarMenuItem key={index}  >
+            <SidebarMenuButton asChild className="hover:bg-separators/40 hover:text-text">
               <a
                 href="#"
                 onClick={(e) => {
@@ -42,6 +42,7 @@ export function Navigation({ requests, handleCreateRequest }: Props) {
                 }}
                 className="flex items-center gap-2"
               >
+                <span>{req.method}</span>
                 <span>{req.title}</span>
               </a>
             </SidebarMenuButton>
