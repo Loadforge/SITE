@@ -4,15 +4,17 @@ import { Project } from "@/db/types";
 export class ProjectService {
   private static repository: ProjectRepository = new ProjectRepository();
 
-  static async create(): Promise<void> {
+  static async create(): Promise<Project> {
+    const projectCount = (await this.repository.getAllProjects()).length;
+
     const defaultProject: Project = {
       id: crypto.randomUUID(),
-      title: "Novo Projeto",
+      title: `Novo Projeto ${projectCount + 1}`,
       icon: "FaAutoprefixer",
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
-    return this.repository.createProject(defaultProject);
+
+    await this.repository.createProject(defaultProject);
+    return defaultProject;
   }
 
   static async getAll(): Promise<Project[]> {

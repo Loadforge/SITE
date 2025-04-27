@@ -6,6 +6,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import {
@@ -17,13 +18,17 @@ import { Project } from "@/db/types";
 import { ListPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 
-
 export function ListPage() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const navigate = useNavigate();
 
   const handleAddProject = () => {
     ProjectService.create()
-      .then(() => {})
+      .then((project) => {
+        navigate("/project", {
+          state: { id: project.id, title: project.title, icon: project.icon },
+        });
+      })
       .catch((error) => {
         console.error("Erro ao adicionar o projeto:", error);
         toast.error("Erro ao adicionar o projeto. Tente novamente!");
@@ -44,11 +49,11 @@ export function ListPage() {
   };
   const handleRename = (id: string, newTitle: string) => {
     const updatedProject = projects.find((p) => p.id === id);
-  
+
     if (!updatedProject) return;
-  
+
     const renamedProject = { ...updatedProject, title: newTitle };
-  
+
     ProjectService.update(renamedProject)
       .then(() => {
         setProjects((prev) =>
