@@ -46,4 +46,5 @@ export class ProjectRepository {
     const store = tx.objectStore("project");
     await store.delete(id);
   }
+  
 }
