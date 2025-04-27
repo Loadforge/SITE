@@ -1,5 +1,4 @@
 export type RequestDocs = {
-    description?: string;
-    comments?: string[];
+    comments: string;
   };
   
