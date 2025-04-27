@@ -7,14 +7,17 @@ import { Navigation } from "./navigation";
 interface Props {
   requests: Request[];
   handleCreateRequest: () => void;
+  selectedRequest: Request | null;
+  setSelectedRequest: (request: Request) => void;
+
 
 }
 
-export function AppSidebar({ requests, handleCreateRequest }: Props) {
+export function AppSidebar({ setSelectedRequest,selectedRequest,requests, handleCreateRequest }: Props) {
   return (
     <Sidebar className="mt-14 h-[calc(100vh-3.5rem)]">
       <SidebarContent>
-        <Navigation requests={requests} handleCreateRequest={handleCreateRequest}  />
+        <Navigation selectedRequest={selectedRequest} setSelectedRequest={setSelectedRequest} requests={requests} handleCreateRequest={handleCreateRequest}  />
       </SidebarContent>
     </Sidebar>
   );

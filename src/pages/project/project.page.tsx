@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { FaHistory, FaIceCream } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-import { ProjectEntity } from "@/@entities";
 import {
   AdvancedReq,
   AuthReq,
@@ -22,39 +21,14 @@ import { SetUrl } from "@/components/setUrl/seturl";
 import { Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { RequestService } from "@/services/request/request.service";
-import { useProjectStore } from "@/stores/project.store";
 
 export function ProjectPage() {
   const [requests, setRequests] = useState<Request[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
   const location = useLocation();
   const { id: projectId, title, icon } = location.state || {};
 
-  const { selectedRequest, setProject } = useProjectStore();
-
-  const mockProject: ProjectEntity = {
-    id: crypto.randomUUID(),
-    title: "Project 1",
-    icon: FaIceCream,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    requests: [
-      {
-        id: crypto.randomUUID(),
-        title: "Buscar configurações",
-        method: "GET",
-        url: "https://minhaapi.com/configuracoes",
-        body: { type: "json", content: "{}" },
-      },
-      {
-        id: crypto.randomUUID(),
-        title: "Atualizar sistema",
-        method: "PUT",
-        url: "https://minhaapi.com/sistema",
-        body: { type: "json", content: "{}" },
-      },
-    ],
-  };
   function handleCreateRequest() {
     if (!projectId) return;
 
@@ -62,11 +36,7 @@ export function ProjectPage() {
       RequestService.getByProjectId(projectId).then(setRequests);
     });
   }
-  useEffect(() => {
-    if (projectId) {
-      setProject(mockProject);
-    }
-  }, [projectId]);
+
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
@@ -75,6 +45,8 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
+      selectedRequest={selectedRequest}
+      setSelectedRequest={setSelectedRequest}
       handleCreateRequest={handleCreateRequest}
       requests={requests}
       dbproject={{ id: projectId, title: title, icon: icon }}
