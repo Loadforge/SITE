@@ -1,7 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
-
+import { MoreHorizontal, Plus } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -12,10 +11,21 @@ import {
 } from "@/components/ui/sidebar";
 import { Request } from "@/db/types/request.type";
 import { useProjectStore } from "@/stores/project.store";
+
+import { CustomBadge } from "../project";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui";
 interface Props {
   requests: Request[];
   handleCreateRequest: () => void;
-
 }
 
 export function Navigation({ requests, handleCreateRequest }: Props) {
@@ -23,28 +33,72 @@ export function Navigation({ requests, handleCreateRequest }: Props) {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="flex items-center justify-between">
+      <SidebarGroupLabel className="flex items-center justify-between text-sm">
         Requests
-        <button className="text-muted-foreground hover:text-white">
-          <Plus onClick={handleCreateRequest} size={16} />
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="text-text hover:text-primary transition-all">
+                <Plus className="" onClick={handleCreateRequest} size={16} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Criar Requisição</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </SidebarGroupLabel>
 
       <SidebarMenu>
         {requests?.map((req, index) => (
-          <SidebarMenuItem key={index}  >
-            <SidebarMenuButton asChild className="hover:bg-separators/40 hover:text-text">
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setSelectedRequest(req);
-                }}
-                className="flex items-center gap-2"
-              >
-                <span>{req.method}</span>
-                <span>{req.title}</span>
-              </a>
+          <SidebarMenuItem
+            key={index}
+            className="group flex items-center justify-between"
+          >
+            <SidebarMenuButton
+              asChild
+              className="hover:bg-separators/40 hover:text-text w-full flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2 w-full">
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelectedRequest(req);
+                  }}
+                  className="flex items-center gap-2 flex-1"
+                >
+                  <CustomBadge>{req.method}</CustomBadge>
+                  <span>{req.title}</span>
+                </a>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="opacity-50 hover:opacity-100 hover:text-primary transition-opacity p-1">
+                      <MoreHorizontal size={16} />
+                    </button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem
+                      onClick={() => console.log("Renomear", req.id)}
+                    >
+                      Renomear
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => console.log("Duplicar", req.id)}
+                    >
+                      Duplicar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => console.log("Deletar", req.id)}
+                      className="text-red-500"
+                    >
+                      Deletar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
