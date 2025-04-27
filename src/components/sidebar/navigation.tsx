@@ -12,7 +12,9 @@ import {
 import { Request } from "@/db/types/request.type";
 import { useProjectStore } from "@/stores/project.store";
 
+
 import { CustomBadge } from "../badge";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,6 +58,7 @@ export function Navigation({
       </SidebarGroupLabel>
 
       <SidebarMenu>
+
         {requests?.map((req, index) => {
           // Verifica se o item está selecionado
           const isSelected = selectedRequest?.id === req.id;
@@ -112,6 +115,7 @@ export function Navigation({
             </SidebarMenuItem>
           );
         })}
+
       </SidebarMenu>
     </SidebarGroup>
   );
