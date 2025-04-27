@@ -10,8 +10,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Request } from "@/db/types/request.type";
-import { useProjectStore } from "@/stores/project.store";
-
 
 import { CustomBadge } from "../badge";
 
@@ -58,18 +56,22 @@ export function Navigation({
       </SidebarGroupLabel>
 
       <SidebarMenu>
-
         {requests?.map((req, index) => {
           // Verifica se o item está selecionado
           const isSelected = selectedRequest?.id === req.id;
 
           return (
-            <SidebarMenuItem key={index} className="group flex items-center justify-between">
+            <SidebarMenuItem
+              key={index}
+              className="group flex items-center justify-between"
+            >
               <SidebarMenuButton
                 asChild
                 className={`w-full flex items-center justify-between hover:bg-separators/40 hover:text-text ${
-                  isSelected ? "bg-separators/70  border-l-4 border-primary" : ""
-                }`} 
+                  isSelected
+                    ? "bg-separators/70  border-l-4 border-primary"
+                    : ""
+                }`}
               >
                 <div className="flex items-center gap-2 w-full">
                   <a
@@ -115,7 +117,6 @@ export function Navigation({
             </SidebarMenuItem>
           );
         })}
-
       </SidebarMenu>
     </SidebarGroup>
   );
