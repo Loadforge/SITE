@@ -12,7 +12,7 @@ export async function openDb() {
       bodyStore.createIndex("requestIndex", "requestId");
 
       const docsStore = db.createObjectStore("docs", { keyPath: "id" });
-      docsStore.createIndex("projectIndex", "projectId");
+      docsStore.createIndex("requestIndex", "requestId");
 
       const paramsStore = db.createObjectStore("params", { keyPath: "id" });
       paramsStore.createIndex("requestIndex", "requestId");
