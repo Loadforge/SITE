@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, MoreVertical, Plus } from "lucide-react";
+import { MoreHorizontal, Plus } from "lucide-react";
 
 import {
   SidebarGroup,
