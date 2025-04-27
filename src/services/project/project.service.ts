@@ -5,16 +5,7 @@ export class ProjectService {
   private static repository: ProjectRepository = new ProjectRepository();
 
   static async create(): Promise<Project> {
-    const projectCount = (await this.repository.getAllProjects()).length;
-
-    const defaultProject: Project = {
-      id: crypto.randomUUID(),
-      title: `Novo Projeto ${projectCount + 1}`,
-      icon: "FaAutoprefixer",
-    };
-
-    await this.repository.createProject(defaultProject);
-    return defaultProject;
+    return await this.repository.createProject();
   }
 
   static async getAll(): Promise<Project[]> {
@@ -31,17 +22,5 @@ export class ProjectService {
 
   static async delete(id: string): Promise<void> {
     return this.repository.deleteProject(id);
-  }
-
-  static async duplicate(id: string): Promise<void> {
-    const project = await this.getById(id);
-    if (project) {
-      const duplicatedProject = {
-        ...project,
-        id: crypto.randomUUID(),
-      };
-      return this.repository.createProject(duplicatedProject);
-    }
-    throw new Error("Projeto não encontrado para duplicação");
   }
 }

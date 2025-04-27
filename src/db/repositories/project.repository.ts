@@ -3,8 +3,15 @@ import { IDBPDatabase } from "idb";
 import { openDb } from "../initialize.db";
 import { Project } from "../types";
 
+import { RequestRepository } from "./request.repository";
+
 export class ProjectRepository {
   private db?: IDBPDatabase;
+  private requestRepository: RequestRepository;
+
+  constructor() {
+    this.requestRepository = new RequestRepository();
+  }
 
   private async getDb(): Promise<IDBPDatabase> {
     if (!this.db) {
@@ -12,11 +19,23 @@ export class ProjectRepository {
     }
     return this.db;
   }
-  async createProject(project: Project): Promise<void> {
+  async createProject(): Promise<Project> {
+    const projectCount = (await this.getAllProjects()).length;
+
+    const defaultProject: Project = {
+      id: crypto.randomUUID(),
+      title: `Novo Projeto ${projectCount + 1}`,
+      icon: "FaAutoprefixer",
+    };
     const db = await this.getDb();
     const tx = db.transaction("project", "readwrite");
     const store = tx.objectStore("project");
-    await store.add(project);
+
+    await store.add(defaultProject);
+
+    await tx.done;
+
+    return defaultProject;
   }
 
   async getAllProjects(): Promise<Project[]> {
@@ -45,6 +64,6 @@ export class ProjectRepository {
     const tx = db.transaction("project", "readwrite");
     const store = tx.objectStore("project");
     await store.delete(id);
+    await this.requestRepository.deleteAllRequestsByProjectId(id);
   }
-  
 }

@@ -1,10 +1,19 @@
+
 import { IDBPDatabase } from "idb";
 
 import { openDb } from "../initialize.db";
-import { Request } from "../types/request.type";
+
+import { Request } from './../types/request.type';
+
+import { BodyRepository } from "./body.repository";
 
 export class RequestRepository {
   private db?: IDBPDatabase;
+  private bodyRepository: BodyRepository;
+
+  constructor() {
+    this.bodyRepository = new BodyRepository();
+  }
 
   private async getDb(): Promise<IDBPDatabase> {
     if (!this.db) {
@@ -13,11 +22,19 @@ export class RequestRepository {
     return this.db;
   }
 
-  async createRequest(request: Request): Promise<void> {
+  async createRequest(id:string): Promise<void> {
     const db = await this.getDb();
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
+    const request : Request ={
+      id: crypto.randomUUID(),
+      projectId: id,
+      title: "Nova Requisição",
+      method: "GET",
+      url: "",
+    }
     await store.add(request);
+    await this.bodyRepository.createBody(request.id);
   }
 
   async getRequestsByProjectId(projectId: string): Promise<Request[]> {
@@ -47,5 +64,20 @@ export class RequestRepository {
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
     await store.delete(id);
+    await this.bodyRepository.deleteBodyByRequestId(id);
+  }
+  async deleteAllRequestsByProjectId(id: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+  
+    const index = store.index("projectIndex");
+    const requests = await index.getAll(id);
+  
+    for (const request of requests) {
+      await this.deleteRequest(request.id);  
+    }
+  
+    await tx.done;
   }
 }
