@@ -5,14 +5,7 @@ export class RequestService {
   private static repository: RequestRepository = new RequestRepository();
 
   static async create(projectId: string): Promise<void> {
-    const defaultRequest: Request = {
-      id: crypto.randomUUID(),
-      title: "Nova Requisição",
-      method: "GET",
-      url: "",
-      projectId,
-    };
-    return this.repository.createRequest(defaultRequest);
+    return this.repository.createRequest(projectId);
   }
 
   static async getById(id: string): Promise<Request | undefined> {
@@ -30,6 +23,4 @@ export class RequestService {
   static async delete(id: string): Promise<void> {
     return this.repository.deleteRequest(id);
   }
-
-  
 }
