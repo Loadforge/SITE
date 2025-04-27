@@ -66,9 +66,9 @@ export class RequestRepository {
     const db = await this.getDb();
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
-    await store.delete(id);
-    await this.bodyRepository.deleteBodyByRequestId(id);
     await this.docsRepository.deleteDocsByRequestId(id);
+    await this.bodyRepository.deleteBodyByRequestId(id);
+    await store.delete(id);
   }
   async deleteAllRequestsByProjectId(id: string): Promise<void> {
     const db = await this.getDb();
@@ -77,6 +77,7 @@ export class RequestRepository {
 
     const index = store.index("projectIndex");
     const requests = await index.getAll(id);
+    console.log(requests);
 
     for (const request of requests) {
       await this.deleteRequest(request.id);
