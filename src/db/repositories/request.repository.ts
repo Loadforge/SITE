@@ -86,4 +86,18 @@ export class RequestRepository {
 
     await tx.done;
   }
+  async renameRequest(id: string, newTitle: string): Promise<Request> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+
+    const request = await store.get(id);
+    if (request) {
+      request.title = newTitle;
+      await store.put(request);
+    }
+
+    await tx.done;
+    return request;
+  }
 }

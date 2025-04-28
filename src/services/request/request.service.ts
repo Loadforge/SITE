@@ -23,4 +23,7 @@ export class RequestService {
   static async delete(id: string): Promise<void> {
     return this.repository.deleteRequest(id);
   }
+  static async rename(id: string, newTitle: string): Promise<Request> {
+    return this.repository.renameRequest(id, newTitle);
+  }
 }

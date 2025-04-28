@@ -1,6 +1,7 @@
 "use client";
 
 import { MoreHorizontal, Plus } from "lucide-react";
+import { useState } from "react";
 
 import {
   SidebarGroup,
@@ -12,7 +13,6 @@ import {
 import { Request } from "@/db/types/request.type";
 
 import { CustomBadge } from "../badge";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,7 @@ interface Props {
   requests: Request[];
   handleCreateRequest: () => void;
   handleDeleteRequest: (id: string) => void;
-
+  handleRenameRequest: (id: string, newTitle: string) => void;
 }
 
 export function Navigation({
@@ -38,8 +38,25 @@ export function Navigation({
   setSelectedRequest,
   requests,
   handleCreateRequest,
-  handleDeleteRequest
+  handleDeleteRequest,
+  handleRenameRequest,
 }: Props) {
+  const [renamingRequestId, setRenamingRequestId] = useState<string | null>(null);
+  const [newTitle, setNewTitle] = useState("");
+
+  function handleRenameStart(req: Request) {
+    setRenamingRequestId(req.id);
+    setNewTitle(req.title);
+  }
+
+  function handleRenameSubmit(id: string) {
+    if (newTitle.trim()) {
+      handleRenameRequest(id, newTitle.trim());
+    }
+    setRenamingRequestId(null);
+    
+  }
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="flex items-center justify-between text-sm">
@@ -47,8 +64,8 @@ export function Navigation({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="text-text hover:text-primary transition-all ">
-                <Plus className="" onClick={handleCreateRequest} size={16} />
+              <button className="text-text hover:text-primary transition-all">
+                <Plus onClick={handleCreateRequest} size={16} />
               </button>
             </TooltipTrigger>
             <TooltipContent>
@@ -61,18 +78,17 @@ export function Navigation({
       <SidebarMenu>
         {requests?.map((req, index) => {
           const isSelected = selectedRequest?.id === req.id;
+          const isRenaming = renamingRequestId === req.id;
 
           return (
             <SidebarMenuItem
               key={index}
-              className="group flex items-center justify-between "
+              className="group flex items-center justify-between"
             >
               <SidebarMenuButton
                 asChild
-                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text active:bg-transparent active:text-text rounded-none   ${
-                  isSelected
-                    ? "bg-separators/25  border-l-2 border-primary"
-                    : ""
+                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text active:bg-transparent active:text-text rounded-none ${
+                  isSelected ? "bg-separators/25 border-l-2 border-primary" : ""
                 }`}
               >
                 <div className="flex items-center gap-2 w-full">
@@ -85,7 +101,25 @@ export function Navigation({
                     className="flex items-center gap-2 flex-1"
                   >
                     <CustomBadge>{req.method}</CustomBadge>
-                    <span>{req.title}</span>
+                    {isRenaming ? (
+                      <input
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        onBlur={() => handleRenameSubmit(req.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleRenameSubmit(req.id);
+                          } else if (e.key === "Escape") {
+                            setRenamingRequestId(null);
+                          }
+                        }}
+                        autoFocus
+                        className="flex-1 max-w-30 bg-transparent border-b border-primary focus:outline-none text-sm"
+                      />
+                    ) : (
+                      <span>{req.title}</span>
+                    )}
                   </a>
 
                   <DropdownMenu>
@@ -96,14 +130,10 @@ export function Navigation({
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="start">
-                      <DropdownMenuItem
-                        onClick={() => console.log("Renomear", req.id)}
-                      >
+                      <DropdownMenuItem onClick={() => handleRenameStart(req)}>
                         Renomear
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => console.log("Duplicar", req.id)}
-                      >
+                      <DropdownMenuItem onClick={() => console.log("Duplicar", req.id)}>
                         Duplicar
                       </DropdownMenuItem>
                       <DropdownMenuItem
