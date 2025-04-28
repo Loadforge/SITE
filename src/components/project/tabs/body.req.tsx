@@ -1,7 +1,7 @@
 import { json } from "@codemirror/lang-json";
 import { xml } from "@codemirror/lang-xml";
 import CodeMirror from "@uiw/react-codemirror";
-import { XMLParser, XMLBuilder } from "fast-xml-parser";
+import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import { useEffect, useState } from "react";
 
 import {
@@ -12,15 +12,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTheme } from "@/contexts";
-import { useProjectStore } from "@/stores/project.store";
+import { RequestBody } from "@/db/types";
+import { RequestBodyService } from "@/services/request/body.request.service";
+interface Props {
+  id: string;
+}
 
-export function BodyReq() {
-  const [format, setFormat] = useState<"json" | "xml" | "none">("json");
-  const [content, setContent] = useState<string>("{}");
+export function BodyReq({ id }: Props) {
+  const [body, setBody] = useState<RequestBody>();
+  const [format, setFormat] = useState<"json" | "xml" | "none">("none");
+  const [content, setContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const { resolvedTheme } = useTheme();
-
-  const { selectedRequest, updateRequest } = useProjectStore();
 
   const parser = new XMLParser();
   const builder = new XMLBuilder({
@@ -28,31 +31,30 @@ export function BodyReq() {
     indentBy: "  ",
     ignoreAttributes: false,
   });
-
   useEffect(() => {
-    if (selectedRequest?.body) {
-      const type = selectedRequest.body.type ?? "none";
-      const content =
-        selectedRequest.body.content ??
-        (type === "json" ? "{}" : type === "xml" ? "<root></root>" : "");
-      setFormat(type);
-      setContent(content);
-    }
-  }, [selectedRequest]);
+    RequestBodyService.getBodyByRequestId(id).then((body) => {
+      setBody(body);
+      setFormat(body.type);
+      setContent(body.content);
+    });
+  }, [id]);
 
   const handleContentChange = (value: string) => {
     setContent(value);
-    setError(null);
 
-    if (selectedRequest?.id) {
-      updateRequest({
-        ...selectedRequest,
-        body: {
-          type: format,
-          content: value,
-        },
+    if (body) {
+      const updatedBody: RequestBody = {
+        ...body,
+        content: value,
+      };
+
+      RequestBodyService.update(updatedBody).catch((err) => {
+        setError("Erro ao salvar corpo da requisição.");
+        console.error(err);
       });
     }
+
+    setError(null);
   };
 
   const handleFormatChange = (newFormat: "json" | "xml" | "none") => {
@@ -60,14 +62,15 @@ export function BodyReq() {
       setFormat("none");
       setContent("");
       setError(null);
+      if (body) {
+        const updatedBody: RequestBody = {
+          ...body,
+          content: "",
+        };
 
-      if (selectedRequest?.id) {
-        updateRequest({
-          ...selectedRequest,
-          body: {
-            type: "none",
-            content: "",
-          },
+        RequestBodyService.update(updatedBody).catch((err) => {
+          setError("Erro ao salvar corpo da requisição.");
+          console.error(err);
         });
       }
 
@@ -90,17 +93,20 @@ export function BodyReq() {
 
       setFormat(newFormat);
       setContent(converted);
-      setError(null);
+      if (body) {
+        const updatedBody: RequestBody = {
+          ...body,
+          type: newFormat,
+          content: converted,
+        };
 
-      if (selectedRequest?.id) {
-        updateRequest({
-          ...selectedRequest,
-          body: {
-            type: newFormat,
-            content: converted,
-          },
+        RequestBodyService.update(updatedBody).catch((err) => {
+          setError("Erro ao salvar corpo da requisição.");
+          console.error(err);
         });
       }
+
+      setError(null);
     } catch (err) {
       console.error("Erro na conversão:", err);
       setError(

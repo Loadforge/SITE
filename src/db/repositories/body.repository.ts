@@ -21,7 +21,7 @@ export class BodyRepository {
         id: crypto.randomUUID(),
         requestId: id,
         type: "none",
-        content: {}
+        content: ""
     }
     await store.add(body);
     await tx.done;
