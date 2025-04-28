@@ -44,7 +44,7 @@ export function Navigation({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="text-text hover:text-primary transition-all">
+              <button className="text-text hover:text-primary transition-all ">
                 <Plus className="" onClick={handleCreateRequest} size={16} />
               </button>
             </TooltipTrigger>
@@ -62,11 +62,11 @@ export function Navigation({
           return (
             <SidebarMenuItem
               key={index}
-              className="group flex items-center justify-between"
+              className="group flex items-center justify-between "
             >
               <SidebarMenuButton
                 asChild
-                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text ${
+                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text active:bg-transparent active:text-text   ${
                   isSelected
                     ? "bg-separators/25  border-l-4 border-primary"
                     : ""
