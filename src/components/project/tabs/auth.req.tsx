@@ -1,19 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RequestAuthService } from "@/services/request/auth.request.service";
+import { RequestAuth, Type } from "@/db/types";
 
-export function AuthReq() {
-  const [authType, setAuthType] = useState<string>("none");
+interface Props{
+  id: string;
+}
+
+export function AuthReq({id}: Props) {
+  useEffect(()=>{
+    RequestAuthService.getAuthByRequestId(id).then((auth)=>{setAuth(auth)})
+  },[])
+
+  const [auth, setAuth] = useState<RequestAuth>();
+  const [type ,setType] = useState<"none"| "apiKey" | "basic" | "bearer">(auth ? auth.type : "none")
+
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="space-y-6 p-1 w-full">
       <div className="flex items-center gap-3">
         <Label>Auth Type</Label>
-        <Select value={authType} onValueChange={setAuthType}>
+        <Select value={type} onValueChange={(value) => setType(value as Type)}  >
           <SelectTrigger>
             <SelectValue/>
           </SelectTrigger>
@@ -26,7 +38,7 @@ export function AuthReq() {
         </Select>
       </div>
 
-      {authType === "apiKey" && (
+      {type === "apiKey" && (
         <div className="space-y-5">
           <div className="flex items-center space-x-3">
           <Label htmlFor="api-key-enabled">Enabled</Label>
@@ -67,7 +79,7 @@ export function AuthReq() {
         </div>
       )}
 
-      {authType === "basic" && (
+      {type === "basic" && (
         <div className="space-y-5">
           <div className="flex items-center space-x-3">
           <Label htmlFor="api-key-enabled">Enabled</Label>
@@ -96,7 +108,7 @@ export function AuthReq() {
         </div>
       )}
 
-      {authType === "bearer" && (
+      {type === "bearer" && (
         <div className="space-y-5 relative">
           <div className="flex items-center space-x-3">
           <Label htmlFor="api-key-enabled">Enabled</Label>
