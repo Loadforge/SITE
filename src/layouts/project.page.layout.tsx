@@ -16,6 +16,7 @@ interface Props {
   selectedRequest: Request | null;
   setSelectedRequest: (request: Request | null) => void;
   handleProjectRename: (id: string, newTitle: string) => void;
+  handleProjectIconChange: (id: string, newIcon: string) => void;
 }
 
 export function ProjectPageLayout({
@@ -28,10 +29,12 @@ export function ProjectPageLayout({
   handleDeleteRequest,
   handleRenameRequest,
   handleProjectRename,
+  handleProjectIconChange,
 }: Props) {
   return (
     <div className="h-screen">
       <ProjectHeader
+        handleProjectIconChange={handleProjectIconChange}
         project={project}
         handleProjectRename={handleProjectRename}
       />

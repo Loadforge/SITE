@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import * as FaIcons from "react-icons/fa";
-
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
@@ -12,20 +11,36 @@ import LogoBlack from "../../assets/Logo_black.svg";
 
 import { BugButton } from "../bugButton";
 import { HelpButton } from "../help";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui";
 
 interface Props {
   project: Project;
   handleProjectRename: (id: string, newTitle: string) => void;
+  handleProjectIconChange: (id: string, newIcon: string) => void;
 }
 
-export function ProjectHeader({ project, handleProjectRename }: Props) {
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
+export function ProjectHeader({
+  project,
+  handleProjectRename,
+  handleProjectIconChange,
+}: Props) {
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
+    null
+  );
   const { theme } = useTheme();
   const navigate = useNavigate();
   const Logo = theme === "light" ? LogoBlack : LogoDefault;
 
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(project.title);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (
@@ -47,47 +62,127 @@ export function ProjectHeader({ project, handleProjectRename }: Props) {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleProjectRename(project.id, newTitle); 
-      setIsEditing(false); 
+      handleProjectRename(project.id, newTitle);
+      setIsEditing(false);
     }
   };
 
   const handleTitleClick = () => {
-    setIsEditing(true); 
+    setIsEditing(true);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleIconChange = (iconName: string) => {
+    handleProjectIconChange(project.id, iconName);
+    setIsDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="bg-background-secondary border-b border-separators/25 text-text flex items-center h-14 justify-between top-0 left-0 w-full px-4">
       <div className="flex items-center gap-4">
-        <button
-          onClick={handleBackToHome}
-          className="text-xl bg-transparent border border-separators/50 hover:bg-separators/10 p-2 rounded-md transition"
-        >
-          <IoIosArrowBack className="text-text" />
-        </button>
-        <span className="text-2xl text-text">
-          {IconComponent ? React.createElement(IconComponent) : null}
-        </span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleBackToHome}
+                className="text-xl bg-transparent border border-separators/50 hover:bg-separators/10 p-2 rounded-md transition"
+              >
+                <IoIosArrowBack className="text-text" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Voltar para a página inicial</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-        <span
-          className="text-lg font-bold cursor-pointer"
-          onClick={handleTitleClick}
-          title="Clique para editar"
-        >
-          {isEditing ? (
-            <input
-              type="text"
-              value={newTitle}
-              onChange={handleTitleChange}
-              onKeyDown={handleKeyPress}
-              autoFocus
-              className="border-b-2 border-text bg-transparent focus:outline-none"
-            />
-          ) : (
-            project.title
-          )}
-        </span>
+        {IconComponent && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className="text-2xl text-text cursor-pointer"
+                  onClick={toggleDropdown}
+                >
+                  {React.createElement(IconComponent)}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Clique para alterar o ícone</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span
+                className="text-lg font-bold cursor-pointer"
+                onClick={handleTitleClick}
+              >
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={newTitle}
+                    onChange={handleTitleChange}
+                    onKeyDown={handleKeyPress}
+                    autoFocus
+                    className="border-b-2 border-text bg-transparent focus:outline-none"
+                  />
+                ) : (
+                  project.title
+                )}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Clique para editar o título</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        {isDropdownOpen && (
+          <div
+            ref={dropdownRef}
+            className="fixed bg-background top-10 left-20 border border-separators/25 p-2 mt-2 rounded-md shadow-lg z-20 w-56"
+          >
+            <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+              {Object.keys(FaIcons).map((iconKey) => (
+                <button
+                  key={iconKey}
+                  onClick={() => handleIconChange(iconKey)}
+                  className="text-2xl hover:text-primary"
+                >
+                  {React.createElement(
+                    FaIcons[iconKey as keyof typeof FaIcons]
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
       <div className="flex gap-10">
         <BugButton />
         <HelpButton />

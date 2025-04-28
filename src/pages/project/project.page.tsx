@@ -53,6 +53,21 @@ export function ProjectPage() {
         toast.error("Erro ao renomear o projeto. Tente novamente!");
       });
   };
+  const handleProjectIconChange = (id: string, newIcon: string) => {
+    ProjectService.updateIcon(id, newIcon)
+      .then(() => {
+        setProject((prevProject) => ({
+          ...prevProject,
+          icon: newIcon,
+        }));
+
+        toast.success("Ícone do projeto alterado com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao alterar o ícone do projeto:", error);
+        toast.error("Erro ao alterar o ícone do projeto. Tente novamente!");
+      });
+  };
   function handleCreateRequest() {
     RequestService.create(projectId).then((req) => {
       setRequests((prev) => [...prev, req]);
@@ -123,6 +138,7 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
+      handleProjectIconChange={handleProjectIconChange}
       handleRenameRequest={handleRenameRequest}
       handleDeleteRequest={handleDeleteRequest}
       selectedRequest={selectedRequest}
