@@ -59,6 +59,23 @@ export function ProjectPage() {
         toast.error("Erro ao Renomear a requisição: " + error.message);
       });
   }
+  function handleUpdateMethodRequest(id: string, method: string) {
+    RequestService.updateMethod(id, method)
+      .then(() => {})
+      .catch((error) => {
+        toast.error(
+          "Erro ao atualizar o método da requisição: " + error.message
+        );
+      });
+  }
+
+  function handleUpdateUrlRequest(id: string, url: string) {
+    RequestService.updateUrl(id, url)
+      .then(() => {})
+      .catch((error) => {
+        toast.error("Erro ao atualizar a URL da requisição: " + error.message);
+      });
+  }
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
@@ -68,6 +85,8 @@ export function ProjectPage() {
     handleCreateRequest,
     handleDeleteRequest,
     handleRenameRequest,
+    handleUpdateMethodRequest,
+    handleUpdateUrlRequest,
   ]);
 
   return (
@@ -84,7 +103,11 @@ export function ProjectPage() {
         <NotReqSelected handleCreateRequest={handleCreateRequest} />
       ) : (
         <div className="flex flex-col gap-4 ">
-          <SetUrl />
+          <SetUrl
+            request={selectedRequest}
+            handleUpdateMethodRequest={handleUpdateMethodRequest}
+            handleUpdateUrlRequest={handleUpdateUrlRequest}
+          />
 
           <Tabs defaultValue="body">
             <TabsList className="flex">

@@ -100,4 +100,33 @@ export class RequestRepository {
     await tx.done;
     return request;
   }
+  async updateRequestMethod(id: string, method: string): Promise<Request> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+
+    const request = await store.get(id);
+    if (request) {
+      request.method = method;
+      await store.put(request);
+    }
+
+    await tx.done;
+    return request;
+  }
+
+  async updateRequestUrl(id: string, url: string): Promise<Request> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+
+    const request = await store.get(id);
+    if (request) {
+      request.url = url;
+      await store.put(request);
+    }
+
+    await tx.done;
+    return request;
+  }
 }

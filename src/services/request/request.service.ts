@@ -26,4 +26,11 @@ export class RequestService {
   static async rename(id: string, newTitle: string): Promise<Request> {
     return this.repository.renameRequest(id, newTitle);
   }
+  static async updateMethod(id: string, method: string): Promise<Request> {
+    return this.repository.updateRequestMethod(id, method);
+  }
+
+  static async updateUrl(id: string, url: string): Promise<Request> {
+    return this.repository.updateRequestUrl(id, url);
+  }
 }
