@@ -15,7 +15,7 @@ import { BugButton } from "../bugButton";
 import { HelpButton } from "../help";
 
 interface Props {
-  project: Partial<Project>;
+  project: Project;
 }
 
 export function ProjectHeader({ project }: Props) {

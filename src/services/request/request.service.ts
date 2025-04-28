@@ -4,7 +4,7 @@ import { Request } from "@/db/types/request.type";
 export class RequestService {
   private static repository: RequestRepository = new RequestRepository();
 
-  static async create(projectId: string): Promise<void> {
+  static async create(projectId: string): Promise<Request> {
     return this.repository.createRequest(projectId);
   }
 

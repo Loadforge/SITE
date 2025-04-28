@@ -8,30 +8,33 @@ import { Request } from "@/db/types/request.type";
 
 interface Props {
   children: ReactNode;
-  dbproject: Partial<Project>;
+  project: Project;
   requests: Request[];
   handleCreateRequest: () => void;
+  handleDeleteRequest: (id: string) => void;
   selectedRequest: Request | null;
-  setSelectedRequest: (request: Request) => void;
+  setSelectedRequest: (request: Request | null) => void;
 }
 
 export function ProjectPageLayout({
   setSelectedRequest,
   selectedRequest,
   children,
-  dbproject,
+  project,
   requests,
   handleCreateRequest,
+  handleDeleteRequest
 }: Props) {
   return (
     <div className="h-screen">
-      <ProjectHeader project={dbproject} />
+      <ProjectHeader project={project} />
       <SidebarProvider>
         <AppSidebar
           selectedRequest={selectedRequest}
           setSelectedRequest={setSelectedRequest}
           requests={requests}
           handleCreateRequest={handleCreateRequest}
+          handleDeleteRequest={handleDeleteRequest}
         />
         <main className="flex-1 px-2  overflow-y-hidden pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">
@@ -40,7 +43,7 @@ export function ProjectPageLayout({
               orientation="vertical"
               className="h-6 w-[1px] bg-separators mr-2"
             />
-            <BreadCrumbs />
+            <BreadCrumbs project={project} selectedRequest={selectedRequest} setSelectedRequest={setSelectedRequest} />
           </div>
           <div className="p-4 h-full w-full">{children}</div>
         </main>
