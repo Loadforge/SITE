@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -11,55 +11,62 @@ import {
 
 import { Method, Request } from "@/db/types";
 
-import { Button, Input } from "../ui";
+import { RequestService } from "@/services/request/request.service";
+
+import { Button, Input, Skeleton } from "../ui";
 
 interface Props {
-  request: Request;
+  id: string;
   handleUpdateMethodRequest: (id: string, method: string) => void;
   handleUpdateUrlRequest: (id: string, url: string) => void;
 }
 
 export function SetUrl({
-  request,
+  id,
   handleUpdateMethodRequest,
   handleUpdateUrlRequest,
 }: Props) {
-  const [method, setMethod] = useState(request.method);
-  const [url, setUrl] = useState(request.url);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [request, setRequest] = useState<Request>();
+
+  useEffect(() => {
+    RequestService.getById(id)
+      .then((res) => {
+        setRequest(res);
+      })
+      .catch(() => {
+        toast.error("Erro ao buscar a requisição!");
+      });
+  }, [id]);
 
   const handleMethodChange = (newMethod: Method) => {
-    setMethod(newMethod);
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      handleUpdateMethodRequest(request.id, newMethod);
-    }, 500);
+    if (!request) return;
+    handleUpdateMethodRequest(request.id, newMethod);
+    setRequest({ ...request, method: newMethod });
   };
 
   const handleUrlChange = (newUrl: string) => {
-    setUrl(newUrl);
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    if (!request) {
+      toast.error("ID da requisição não encontrado!");
+      return;
     }
 
-    timeoutRef.current = setTimeout(() => {
-      if (!request.id) {
-        toast.error("ID da requisição não encontrado!");
-        return;
-      }
-
-      handleUpdateUrlRequest(request.id, newUrl);
-    }, 500);
+    handleUpdateUrlRequest(request.id, newUrl);
+    setRequest({ ...request, url: newUrl });
   };
+
+  if (!request) {
+    return (
+      <div className="flex items-center w-full gap-2">
+        <Skeleton className="h-10 w-24 rounded-r-none" />
+        <Skeleton className="h-10 flex-1" />
+        <Skeleton className="h-10 w-24" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center w-full">
-      <Select value={method} onValueChange={handleMethodChange}>
+      <Select value={request.method} onValueChange={handleMethodChange}>
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
           <SelectValue placeholder="Método" />
         </SelectTrigger>
@@ -74,7 +81,7 @@ export function SetUrl({
 
       <Input
         className="rounded-l-none w-full mr-5 border-separators/50 placeholder:text-text/50"
-        value={url}
+        value={request.url}
         onChange={(e) => handleUrlChange(e.target.value)}
         placeholder="https://"
       />

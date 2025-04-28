@@ -78,7 +78,6 @@ export class RequestRepository {
 
     const index = store.index("projectIndex");
     const requests = await index.getAll(id);
-    console.log(requests);
 
     for (const request of requests) {
       await this.deleteRequest(request.id);
