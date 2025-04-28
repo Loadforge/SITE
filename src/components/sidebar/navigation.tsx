@@ -66,9 +66,9 @@ export function Navigation({
             >
               <SidebarMenuButton
                 asChild
-                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text active:bg-transparent active:text-text   ${
+                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text active:bg-transparent active:text-text rounded-none   ${
                   isSelected
-                    ? "bg-separators/25  border-l-4 border-primary"
+                    ? "bg-separators/25  border-l-2 border-primary"
                     : ""
                 }`}
               >
