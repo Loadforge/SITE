@@ -9,15 +9,17 @@ interface Props {
   handleCreateRequest: () => void;
   selectedRequest: Request | null;
   setSelectedRequest: (request: Request) => void;
+  handleDeleteRequest: (id: string) => void;
+
 
 
 }
 
-export function AppSidebar({ setSelectedRequest,selectedRequest,requests, handleCreateRequest }: Props) {
+export function AppSidebar({ handleDeleteRequest,setSelectedRequest,selectedRequest,requests, handleCreateRequest }: Props) {
   return (
     <Sidebar className="mt-14 h-[calc(100vh-3.5rem)]">
       <SidebarContent>
-        <Navigation selectedRequest={selectedRequest} setSelectedRequest={setSelectedRequest} requests={requests} handleCreateRequest={handleCreateRequest}  />
+        <Navigation handleDeleteRequest={handleDeleteRequest} selectedRequest={selectedRequest} setSelectedRequest={setSelectedRequest} requests={requests} handleCreateRequest={handleCreateRequest}  />
       </SidebarContent>
     </Sidebar>
   );

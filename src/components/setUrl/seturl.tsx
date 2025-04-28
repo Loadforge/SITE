@@ -1,3 +1,4 @@
+import React from "react";
 import { toast } from "sonner";
 
 import {
@@ -8,15 +9,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useProjectStore } from "@/stores/project.store";
-
 import { Button, Input } from "../ui";
 
 export function SetUrl() {
-  const { selectedRequest, setSelectedRequest, updateRequest } =
-    useProjectStore();
+  const [selectedRequest, setSelectedRequest] = React.useState({
+    method: "GET",
+    url: "",
+  });
 
-  if (!selectedRequest) return null;
+  const updateRequest = (updatedRequest: { method: string; url: string }) => {
+    console.log("Updated request:", updatedRequest);
+  };
 
   const handleMethodChange = (method: string) => {
     const updated = {
@@ -40,8 +43,7 @@ export function SetUrl() {
     }
     console.log("Method:", selectedRequest.method);
     console.log("URL:", selectedRequest.url);
-    
-    
+    toast.success(`Request sent: ${selectedRequest.method} ${selectedRequest.url}`);
   };
 
   return (

@@ -29,6 +29,8 @@ interface Props {
   setSelectedRequest: (request: Request) => void;
   requests: Request[];
   handleCreateRequest: () => void;
+  handleDeleteRequest: (id: string) => void;
+
 }
 
 export function Navigation({
@@ -36,6 +38,7 @@ export function Navigation({
   setSelectedRequest,
   requests,
   handleCreateRequest,
+  handleDeleteRequest
 }: Props) {
   return (
     <SidebarGroup>
@@ -44,7 +47,7 @@ export function Navigation({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="text-text hover:text-primary transition-all">
+              <button className="text-text hover:text-primary transition-all ">
                 <Plus className="" onClick={handleCreateRequest} size={16} />
               </button>
             </TooltipTrigger>
@@ -57,19 +60,18 @@ export function Navigation({
 
       <SidebarMenu>
         {requests?.map((req, index) => {
-          // Verifica se o item está selecionado
           const isSelected = selectedRequest?.id === req.id;
 
           return (
             <SidebarMenuItem
               key={index}
-              className="group flex items-center justify-between"
+              className="group flex items-center justify-between "
             >
               <SidebarMenuButton
                 asChild
-                className={`w-full flex items-center justify-between hover:bg-separators/40 hover:text-text ${
+                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text active:bg-transparent active:text-text rounded-none   ${
                   isSelected
-                    ? "bg-separators/70  border-l-4 border-primary"
+                    ? "bg-separators/25  border-l-2 border-primary"
                     : ""
                 }`}
               >
@@ -105,7 +107,7 @@ export function Navigation({
                         Duplicar
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => console.log("Deletar", req.id)}
+                        onClick={() => handleDeleteRequest(req.id)}
                         className="text-red-500"
                       >
                         Deletar

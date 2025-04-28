@@ -24,7 +24,7 @@ export class RequestRepository {
     return this.db;
   }
 
-  async createRequest(id: string): Promise<void> {
+  async createRequest(id: string): Promise<Request> {
     const db = await this.getDb();
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
@@ -38,6 +38,7 @@ export class RequestRepository {
     await store.add(request);
     await this.bodyRepository.createBody(request.id);
     await this.docsRepository.createDocs(request.id);
+    return request;
   }
 
   async getRequestsByProjectId(projectId: string): Promise<Request[]> {
@@ -66,9 +67,9 @@ export class RequestRepository {
     const db = await this.getDb();
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
+    await store.delete(id);
     await this.docsRepository.deleteDocsByRequestId(id);
     await this.bodyRepository.deleteBodyByRequestId(id);
-    await store.delete(id);
   }
   async deleteAllRequestsByProjectId(id: string): Promise<void> {
     const db = await this.getDb();
