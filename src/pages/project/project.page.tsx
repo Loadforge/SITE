@@ -152,7 +152,7 @@ export function ProjectPage() {
               <AdvancedReq />
             </TabsContent>
             <TabsContent value="docs">
-              <DocsReq />
+              <DocsReq id={selectedRequest.id}  />
             </TabsContent>
             <TabsContent value="history">
               <InDevelopment />
