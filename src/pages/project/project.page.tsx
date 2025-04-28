@@ -182,7 +182,7 @@ export function ProjectPage() {
               <ParamsReq />
             </TabsContent>
             <TabsContent value="auth">
-              <AuthReq />
+              <AuthReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="headers">
               <HeadersReq />

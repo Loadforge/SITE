@@ -1,6 +1,7 @@
+export type Type = "none" | "bearer" | "basic" | "apiKey";
 export type RequestAuth = {
     id: string;
     requestId: string;
-    type: "none" | "bearer" | "basic" | "apiKey";
+    type: Type
     value: object
   };
