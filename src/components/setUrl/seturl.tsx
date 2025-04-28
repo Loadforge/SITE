@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -9,48 +9,66 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Button, Input } from "../ui";
+import { Method, Request } from "@/db/types";
 
-export function SetUrl() {
-  const [selectedRequest, setSelectedRequest] = React.useState({
-    method: "GET",
-    url: "",
-  });
+import { RequestService } from "@/services/request/request.service";
 
-  const updateRequest = (updatedRequest: { method: string; url: string }) => {
-    console.log("Updated request:", updatedRequest);
+import { Button, Input, Skeleton } from "../ui";
+
+interface Props {
+  id: string;
+  handleUpdateMethodRequest: (id: string, method: string) => void;
+  handleUpdateUrlRequest: (id: string, url: string) => void;
+}
+
+export function SetUrl({
+  id,
+  handleUpdateMethodRequest,
+  handleUpdateUrlRequest,
+}: Props) {
+  const [request, setRequest] = useState<Request>();
+
+  useEffect(() => {
+    RequestService.getById(id)
+      .then((res) => {
+        setRequest(res);
+      })
+      .catch(() => {
+        toast.error("Erro ao buscar a requisição!");
+      });
+  }, [id]);
+
+  const handleMethodChange = (newMethod: Method) => {
+    if (!request) return;
+    handleUpdateMethodRequest(request.id, newMethod);
+    setRequest({ ...request, method: newMethod });
   };
 
-  const handleMethodChange = (method: string) => {
-    const updated = {
-      ...selectedRequest,
-      method: method as "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
-    };
-    setSelectedRequest(updated);
-    updateRequest(updated);
-  };
-
-  const handleUrlChange = (url: string) => {
-    const updated = { ...selectedRequest, url };
-    setSelectedRequest(updated);
-    updateRequest(updated);
-  };
-
-  const handleSend = () => {
-    if (!selectedRequest.url) {
-      toast.error("Please enter a URL");
+  const handleUrlChange = (newUrl: string) => {
+    if (!request) {
+      toast.error("ID da requisição não encontrado!");
       return;
     }
-    console.log("Method:", selectedRequest.method);
-    console.log("URL:", selectedRequest.url);
-    toast.success(`Request sent: ${selectedRequest.method} ${selectedRequest.url}`);
+
+    handleUpdateUrlRequest(request.id, newUrl);
+    setRequest({ ...request, url: newUrl });
   };
+
+  if (!request) {
+    return (
+      <div className="flex items-center w-full gap-2">
+        <Skeleton className="h-10 w-24 rounded-r-none" />
+        <Skeleton className="h-10 flex-1" />
+        <Skeleton className="h-10 w-24" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center w-full">
-      <Select value={selectedRequest.method} onValueChange={handleMethodChange}>
+      <Select value={request.method} onValueChange={handleMethodChange}>
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
-          <SelectValue />
+          <SelectValue placeholder="Método" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="GET">GET</SelectItem>
@@ -63,12 +81,12 @@ export function SetUrl() {
 
       <Input
         className="rounded-l-none w-full mr-5 border-separators/50 placeholder:text-text/50"
-        value={selectedRequest.url}
+        value={request.url}
         onChange={(e) => handleUrlChange(e.target.value)}
         placeholder="https://"
       />
 
-      <Button className="w-25 font-bold text-xl" onClick={handleSend}>
+      <Button className="w-25 font-bold text-xl" disabled>
         Send
       </Button>
     </div>

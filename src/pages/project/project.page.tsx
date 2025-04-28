@@ -20,7 +20,7 @@ import {
 } from "@/components";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
-import { Request } from "@/db/types/request.type";
+import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { RequestService } from "@/services/request/request.service";
 
@@ -33,6 +33,7 @@ export function ProjectPage() {
 
   function handleCreateRequest() {
     RequestService.create(projectId).then((req) => {
+      setRequests((prev) => [...prev, req]);
       setSelectedRequest(req);
     });
   }
@@ -42,6 +43,7 @@ export function ProjectPage() {
     }
     RequestService.delete(id)
       .then(() => {
+        setRequests((prev) => prev.filter((r) => r.id !== id));
         toast.success("Requisição deletada com sucesso!");
       })
       .catch((error) => {
@@ -51,6 +53,9 @@ export function ProjectPage() {
   function handleRenameRequest(id: string, newTitle: string) {
     RequestService.rename(id, newTitle)
       .then((req) => {
+        setRequests((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, title: req.title } : r))
+        );
         if (req.id === selectedRequest?.id) {
           setSelectedRequest(req);
         }
@@ -59,16 +64,38 @@ export function ProjectPage() {
         toast.error("Erro ao Renomear a requisição: " + error.message);
       });
   }
+  function handleUpdateMethodRequest(id: string, method: string) {
+    RequestService.updateMethod(id, method)
+      .then(() => {
+        setRequests((prev) =>
+          prev.map((r) =>
+            r.id === id ? { ...r, method: method as Method } : r
+          )
+        );
+      })
+      .catch((error) => {
+        toast.error(
+          "Erro ao atualizar o método da requisição: " + error.message
+        );
+      });
+  }
+
+  function handleUpdateUrlRequest(id: string, url: string) {
+    RequestService.updateUrl(id, url)
+      .then(() => {
+        setRequests((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, url } : r))
+        );
+      })
+      .catch((error) => {
+        toast.error("Erro ao atualizar a URL da requisição: " + error.message);
+      });
+  }
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
     }
-  }, [
-    projectId,
-    handleCreateRequest,
-    handleDeleteRequest,
-    handleRenameRequest,
-  ]);
+  }, [projectId]);
 
   return (
     <ProjectPageLayout
@@ -84,7 +111,11 @@ export function ProjectPage() {
         <NotReqSelected handleCreateRequest={handleCreateRequest} />
       ) : (
         <div className="flex flex-col gap-4 ">
-          <SetUrl />
+          <SetUrl
+            id={selectedRequest.id}
+            handleUpdateMethodRequest={handleUpdateMethodRequest}
+            handleUpdateUrlRequest={handleUpdateUrlRequest}
+          />
 
           <Tabs defaultValue="body">
             <TabsList className="flex">
