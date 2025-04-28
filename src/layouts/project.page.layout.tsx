@@ -8,7 +8,7 @@ import { Request } from "@/db/types/request.type";
 
 interface Props {
   children: ReactNode;
-  dbproject: Partial<Project>;
+  project: Partial<Project>;
   requests: Request[];
   handleCreateRequest: () => void;
   selectedRequest: Request | null;
@@ -19,13 +19,13 @@ export function ProjectPageLayout({
   setSelectedRequest,
   selectedRequest,
   children,
-  dbproject,
+  project,
   requests,
   handleCreateRequest,
 }: Props) {
   return (
     <div className="h-screen">
-      <ProjectHeader project={dbproject} />
+      <ProjectHeader project={project} />
       <SidebarProvider>
         <AppSidebar
           selectedRequest={selectedRequest}
@@ -40,7 +40,7 @@ export function ProjectPageLayout({
               orientation="vertical"
               className="h-6 w-[1px] bg-separators mr-2"
             />
-            <BreadCrumbs />
+            <BreadCrumbs project={project} selectedRequest={selectedRequest} setSelectedRequest={selectedRequest} />
           </div>
           <div className="p-4 h-full w-full">{children}</div>
         </main>

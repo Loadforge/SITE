@@ -5,10 +5,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useProjectStore } from "@/stores/project.store";
+import { Project, Request } from "@/db/types";
+interface Props {
+  project: Partial<Project>;
+  selectedRequest: Request | null;
+  setSelectedRequest: (request: Request | null) => void;
+}
 
-export function BreadCrumbs() {
-  const { project, selectedRequest, resetSelections } = useProjectStore();
+export function BreadCrumbs({project,selectedRequest,setSelectedRequest}: Props) {
   return (
     <div className="flex items-center">
       <Breadcrumb className="hidden md:block">
@@ -18,7 +22,7 @@ export function BreadCrumbs() {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                resetSelections();
+                setSelectedRequest(null);
               }}
             >
               {project?.title}
@@ -28,7 +32,7 @@ export function BreadCrumbs() {
           {selectedRequest && (
             <div className="font-bold flex gap-2">
               <BreadcrumbSeparator />
-              <BreadcrumbItem>{selectedRequest.title}</BreadcrumbItem>
+              <BreadcrumbItem>{selectedRequest?.title}</BreadcrumbItem>
             </div>
           )}
         </BreadcrumbList>

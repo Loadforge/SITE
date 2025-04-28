@@ -57,7 +57,6 @@ export function Navigation({
 
       <SidebarMenu>
         {requests?.map((req, index) => {
-          // Verifica se o item está selecionado
           const isSelected = selectedRequest?.id === req.id;
 
           return (
@@ -67,9 +66,9 @@ export function Navigation({
             >
               <SidebarMenuButton
                 asChild
-                className={`w-full flex items-center justify-between hover:bg-separators/40 hover:text-text ${
+                className={`w-full flex items-center justify-between hover:bg-separators/30 hover:text-text ${
                   isSelected
-                    ? "bg-separators/70  border-l-4 border-primary"
+                    ? "bg-separators/25  border-l-4 border-primary"
                     : ""
                 }`}
               >
