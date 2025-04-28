@@ -99,7 +99,7 @@ export function ProjectHeader({
 
   return (
     <header className="bg-background-secondary border-b border-separators/25 text-text flex items-center h-14 justify-between top-0 left-0 w-full px-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -121,7 +121,7 @@ export function ProjectHeader({
             <Tooltip>
               <TooltipTrigger asChild>
                 <span
-                  className="text-2xl text-text cursor-pointer"
+                  className="text-4xl text-text cursor-pointer"
                   onClick={toggleDropdown}
                 >
                   {React.createElement(IconComponent)}
@@ -138,7 +138,7 @@ export function ProjectHeader({
           <Tooltip>
             <TooltipTrigger asChild>
               <span
-                className="text-lg font-bold cursor-pointer"
+                className="text-2xl font-bold cursor-pointer"
                 onClick={handleTitleClick}
               >
                 {isEditing ? (
@@ -171,7 +171,7 @@ export function ProjectHeader({
                 <button
                   key={iconKey}
                   onClick={() => handleIconChange(iconKey)}
-                  className="text-2xl hover:text-primary"
+                  className="text-2xl text-text/80 hover:text-text/50"
                 >
                   {React.createElement(
                     FaIcons[iconKey as keyof typeof FaIcons]
