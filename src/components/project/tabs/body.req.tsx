@@ -60,7 +60,7 @@ export function BodyReq() {
       setFormat("none");
       setContent("");
       setError(null);
-  
+
       if (selectedRequest?.id) {
         updateRequest({
           ...selectedRequest,
@@ -70,13 +70,13 @@ export function BodyReq() {
           },
         });
       }
-  
+
       return;
     }
-  
+
     try {
       let converted = content;
-  
+
       if (format === "none") {
         converted = newFormat === "json" ? "{}" : "<root></root>";
       } else if (format === "json" && newFormat === "xml") {
@@ -87,11 +87,11 @@ export function BodyReq() {
         const data = typeof obj.root === "string" ? {} : obj.root;
         converted = JSON.stringify(data, null, 2) || "{}";
       }
-  
+
       setFormat(newFormat);
       setContent(converted);
       setError(null);
-  
+
       if (selectedRequest?.id) {
         updateRequest({
           ...selectedRequest,

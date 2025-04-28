@@ -66,4 +66,29 @@ export class ProjectRepository {
     await store.delete(id);
     await this.requestRepository.deleteAllRequestsByProjectId(id);
   }
+  async renameProject(id: string, newTitle: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("project", "readwrite");
+    const store = tx.objectStore("project");
+    const project = await store.get(id);
+
+    if (project) {
+      project.title = newTitle; 
+      await store.put(project);
+    }
+    await tx.done;
+  }
+
+  async updateIcon(id: string, newIcon: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("project", "readwrite");
+    const store = tx.objectStore("project");
+    const project = await store.get(id);
+
+    if (project) {
+      project.icon = newIcon;
+      await store.put(project);
+    }
+    await tx.done;
+  }
 }

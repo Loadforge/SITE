@@ -23,4 +23,11 @@ export class ProjectService {
   static async delete(id: string): Promise<void> {
     return this.repository.deleteProject(id);
   }
+  static async rename(id: string, newTitle: string): Promise<void> {
+    return this.repository.renameProject(id, newTitle);
+  }
+
+  static async updateIcon(id: string, newIcon: string): Promise<void> {
+    return this.repository.updateIcon(id, newIcon);
+  }
 }

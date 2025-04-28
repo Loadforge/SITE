@@ -22,6 +22,7 @@ import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
+import { ProjectService } from "@/services/project/project.service";
 import { RequestService } from "@/services/request/request.service";
 
 export function ProjectPage() {
@@ -31,12 +32,49 @@ export function ProjectPage() {
   const location = useLocation();
   const { id: projectId, title, icon } = location.state || {};
 
+  const [project, setProject] = useState({
+    id: projectId,
+    title: title || "",
+    icon: icon || "",
+  });
+
+  const handleProjectRename = (id: string, newTitle: string) => {
+    ProjectService.rename(id, newTitle)
+      .then(() => {
+        setProject((prevProject) => ({
+          ...prevProject,
+          title: newTitle,
+        }));
+
+        toast.success("Projeto renomeado com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao renomear o projeto:", error);
+        toast.error("Erro ao renomear o projeto. Tente novamente!");
+      });
+  };
+  const handleProjectIconChange = (id: string, newIcon: string) => {
+    ProjectService.updateIcon(id, newIcon)
+      .then(() => {
+        setProject((prevProject) => ({
+          ...prevProject,
+          icon: newIcon,
+        }));
+
+        toast.success("Ícone do projeto alterado com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao alterar o ícone do projeto:", error);
+        toast.error("Erro ao alterar o ícone do projeto. Tente novamente!");
+      });
+  };
   function handleCreateRequest() {
     RequestService.create(projectId).then((req) => {
       setRequests((prev) => [...prev, req]);
       setSelectedRequest(req);
     });
   }
+
   function handleDeleteRequest(id: string) {
     if (id === selectedRequest?.id) {
       setSelectedRequest(null);
@@ -91,6 +129,7 @@ export function ProjectPage() {
         toast.error("Erro ao atualizar a URL da requisição: " + error.message);
       });
   }
+
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
@@ -99,13 +138,15 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
+      handleProjectIconChange={handleProjectIconChange}
       handleRenameRequest={handleRenameRequest}
       handleDeleteRequest={handleDeleteRequest}
       selectedRequest={selectedRequest}
       setSelectedRequest={setSelectedRequest}
       handleCreateRequest={handleCreateRequest}
       requests={requests}
-      project={{ id: projectId, title: title, icon: icon }}
+      handleProjectRename={handleProjectRename}
+      project={project}
     >
       {!selectedRequest ? (
         <NotReqSelected handleCreateRequest={handleCreateRequest} />
@@ -152,7 +193,7 @@ export function ProjectPage() {
               <AdvancedReq />
             </TabsContent>
             <TabsContent value="docs">
-              <DocsReq />
+              <DocsReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="history">
               <InDevelopment />
