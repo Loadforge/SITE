@@ -6,15 +6,18 @@ import { Request } from "./../types/request.type";
 
 import { BodyRepository } from "./body.repository";
 import { DocsRepository } from "./docs.repository";
+import { AuthRepository } from "./auth.repository";
 
 export class RequestRepository {
   private db?: IDBPDatabase;
   private bodyRepository: BodyRepository;
   private docsRepository: DocsRepository;
+  private authrepository: AuthRepository
 
   constructor() {
     this.bodyRepository = new BodyRepository();
     this.docsRepository = new DocsRepository();
+    this.authrepository= new AuthRepository();
   }
 
   private async getDb(): Promise<IDBPDatabase> {
@@ -38,6 +41,7 @@ export class RequestRepository {
     await store.add(request);
     await this.bodyRepository.createBody(request.id);
     await this.docsRepository.createDocs(request.id);
+    await this.authrepository.createAuth(request.id)
     return request;
   }
 
@@ -70,6 +74,8 @@ export class RequestRepository {
     await store.delete(id);
     await this.docsRepository.deleteDocsByRequestId(id);
     await this.bodyRepository.deleteBodyByRequestId(id);
+    await this.authrepository.deleteAuthByRequestId(id);
+
   }
   async deleteAllRequestsByProjectId(id: string): Promise<void> {
     const db = await this.getDb();
