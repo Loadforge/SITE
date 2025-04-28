@@ -30,12 +30,13 @@ export function ProjectPage() {
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
   const location = useLocation();
-  const { id: projectId, title, icon } = location.state || {};
+  const { id: projectId, title, icon, index } = location.state || {};
 
   const [project, setProject] = useState({
     id: projectId,
     title: title || "",
     icon: icon || "",
+    index: index || 0,
   });
 
   const handleProjectRename = (id: string, newTitle: string) => {

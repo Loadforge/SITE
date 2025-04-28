@@ -72,16 +72,33 @@ export function ListPage() {
       .catch((error) => {
         console.error("Erro ao carregar os projetos:", error);
       });
-  }, [handleAddProject, handleDelete]);
+  }, []);
 
   const handleDragEnd = (event: import("@dnd-kit/core").DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
-      const oldIndex = projects.findIndex((p) => p.id === active.id);
-      const newIndex = projects.findIndex((p) => p.id === over?.id);
+    if (!over) return;
 
-      setProjects((items) => arrayMove(items, oldIndex, newIndex));
+    if (active.id !== over.id) {
+      const oldIndex = projects.findIndex((p) => p.id === active.id);
+      const newIndex = projects.findIndex((p) => p.id === over.id);
+
+      const newProjects = arrayMove(projects, oldIndex, newIndex);
+
+      const reorderedProjects = newProjects.map((project, index) => ({
+        ...project,
+        index: index + 1, 
+      }));
+
+      setProjects(reorderedProjects);
+
+      ProjectService.reorder(reorderedProjects)
+        .then(() => {
+        })
+        .catch((error) => {
+          console.error("Erro ao reordenar os projetos:", error);
+          toast.error("Erro ao reordenar os projetos. Tente novamente!");
+        });
     }
   };
 
@@ -99,14 +116,16 @@ export function ListPage() {
             <div className="hidden lg:grid lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 justify-items-center gap-10 p-4">
               <NewProjectButton onClick={handleAddProject} />
               <ImportProjectButton />
-              {projects.map((project) => (
-                <SortableCard
-                  key={project.id}
-                  {...project}
-                  onClick={handleDelete}
-                  onRename={handleRename}
-                />
-              ))}
+              {projects
+                .sort((a, b) => a.index - b.index)
+                .map((project) => (
+                  <SortableCard
+                    key={project.id}
+                    {...project}
+                    onClick={handleDelete}
+                    onRename={handleRename}
+                  />
+                ))}
             </div>
           </SortableContext>
         </DndContext>

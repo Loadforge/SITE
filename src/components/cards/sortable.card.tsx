@@ -1,11 +1,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { ProjectCardEntity } from "@/@entities";
+
+import { Project } from "@/db/types";
 
 import { ProjectCard } from "./project.card";
 
-type Props = ProjectCardEntity & {
+type Props = Project & {
   onClick: (id: string) => void;
   onRename: (id: string, newTitle: string) => void;
 };

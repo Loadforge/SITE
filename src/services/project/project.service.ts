@@ -30,4 +30,7 @@ export class ProjectService {
   static async updateIcon(id: string, newIcon: string): Promise<void> {
     return this.repository.updateIcon(id, newIcon);
   }
+  static async reorder(projects: Project[]): Promise<void> {
+    return this.repository.reorderProjects(projects);
+  }
 }

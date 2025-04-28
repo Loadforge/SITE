@@ -24,6 +24,7 @@ export class ProjectRepository {
 
     const defaultProject: Project = {
       id: crypto.randomUUID(),
+      index: projectCount + 1,
       title: `Novo Projeto ${projectCount + 1}`,
       icon: "FaAutoprefixer",
     };
@@ -73,7 +74,7 @@ export class ProjectRepository {
     const project = await store.get(id);
 
     if (project) {
-      project.title = newTitle; 
+      project.title = newTitle;
       await store.put(project);
     }
     await tx.done;
@@ -90,5 +91,10 @@ export class ProjectRepository {
       await store.put(project);
     }
     await tx.done;
+  }
+  async reorderProjects(projects: Project[]): Promise<void> {
+    for (const project of projects) {
+      await this.updateProject(project);
+    }
   }
 }

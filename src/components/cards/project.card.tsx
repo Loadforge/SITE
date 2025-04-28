@@ -1,19 +1,19 @@
 import { MoreVertical } from "lucide-react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
-import { ProjectCardEntity } from "@/@entities";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Project } from "@/db/types";
 
-type Props = ProjectCardEntity & {
+type Props = Project & {
   onClick: (id: string) => void;
   onRename: (id: string, newTitle: string) => void;
   listeners?: React.SVGAttributes<SVGElement>;
@@ -24,13 +24,16 @@ export function ProjectCard({
   id,
   title,
   icon,
+  index,
   listeners,
   attributes,
   onClick,
   onRename,
 }: Props) {
   const navigate = useNavigate();
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
+    null
+  );
   const [isRenaming, setIsRenaming] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +53,7 @@ export function ProjectCard({
 
   const handleNavigate = () => {
     if (!isRenaming) {
-      navigate("/project", { state: { id, title, icon } });
+      navigate("/project", { state: { id, title, icon, index } });
     }
   };
 
@@ -60,10 +63,10 @@ export function ProjectCard({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      onRename(id, newTitle.trim() || title); 
+      onRename(id, newTitle.trim() || title);
       setIsRenaming(false);
     } else if (e.key === "Escape") {
-      setNewTitle(title); 
+      setNewTitle(title);
       setIsRenaming(false);
     }
   };
