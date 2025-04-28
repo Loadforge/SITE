@@ -188,7 +188,7 @@ export function ProjectPage() {
               <HeadersReq />
             </TabsContent>
             <TabsContent value="body">
-              <BodyReq />
+              <BodyReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="advanced">
               <AdvancedReq />
