@@ -19,10 +19,10 @@ import {
   TabsTrigger,
 } from "@/components";
 import { ResponseSheet } from "@/components/project/response";
+import { SetUrl } from "@/components/setUrl/seturl";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { RequestService } from "@/services/request/request.service";
-import { SetUrl } from "@/components/setUrl/seturl";
 
 export function ProjectPage() {
   const [requests, setRequests] = useState<Request[]>([]);
