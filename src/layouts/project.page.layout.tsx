@@ -8,11 +8,11 @@ import { Request } from "@/db/types/request.type";
 
 interface Props {
   children: ReactNode;
-  project: Partial<Project>;
+  project: Project;
   requests: Request[];
   handleCreateRequest: () => void;
   selectedRequest: Request | null;
-  setSelectedRequest: (request: Request) => void;
+  setSelectedRequest: (request: Request | null) => void;
 }
 
 export function ProjectPageLayout({
@@ -40,7 +40,7 @@ export function ProjectPageLayout({
               orientation="vertical"
               className="h-6 w-[1px] bg-separators mr-2"
             />
-            <BreadCrumbs project={project} selectedRequest={selectedRequest} setSelectedRequest={selectedRequest} />
+            <BreadCrumbs project={project} selectedRequest={selectedRequest} setSelectedRequest={setSelectedRequest} />
           </div>
           <div className="p-4 h-full w-full">{children}</div>
         </main>

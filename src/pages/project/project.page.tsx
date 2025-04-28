@@ -32,9 +32,7 @@ export function ProjectPage() {
   function handleCreateRequest() {
     if (!projectId) return;
 
-    RequestService.create(projectId).then(() => {
-      RequestService.getByProjectId(projectId).then(setRequests);
-    });
+    RequestService.create(projectId).then((req) => {setSelectedRequest(req)});
   }
 
   useEffect(() => {
@@ -49,7 +47,7 @@ export function ProjectPage() {
       setSelectedRequest={setSelectedRequest}
       handleCreateRequest={handleCreateRequest}
       requests={requests}
-      dbproject={{ id: projectId, title: title, icon: icon }}
+      project={{ id: projectId, title: title, icon: icon }}
     >
       {!selectedRequest ? (
         <NotReqSelected handleCreateRequest={handleCreateRequest} />
