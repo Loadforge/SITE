@@ -12,7 +12,11 @@ interface Props {
   setSelectedRequest: (request: Request | null) => void;
 }
 
-export function BreadCrumbs({project,selectedRequest,setSelectedRequest}: Props) {
+export function BreadCrumbs({
+  project,
+  selectedRequest,
+  setSelectedRequest,
+}: Props) {
   return (
     <div className="flex items-center">
       <Breadcrumb className="hidden md:block">

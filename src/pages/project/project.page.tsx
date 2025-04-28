@@ -32,15 +32,13 @@ export function ProjectPage() {
   const { id: projectId, title, icon } = location.state || {};
 
   function handleCreateRequest() {
-    if (!projectId) return;
-
     RequestService.create(projectId).then((req) => {
       setSelectedRequest(req);
     });
   }
   function handleDeleteRequest(id: string) {
-    if (id === selectedRequest?.id){
-      setSelectedRequest(null)
+    if (id === selectedRequest?.id) {
+      setSelectedRequest(null);
     }
     RequestService.delete(id)
       .then(() => {
@@ -50,14 +48,31 @@ export function ProjectPage() {
         toast.error("Erro ao deletar a requisição: " + error.message);
       });
   }
+  function handleRenameRequest(id: string, newTitle: string) {
+    RequestService.rename(id, newTitle)
+      .then((req) => {
+        if (req.id === selectedRequest?.id) {
+          setSelectedRequest(req);
+        }
+      })
+      .catch((error) => {
+        toast.error("Erro ao Renomear a requisição: " + error.message);
+      });
+  }
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
     }
-  }, [projectId, handleCreateRequest]);
+  }, [
+    projectId,
+    handleCreateRequest,
+    handleDeleteRequest,
+    handleRenameRequest,
+  ]);
 
   return (
     <ProjectPageLayout
+      handleRenameRequest={handleRenameRequest}
       handleDeleteRequest={handleDeleteRequest}
       selectedRequest={selectedRequest}
       setSelectedRequest={setSelectedRequest}
