@@ -29,6 +29,8 @@ interface Props {
   setSelectedRequest: (request: Request) => void;
   requests: Request[];
   handleCreateRequest: () => void;
+  handleDeleteRequest: (id: string) => void;
+
 }
 
 export function Navigation({
@@ -36,6 +38,7 @@ export function Navigation({
   setSelectedRequest,
   requests,
   handleCreateRequest,
+  handleDeleteRequest
 }: Props) {
   return (
     <SidebarGroup>
@@ -104,7 +107,7 @@ export function Navigation({
                         Duplicar
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => console.log("Deletar", req.id)}
+                        onClick={() => handleDeleteRequest(req.id)}
                         className="text-red-500"
                       >
                         Deletar

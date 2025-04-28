@@ -11,6 +11,7 @@ interface Props {
   project: Project;
   requests: Request[];
   handleCreateRequest: () => void;
+  handleDeleteRequest: (id: string) => void;
   selectedRequest: Request | null;
   setSelectedRequest: (request: Request | null) => void;
 }
@@ -22,6 +23,7 @@ export function ProjectPageLayout({
   project,
   requests,
   handleCreateRequest,
+  handleDeleteRequest
 }: Props) {
   return (
     <div className="h-screen">
@@ -32,6 +34,7 @@ export function ProjectPageLayout({
           setSelectedRequest={setSelectedRequest}
           requests={requests}
           handleCreateRequest={handleCreateRequest}
+          handleDeleteRequest={handleDeleteRequest}
         />
         <main className="flex-1 px-2  overflow-y-hidden pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">

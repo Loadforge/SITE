@@ -21,6 +21,7 @@ import { SetUrl } from "@/components/setUrl/seturl";
 import { Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { RequestService } from "@/services/request/request.service";
+import { toast } from "sonner";
 
 export function ProjectPage() {
   const [requests, setRequests] = useState<Request[]>([]);
@@ -32,9 +33,19 @@ export function ProjectPage() {
   function handleCreateRequest() {
     if (!projectId) return;
 
-    RequestService.create(projectId).then((req) => {setSelectedRequest(req)});
+    RequestService.create(projectId).then((req) => {
+      setSelectedRequest(req);
+    });
   }
-
+  function handleDeleteRequest(id: string) {
+    RequestService.delete(id)
+      .then(() => {
+        toast.success("Requisição deletada com sucesso!");
+      })
+      .catch((error) => {
+        toast.error("Erro ao deletar a requisição: " + error.message);
+      });
+  }
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
@@ -43,6 +54,7 @@ export function ProjectPage() {
 
   return (
     <ProjectPageLayout
+      handleDeleteRequest={handleDeleteRequest}
       selectedRequest={selectedRequest}
       setSelectedRequest={setSelectedRequest}
       handleCreateRequest={handleCreateRequest}
