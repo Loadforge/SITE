@@ -18,7 +18,6 @@ export function DocsReq({ id }: Props) {
   useEffect(() => {
     RequestdocsService.getdocsByRequestId(id).then((docs) => {
       setDocs(docs);
-      console.log(docs)
     });
   }, [id]);
 

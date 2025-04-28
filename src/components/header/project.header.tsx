@@ -5,7 +5,6 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 import { useTheme } from "@/contexts";
-
 import { Project } from "@/db/types";
 
 import LogoDefault from "../../assets/Logo.svg";
@@ -16,22 +15,45 @@ import { HelpButton } from "../help";
 
 interface Props {
   project: Project;
+  handleProjectRename: (id: string, newTitle: string) => void;
 }
 
-export function ProjectHeader({ project }: Props) {
+export function ProjectHeader({ project, handleProjectRename }: Props) {
   const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
   const { theme } = useTheme();
   const navigate = useNavigate();
   const Logo = theme === "light" ? LogoBlack : LogoDefault;
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState(project.title);
+
   useEffect(() => {
-    if (project.icon && typeof project.icon === "string" && project.icon in FaIcons) {
+    if (
+      project.icon &&
+      typeof project.icon === "string" &&
+      project.icon in FaIcons
+    ) {
       setIconComponent(() => FaIcons[project.icon as keyof typeof FaIcons]);
     }
   }, [project.icon]);
 
   const handleBackToHome = () => {
     navigate("/");
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTitle(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleProjectRename(project.id, newTitle); 
+      setIsEditing(false); 
+    }
+  };
+
+  const handleTitleClick = () => {
+    setIsEditing(true); 
   };
 
   return (
@@ -46,7 +68,25 @@ export function ProjectHeader({ project }: Props) {
         <span className="text-2xl text-text">
           {IconComponent ? React.createElement(IconComponent) : null}
         </span>
-        <span className="text-lg font-bold">{project.title}</span>
+
+        <span
+          className="text-lg font-bold cursor-pointer"
+          onClick={handleTitleClick}
+          title="Clique para editar"
+        >
+          {isEditing ? (
+            <input
+              type="text"
+              value={newTitle}
+              onChange={handleTitleChange}
+              onKeyDown={handleKeyPress}
+              autoFocus
+              className="border-b-2 border-text bg-transparent focus:outline-none"
+            />
+          ) : (
+            project.title
+          )}
+        </span>
       </div>
       <div className="flex gap-10">
         <BugButton />

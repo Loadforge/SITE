@@ -52,12 +52,10 @@ export function ListPage() {
 
     if (!updatedProject) return;
 
-    const renamedProject = { ...updatedProject, title: newTitle };
-
-    ProjectService.update(renamedProject)
+    ProjectService.rename(id, newTitle)
       .then(() => {
         setProjects((prev) =>
-          prev.map((p) => (p.id === id ? renamedProject : p))
+          prev.map((p) => (p.id === id ? { ...p, title: newTitle } : p))
         );
         toast.success("Projeto renomeado com sucesso!");
       })
