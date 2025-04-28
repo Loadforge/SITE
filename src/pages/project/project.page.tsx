@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
+import { toast } from "sonner";
+
 import {
   AdvancedReq,
   AuthReq,
@@ -21,7 +23,6 @@ import { SetUrl } from "@/components/setUrl/seturl";
 import { Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { RequestService } from "@/services/request/request.service";
-import { toast } from "sonner";
 
 export function ProjectPage() {
   const [requests, setRequests] = useState<Request[]>([]);
@@ -38,6 +39,9 @@ export function ProjectPage() {
     });
   }
   function handleDeleteRequest(id: string) {
+    if (id === selectedRequest?.id){
+      setSelectedRequest(null)
+    }
     RequestService.delete(id)
       .then(() => {
         toast.success("Requisição deletada com sucesso!");
