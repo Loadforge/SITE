@@ -38,7 +38,7 @@ export function DocsReq({ id }: Props) {
       <CodeMirror
         value={docs?.coments || ""}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
-        height="240px"
+        height="50dvh"
         placeholder="Write a comment"
         onChange={(value) => handleContentChange(value)}
         basicSetup={{
