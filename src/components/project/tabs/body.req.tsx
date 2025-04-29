@@ -144,7 +144,7 @@ export function BodyReq({ id }: Props) {
       ) : (
         <CodeMirror
           value={content}
-          height="240px"
+          height="45dvh"
           theme={resolvedTheme == "dark" ? "dark" : "light"}
           extensions={[format === "json" ? json() : xml()]}
           onChange={(value) => handleContentChange(value)}

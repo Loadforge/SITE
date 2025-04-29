@@ -166,7 +166,7 @@ export function ProjectHeader({
             ref={dropdownRef}
             className="fixed bg-background top-10 left-20 border border-separators/25 p-2 mt-2 rounded-md shadow-lg z-20 w-56"
           >
-            <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+            <div className="grid grid-cols-4 gap-3  max-h-60 overflow-y-auto">
               {Object.keys(FaIcons).map((iconKey) => (
                 <button
                   key={iconKey}

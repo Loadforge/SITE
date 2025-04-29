@@ -86,7 +86,7 @@ export function SetUrl({
         placeholder="https://"
       />
 
-      <Button className="w-25 font-bold text-xl" disabled>
+      <Button className="w-25 font-bold text-xl" >
         Send
       </Button>
     </div>

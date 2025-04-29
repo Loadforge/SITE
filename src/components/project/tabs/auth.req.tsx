@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RequestAuthService } from "@/services/request/auth.request.service";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RequestAuth, Type } from "@/db/types";
+import { RequestAuthService } from "@/services/request/auth.request.service";
 
 interface Props{
   id: string;
