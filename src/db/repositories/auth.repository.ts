@@ -17,12 +17,11 @@ export class AuthRepository {
     const db = await this.getDb();
     const tx = db.transaction("auth", "readwrite");
     const store = tx.objectStore("auth");
-    const auth: RequestAuth={
-        id: crypto.randomUUID(),
-        requestId: id,
-        type: "none",
-        value : {}
-    }
+    const auth: RequestAuth = {
+      id: crypto.randomUUID(),
+      requestId: id,
+      value: { type: "none" },
+    };
     await store.add(auth);
     await tx.done;
   }
