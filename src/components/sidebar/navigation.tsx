@@ -3,6 +3,7 @@
 import { MoreHorizontal, Plus } from "lucide-react";
 import { useState } from "react";
 
+
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -11,6 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Request } from "@/db/types/request.type";
+
 
 import { CustomBadge } from "../badge";
 import {
@@ -31,6 +33,7 @@ interface Props {
   handleCreateRequest: () => void;
   handleDeleteRequest: (id: string) => void;
   handleRenameRequest: (id: string, newTitle: string) => void;
+  handleDuplicateRequest: (request: Request) => void;
 }
 
 export function Navigation({
@@ -40,8 +43,11 @@ export function Navigation({
   handleCreateRequest,
   handleDeleteRequest,
   handleRenameRequest,
+  handleDuplicateRequest,
 }: Props) {
-  const [renamingRequestId, setRenamingRequestId] = useState<string | null>(null);
+  const [renamingRequestId, setRenamingRequestId] = useState<string | null>(
+    null
+  );
   const [newTitle, setNewTitle] = useState("");
 
   function handleRenameStart(req: Request) {
@@ -54,7 +60,6 @@ export function Navigation({
       handleRenameRequest(id, newTitle.trim());
     }
     setRenamingRequestId(null);
-    
   }
 
   return (
@@ -133,7 +138,9 @@ export function Navigation({
                       <DropdownMenuItem onClick={() => handleRenameStart(req)}>
                         Renomear
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => console.log("Duplicar", req.id)}>
+                      <DropdownMenuItem
+                        onClick={() => handleDuplicateRequest(req)}
+                      >
                         Duplicar
                       </DropdownMenuItem>
                       <DropdownMenuItem

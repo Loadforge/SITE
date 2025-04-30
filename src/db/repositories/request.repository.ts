@@ -4,20 +4,20 @@ import { openDb } from "../initialize.db";
 
 import { Request } from "./../types/request.type";
 
+import { AuthRepository } from "./auth.repository";
 import { BodyRepository } from "./body.repository";
 import { DocsRepository } from "./docs.repository";
-import { AuthRepository } from "./auth.repository";
 
 export class RequestRepository {
   private db?: IDBPDatabase;
   private bodyRepository: BodyRepository;
   private docsRepository: DocsRepository;
-  private authrepository: AuthRepository
+  private authrepository: AuthRepository;
 
   constructor() {
     this.bodyRepository = new BodyRepository();
     this.docsRepository = new DocsRepository();
-    this.authrepository= new AuthRepository();
+    this.authrepository = new AuthRepository();
   }
 
   private async getDb(): Promise<IDBPDatabase> {
@@ -41,7 +41,7 @@ export class RequestRepository {
     await store.add(request);
     await this.bodyRepository.createBody(request.id);
     await this.docsRepository.createDocs(request.id);
-    await this.authrepository.createAuth(request.id)
+    await this.authrepository.createAuth(request.id);
     return request;
   }
 
@@ -75,7 +75,6 @@ export class RequestRepository {
     await this.docsRepository.deleteDocsByRequestId(id);
     await this.bodyRepository.deleteBodyByRequestId(id);
     await this.authrepository.deleteAuthByRequestId(id);
-
   }
   async deleteAllRequestsByProjectId(id: string): Promise<void> {
     const db = await this.getDb();
@@ -133,5 +132,27 @@ export class RequestRepository {
 
     await tx.done;
     return request;
+  }
+
+  async duplicate(request: Request): Promise<Request> {
+    const id = crypto.randomUUID();
+    const duplicatedRequest: Request = {
+      ...request,
+      title: `${request.title} (Copy)`,
+      id: id,
+    };
+
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+
+    await store.add(duplicatedRequest);
+
+    await tx.done;
+    await this.bodyRepository.duplicate(request.id, id);
+    await this.authrepository.duplicate(request.id, id);
+    await this.docsRepository.duplicate(request.id, id);
+
+    return duplicatedRequest;
   }
 }
