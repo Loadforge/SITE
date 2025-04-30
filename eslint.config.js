@@ -28,6 +28,7 @@ export default tseslint.config(
         { allowConstantExport: false },
       ],
       "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-explicit-any": "off",
       "import/order": [
         "error",
         {
@@ -40,7 +41,6 @@ export default tseslint.config(
             "index",
           ],
           pathGroups: [
-            // React e hooks externos
             {
               pattern: "react",
               group: "external",
@@ -51,13 +51,11 @@ export default tseslint.config(
               group: "external",
               position: "before",
             },
-            // Entidades (imports relativos com ../)
             {
               pattern: "../../**",
               group: "parent",
               position: "before",
             },
-            // Imports com @ (aliases)
             {
               pattern: "@/**",
               group: "internal",

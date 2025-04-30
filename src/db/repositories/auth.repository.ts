@@ -20,7 +20,8 @@ export class AuthRepository {
     const auth: RequestAuth = {
       id: crypto.randomUUID(),
       requestId: id,
-      value: { type: "none" },
+      type: "none",
+      value: {},
     };
     await store.add(auth);
     await tx.done;
