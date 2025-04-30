@@ -20,64 +20,60 @@ interface Props {
 
 export function AuthReq({ id }: Props) {
   const [auth, setAuth] = useState<RequestAuth>();
+  const [type, setType] = useState<Type>("none");
   const [showPassword, setShowPassword] = useState(false);
 
-  const [enabled, setEnabled] = useState<boolean>(true);
-  const [key, setKey] = useState<string>();
-  const [value, setValue] = useState<string>();
-  const [addTo, setAddTo] = useState<string>();
-  const [username, setUsername] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [token, setToken] = useState<string>();
+  const [enabled, setEnabled] = useState(true);
+  const [key, setKey] = useState("");
+  const [value, setValue] = useState("");
+  const [addTo, setAddTo] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     RequestAuthService.getAuthByRequestId(id).then((auth) => {
+      if (!auth) return;
+
       setAuth(auth);
+      setType(auth.type);
 
-      if (auth) {
-        if (auth.value.type !== "none") {
-          setEnabled(auth.value.value?.enabled ?? true);
+      if (auth.type !== "none") {
+        setEnabled(auth.value.enabled ?? true);
 
-          if (auth.value.type === "apiKey") {
-            setKey(auth.value.value?.key || "");
-            setValue(auth.value.value?.value || "");
-            setAddTo(auth.value.value?.addTo || "");
-          }
+        if (auth.type === "apiKey") {
+          setKey(auth.value.key || "");
+          setValue(auth.value.value || "");
+          setAddTo(auth.value.addTo || "");
+        }
 
-          if (auth.value.type === "basic") {
-            setUsername(auth.value.value?.username || "");
-            setPassword(auth.value.value?.password || "");
-          }
+        if (auth.type === "basic") {
+          setUsername(auth.value.username || "");
+          setPassword(auth.value.password || "");
+        }
 
-          if (auth.value.type === "bearer") {
-            setToken(auth.value.value?.token || "");
-            console.log("Aqui mesmo", auth.value.value?.token)
-          }
-        } 
+        if (auth.type === "bearer") {
+          setToken(auth.value.token || "");
+        }
       }
     });
   }, [id]);
 
   const updateField = (field: string, newValue: any) => {
     if (!auth || auth.value.type === "none") return;
-  
+
     const newInnerValue = {
-   
-      ...auth.value.value,
+      ...auth.value,
       [field]: newValue,
     };
-  
-    const updatedAuth = {
-      
+
+    const updatedAuth: RequestAuth = {
       ...auth,
-      value: {
-        ...auth.value,
-        value: newInnerValue,
-      },
+      value: newInnerValue,
     };
-  
+
     setAuth(updatedAuth);
-  
+
     RequestAuthService.update(updatedAuth).catch((error) => {
       console.error("Error updating auth:", error);
     });
@@ -85,28 +81,31 @@ export function AuthReq({ id }: Props) {
 
   const updateType = (newType: Type) => {
     if (!auth) return;
-    setAuth({
+
+    const updated: RequestAuth = {
       ...auth,
-      value: { type: newType, value: null },
+      type: newType,
+      value: { enabled: true },
+    };
+
+    setType(newType);
+    setAuth(updated);
+
+    RequestAuthService.update(updated).catch((error) => {
+      console.error("Error updating type:", error);
     });
-    RequestAuthService.update({
-      ...auth,
-      value: { type: newType, value: null },
-    }).then(() => {});
   };
-
-
 
   return (
     <div className="space-y-6 p-1 w-full">
       <div className="flex items-center gap-3">
         <Label>Auth Type</Label>
         <Select
-          value={auth?.value.type}
+          value={type}
           onValueChange={(value) => updateType(value as Type)}
         >
           <SelectTrigger>
-            <SelectValue />
+            <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="none">None</SelectItem>
@@ -117,25 +116,26 @@ export function AuthReq({ id }: Props) {
         </Select>
       </div>
 
-      {auth?.value.type === "apiKey" && (
+      {type === "apiKey" && (
         <div className="space-y-5">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <Label htmlFor="api-key-enabled">Enabled</Label>
             <Checkbox
               id="api-key-enabled"
               className="border-primary"
               checked={enabled}
               onCheckedChange={(checked) => {
-                const isChecked = checked === true; 
+                const isChecked = checked === true;
                 setEnabled(isChecked);
                 updateField("enabled", isChecked);
               }}
             />
           </div>
-          <div className="flex space-y-2">
-            <Label className="w-15">Key</Label>
+
+          <div className="flex items-center gap-3">
+            <Label className="w-20">Key</Label>
             <Input
-              className="w-xl"
+              className="w-full"
               value={key}
               onChange={(e) => {
                 setKey(e.target.value);
@@ -143,11 +143,12 @@ export function AuthReq({ id }: Props) {
               }}
             />
           </div>
-          <div className="flex relative w-2xl">
-            <Label className="w-15">Value</Label>
+
+          <div className="flex items-center gap-3 relative">
+            <Label className="w-20">Value</Label>
             <Input
               type={showPassword ? "text" : "password"}
-              className="w-xl"
+              className="w-full"
               value={value}
               onChange={(e) => {
                 setValue(e.target.value);
@@ -155,14 +156,15 @@ export function AuthReq({ id }: Props) {
               }}
             />
             <div
-              className="absolute top-1/2 right-12 -translate-y-1/2 cursor-pointer text-primary"
+              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-primary"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
             </div>
           </div>
-          <div className="flex space-y-2">
-            <Label className="w-15">Add To</Label>
+
+          <div className="flex items-center gap-3">
+            <Label className="w-20">Add To</Label>
             <Select
               value={addTo}
               onValueChange={(val) => {
@@ -182,25 +184,26 @@ export function AuthReq({ id }: Props) {
         </div>
       )}
 
-      {auth?.value.type === "basic" && (
+      {type === "basic" && (
         <div className="space-y-5">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <Label htmlFor="basic-enabled">Enabled</Label>
             <Checkbox
               id="basic-enabled"
               className="border-primary"
               checked={enabled}
               onCheckedChange={(checked) => {
-                const isChecked = checked === true; 
+                const isChecked = checked === true;
                 setEnabled(isChecked);
-                updateField("enabled", checked);
+                updateField("enabled", isChecked);
               }}
             />
           </div>
-          <div className="flex space-y-2">
-            <Label className="w-18">Username</Label>
+
+          <div className="flex items-center gap-3">
+            <Label className="w-24">Username</Label>
             <Input
-              className="w-xl"
+              className="w-full"
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value);
@@ -208,11 +211,12 @@ export function AuthReq({ id }: Props) {
               }}
             />
           </div>
-          <div className="flex relative w-2xl">
-            <Label className="w-18">Password</Label>
+
+          <div className="flex items-center gap-3 relative">
+            <Label className="w-24">Password</Label>
             <Input
               type={showPassword ? "text" : "password"}
-              className="w-xl"
+              className="w-full"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -220,7 +224,7 @@ export function AuthReq({ id }: Props) {
               }}
             />
             <div
-              className="absolute top-1/2 right-9 -translate-y-1/2 cursor-pointer text-primary"
+              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-primary"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
@@ -229,26 +233,27 @@ export function AuthReq({ id }: Props) {
         </div>
       )}
 
-      {auth?.value.type === "bearer" && (
-        <div className="space-y-5 relative">
-          <div className="flex items-center space-x-3">
+      {type === "bearer" && (
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
             <Label htmlFor="bearer-enabled">Enabled</Label>
             <Checkbox
               id="bearer-enabled"
               className="border-primary"
               checked={enabled}
               onCheckedChange={(checked) => {
-                const isChecked = checked === true; 
+                const isChecked = checked === true;
                 setEnabled(isChecked);
-                updateField("enabled", checked);
+                updateField("enabled", isChecked);
               }}
             />
           </div>
-          <div className="flex relative w-2xl">
-            <Label className="w-15">Token</Label>
+
+          <div className="flex items-center gap-3 relative">
+            <Label className="w-20">Token</Label>
             <Input
               type={showPassword ? "text" : "password"}
-              className="w-xl"
+              className="w-full"
               value={token}
               onChange={(e) => {
                 setToken(e.target.value);
@@ -256,7 +261,7 @@ export function AuthReq({ id }: Props) {
               }}
             />
             <div
-              className="absolute top-1/2 right-12 -translate-y-1/2 cursor-pointer text-primary"
+              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-primary"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
