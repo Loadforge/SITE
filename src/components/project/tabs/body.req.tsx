@@ -45,6 +45,7 @@ export function BodyReq({ id }: Props) {
     if (body) {
       const updatedBody: RequestBody = {
         ...body,
+        type: format,
         content: value,
       };
 
@@ -60,18 +61,18 @@ export function BodyReq({ id }: Props) {
   const handleFormatChange = (newFormat: "json" | "xml" | "none") => {
     if (newFormat === "none") {
       setFormat("none");
-      setContent("");
       setError(null);
       if (body) {
         const updatedBody: RequestBody = {
           ...body,
-          content: "",
         };
 
-        RequestBodyService.update(updatedBody).catch((err) => {
-          setError("Erro ao salvar corpo da requisição.");
-          console.error(err);
-        });
+        RequestBodyService.update(updatedBody)
+          .then(() => {})
+          .catch((err) => {
+            setError("Erro ao salvar corpo da requisição.");
+            console.error(err);
+          });
       }
 
       return;

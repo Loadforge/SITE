@@ -33,4 +33,7 @@ export class RequestService {
   static async updateUrl(id: string, url: string): Promise<Request> {
     return this.repository.updateRequestUrl(id, url);
   }
+  static async duplicate(request: Request): Promise<Request> {
+    return this.repository.duplicate(request);
+  }
 }

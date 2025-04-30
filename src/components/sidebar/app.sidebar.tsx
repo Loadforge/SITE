@@ -11,6 +11,7 @@ interface Props {
   setSelectedRequest: (request: Request) => void;
   handleDeleteRequest: (id: string) => void;
   handleRenameRequest: (id: string, newTitle: string) => void;
+  handleDuplicateRequest: (request: Request) => void;
 }
 
 export function AppSidebar({
@@ -20,6 +21,7 @@ export function AppSidebar({
   selectedRequest,
   requests,
   handleCreateRequest,
+  handleDuplicateRequest,
 }: Props) {
   return (
     <Sidebar className="mt-14 h-[calc(100vh-3.5rem)]">
@@ -31,6 +33,7 @@ export function AppSidebar({
           setSelectedRequest={setSelectedRequest}
           requests={requests}
           handleCreateRequest={handleCreateRequest}
+          handleDuplicateRequest={handleDuplicateRequest}
         />
       </SidebarContent>
     </Sidebar>

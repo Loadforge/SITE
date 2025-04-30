@@ -59,4 +59,24 @@ export class DocsRepository {
 
     await tx.done;
   }
+  
+  async duplicate(requestId: string, newRequestId: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("docs", "readwrite");
+    const store = tx.objectStore("docs");
+    const index = store.index("requestIndex");
+  
+    const docs = await index.get(requestId);
+  
+    if (docs) {
+      const duplicatedDocs: RequestDocs = {
+        ...docs,
+        id: crypto.randomUUID(),
+        requestId: newRequestId,
+      };
+      await store.add(duplicatedDocs);
+    }
+  
+    await tx.done;
+  }
 }

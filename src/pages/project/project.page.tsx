@@ -130,7 +130,15 @@ export function ProjectPage() {
         toast.error("Erro ao atualizar a URL da requisição: " + error.message);
       });
   }
-
+  function handleDuplicateRequest(request: Request) {
+    RequestService.duplicate(request).then((req) => {
+      if (req) {
+        setRequests([...requests, req]); 
+        setSelectedRequest(req)
+        toast.success("Requisição Duplicada");
+      }
+    });
+  }
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
@@ -145,6 +153,7 @@ export function ProjectPage() {
       selectedRequest={selectedRequest}
       setSelectedRequest={setSelectedRequest}
       handleCreateRequest={handleCreateRequest}
+      handleDuplicateRequest={handleDuplicateRequest}
       requests={requests}
       handleProjectRename={handleProjectRename}
       project={project}

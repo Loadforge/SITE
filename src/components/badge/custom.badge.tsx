@@ -6,14 +6,14 @@ import { Badge } from "@/components/ui/badge";
  
  export function CustomBadge({ children }: CustomBadgeProps) {
    const colorVariants: Record<string, string> = {
-     GET: "bg-[#DAC380] text-white ",
-     POST: "bg-[#447950] text-white",
-     PUT: "bg-[#F1C40F] text-black",
-     DELETE: "bg-[#C0765B] text-white",
-     PATCH: "bg-[#9B59B6] text-white",
+     GET: "bg-[#DAC380] text-text ",
+     POST: "bg-[#447950] text-text",
+     PUT: "bg-[#F1C40F] text-text",
+     DELETE: "bg-[#F57164] text-text",
+     PATCH: "bg-[#9B59B6] text-text",
    };
  
-   const color = colorVariants[children] || "bg-[#7f8c8d] text-white"; 
+   const color = colorVariants[children] || "bg-[#7f8c8d] text-text"; 
  
    return (
      <Badge className={color}>

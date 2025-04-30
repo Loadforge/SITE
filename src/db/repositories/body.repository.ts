@@ -57,4 +57,24 @@ export class BodyRepository {
 
     await tx.done;
   }
+  async duplicate(requestId: string, newRequestId: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("body", "readwrite");
+    const store = tx.objectStore("body");
+    const index = store.index("requestIndex");
+  
+    const body = await index.get(requestId);
+  
+    if (body) {
+      const duplicatedBody: RequestBody = {
+        ...body,
+        id: crypto.randomUUID(),
+        requestId: newRequestId,
+      };
+      await store.add(duplicatedBody);
+    }
+  
+    await tx.done;
+  }
+  
 }

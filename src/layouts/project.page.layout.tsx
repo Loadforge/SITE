@@ -17,6 +17,7 @@ interface Props {
   setSelectedRequest: (request: Request | null) => void;
   handleProjectRename: (id: string, newTitle: string) => void;
   handleProjectIconChange: (id: string, newIcon: string) => void;
+  handleDuplicateRequest: (request: Request) => void;
 }
 
 export function ProjectPageLayout({
@@ -29,6 +30,7 @@ export function ProjectPageLayout({
   handleDeleteRequest,
   handleRenameRequest,
   handleProjectRename,
+  handleDuplicateRequest,
   handleProjectIconChange,
 }: Props) {
   return (
@@ -46,6 +48,7 @@ export function ProjectPageLayout({
           handleCreateRequest={handleCreateRequest}
           handleDeleteRequest={handleDeleteRequest}
           handleRenameRequest={handleRenameRequest}
+          handleDuplicateRequest={handleDuplicateRequest}
         />
         <main className="flex-1 px-2  overflow-y-hidden pt-3 max-h-[calc(100vh-3.5rem)] ">
           <div className="flex items-center gap-2 ">
