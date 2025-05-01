@@ -53,6 +53,19 @@ export function SetUrl({
     handleUpdateUrlRequest(request.id, newUrl);
     setRequest({ ...request, url: newUrl });
   };
+  const handleSendRequest = () => {
+    if (!request) return;
+  
+    RequestService.sendRequest(request.id)
+      .then((response) => {
+        console.log("Resposta da requisição:", response);
+      })
+      .catch((error) => {
+        toast.error(`Erro ao enviar: ${error.message || "Erro desconhecido"}`);
+        console.error("Erro ao enviar requisição:", error);
+      });
+  };
+
 
   if (!request) {
     return (
@@ -86,7 +99,7 @@ export function SetUrl({
         placeholder="https://"
       />
 
-      <Button className="w-25 font-bold text-xl" >
+      <Button className="w-25 font-bold text-xl" onClick={handleSendRequest}>
         Send
       </Button>
     </div>

@@ -2,6 +2,11 @@ import { IDBPDatabase } from "idb";
 
 import { openDb } from "../initialize.db";
 
+import { RequestAuth, RequestBody } from "../types";
+import { RequestDocs } from "../types/docs.type";
+import { Header } from "../types/headers.type";
+import { Param } from "../types/params.type";
+
 import { Request } from "./../types/request.type";
 
 import { AuthRepository } from "./auth.repository";
@@ -9,6 +14,7 @@ import { BodyRepository } from "./body.repository";
 import { DocsRepository } from "./docs.repository";
 import { HeadersRepository } from "./headers.repository";
 import { ParamsRepository } from "./params .repository";
+
 
 export class RequestRepository {
   private db?: IDBPDatabase;
@@ -59,7 +65,7 @@ export class RequestRepository {
     return index.getAll(projectId);
   }
 
-  async getRequestById(id: string): Promise<Request | undefined> {
+  async getRequestById(id: string): Promise<Request> {
     const db = await this.getDb();
     const tx = db.transaction("request", "readonly");
     const store = tx.objectStore("request");
@@ -164,5 +170,33 @@ export class RequestRepository {
     await this.headersrepository.duplicate(request.id, id);
 
     return duplicatedRequest;
+  }
+
+  async getFullRequestById(id: string): Promise<{
+    request: Request;
+    body: RequestBody;
+    auth: RequestAuth;
+    docs: RequestDocs;
+    params: Param[] | null;
+    headers: Header[] | null;
+  }> {
+    const request = await this.getRequestById(id);
+
+    const [body, auth, docs, params, headers] = await Promise.all([
+      this.bodyRepository.getBodyByRequestId(id),
+      this.authrepository.getAuthByRequestId(id),
+      this.docsRepository.getDocsByRequestId(id),
+      this.paramsrepository.getParamsByRequestId(id),
+      this.headersrepository.getHeadersByRequestId(id),
+    ]);
+
+    return {
+      request,
+      body,
+      auth,
+      docs,
+      params,
+      headers,
+    };
   }
 }
