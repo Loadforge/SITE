@@ -132,11 +132,9 @@ export function ProjectPage() {
   }
   function handleDuplicateRequest(request: Request) {
     RequestService.duplicate(request).then((req) => {
-      if (req) {
-        setRequests([...requests, req]); 
-        setSelectedRequest(req)
-        toast.success("Requisição Duplicada");
-      }
+      setRequests([...requests, req]);
+      setSelectedRequest(req);
+      toast.success("Requisição Duplicada");
     });
   }
   useEffect(() => {
