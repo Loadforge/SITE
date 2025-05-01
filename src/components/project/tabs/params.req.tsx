@@ -127,7 +127,7 @@ export function ParamsReq() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px] border"></TableHead> {/* Checkbox */}
+              <TableHead className="w-[40px] border"></TableHead> 
               <TableHead className="border">Name</TableHead>
               <TableHead className="border">Value</TableHead>
               <TableHead className="text-center border w-20">Actions</TableHead>
