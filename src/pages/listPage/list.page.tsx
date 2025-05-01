@@ -87,14 +87,13 @@ export function ListPage() {
 
       const reorderedProjects = newProjects.map((project, index) => ({
         ...project,
-        index: index + 1, 
+        index: index + 1,
       }));
 
       setProjects(reorderedProjects);
 
       ProjectService.reorder(reorderedProjects)
-        .then(() => {
-        })
+        .then(() => {})
         .catch((error) => {
           console.error("Erro ao reordenar os projetos:", error);
           toast.error("Erro ao reordenar os projetos. Tente novamente!");
@@ -116,16 +115,14 @@ export function ListPage() {
             <div className="hidden lg:grid lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 justify-items-center gap-10 p-4">
               <NewProjectButton onClick={handleAddProject} />
               <ImportProjectButton />
-              {projects
-                .sort((a, b) => a.index - b.index)
-                .map((project) => (
-                  <SortableCard
-                    key={project.id}
-                    {...project}
-                    onClick={handleDelete}
-                    onRename={handleRename}
-                  />
-                ))}
+              {projects.map((project) => (
+                <SortableCard
+                  key={project.id}
+                  {...project}
+                  onClick={handleDelete}
+                  onRename={handleRename}
+                />
+              ))}
             </div>
           </SortableContext>
         </DndContext>
