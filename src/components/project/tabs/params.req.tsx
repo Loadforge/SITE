@@ -61,6 +61,17 @@ export function ParamsReq() {
     setQueryParams((prev) => prev.filter((param) => param.id !== id));
   };
 
+  const buildUrlPreview =(params: QueryParam[]) => {
+    const enabledParams = params.filter(
+      (p) => p.enabled && p.name.trim() && p.value.trim()
+    );
+    const queryString = enabledParams
+      .map((p) => `${encodeURIComponent(p.name)}=${encodeURIComponent(p.value)}`)
+      .join("&");
+  
+    return `http://localhost:8080/url_mock${queryString ? "?" + queryString : ""}`;
+  }
+
   const updateQueryParam = (
     id: string,
     field: "name" | "value" | "enabled",
@@ -127,7 +138,7 @@ export function ParamsReq() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px] border"></TableHead> {/* Checkbox */}
+              <TableHead className="w-[40px] border"></TableHead> 
               <TableHead className="border">Name</TableHead>
               <TableHead className="border">Value</TableHead>
               <TableHead className="text-center border w-20">Actions</TableHead>
@@ -241,13 +252,3 @@ export function ParamsReq() {
   );
 }
 
-function buildUrlPreview(params: QueryParam[]) {
-  const enabledParams = params.filter(
-    (p) => p.enabled && p.name.trim() && p.value.trim()
-  );
-  const queryString = enabledParams
-    .map((p) => `${encodeURIComponent(p.name)}=${encodeURIComponent(p.value)}`)
-    .join("&");
-
-  return `http://localhost:8080/url_mock${queryString ? "?" + queryString : ""}`;
-}

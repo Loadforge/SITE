@@ -7,17 +7,23 @@ import { Request } from "./../types/request.type";
 import { AuthRepository } from "./auth.repository";
 import { BodyRepository } from "./body.repository";
 import { DocsRepository } from "./docs.repository";
+import { HeadersRepository } from "./headers.repository";
+import { ParamsRepository } from "./params .repository";
 
 export class RequestRepository {
   private db?: IDBPDatabase;
   private bodyRepository: BodyRepository;
   private docsRepository: DocsRepository;
   private authrepository: AuthRepository;
+  private paramsrepository: ParamsRepository;
+  private headersrepository: HeadersRepository;
 
   constructor() {
     this.bodyRepository = new BodyRepository();
     this.docsRepository = new DocsRepository();
     this.authrepository = new AuthRepository();
+    this.paramsrepository = new ParamsRepository();
+    this.headersrepository = new HeadersRepository();
   }
 
   private async getDb(): Promise<IDBPDatabase> {
@@ -75,6 +81,8 @@ export class RequestRepository {
     await this.docsRepository.deleteDocsByRequestId(id);
     await this.bodyRepository.deleteBodyByRequestId(id);
     await this.authrepository.deleteAuthByRequestId(id);
+    await this.paramsrepository.deleteParamsByRequestId(id);
+    await this.headersrepository.deleteHeadersByRequestId(id);
   }
   async deleteAllRequestsByProjectId(id: string): Promise<void> {
     const db = await this.getDb();
@@ -152,6 +160,8 @@ export class RequestRepository {
     await this.bodyRepository.duplicate(request.id, id);
     await this.authrepository.duplicate(request.id, id);
     await this.docsRepository.duplicate(request.id, id);
+    await this.paramsrepository.duplicate(request.id, id);
+    await this.headersrepository.duplicate(request.id, id);
 
     return duplicatedRequest;
   }

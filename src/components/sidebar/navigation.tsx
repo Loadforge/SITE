@@ -3,7 +3,6 @@
 import { MoreHorizontal, Plus } from "lucide-react";
 import { useState } from "react";
 
-
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -12,7 +11,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Request } from "@/db/types/request.type";
-
 
 import { CustomBadge } from "../badge";
 import {
@@ -123,7 +121,11 @@ export function Navigation({
                         className="flex-1 max-w-30 bg-transparent border-b border-primary focus:outline-none text-sm"
                       />
                     ) : (
-                      <span>{req.title}</span>
+                      <span>
+                        {req.title.length > 15
+                          ? `${req.title.slice(0, 15)}...`
+                          : req.title}
+                      </span>
                     )}
                   </a>
 
