@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Project } from "@/db/types";
+import { ProjectService } from "@/services/project/project.service";
 
 type Props = Project & {
   onClick: (id: string) => void;
@@ -70,6 +71,18 @@ export function ProjectCard({
       setIsRenaming(false);
     }
   };
+  const handleExport = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    ProjectService.exportToJson(id)
+      .then(() => {
+        console.log("Exportação concluída.");
+      })
+      .catch((error) => {
+        console.error("Erro ao exportar o projeto:", error);
+      });
+  };
 
   return (
     <Card
@@ -103,7 +116,7 @@ export function ProjectCard({
               Excluir
             </DropdownMenuItem>
             <DropdownMenuItem>Duplicar</DropdownMenuItem>
-            <DropdownMenuItem>Exportar</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExport}>Exportar</DropdownMenuItem>
             <DropdownMenuItem
               onClick={(event) => {
                 event.preventDefault();

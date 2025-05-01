@@ -101,4 +101,24 @@ export class ProjectRepository {
       await this.updateProject(project);
     }
   }
+  async exportProjectToJson(id: string): Promise<string | null> {
+    const project = await this.getProjectById(id);
+    if (!project) return null;
+  
+    const requests = await this.requestRepository.getRequestsByProjectId(project.id);
+  
+    const fullRequests = [];
+    for (const request of requests) {
+      const fullRequest = await this.requestRepository.getFullRequestById(request.id);
+      fullRequests.push(fullRequest);
+    }
+  
+    const exportData = {
+      project,
+      requests: fullRequests,
+    };
+  
+    return JSON.stringify(exportData, null, 2); 
+  }
+  
 }

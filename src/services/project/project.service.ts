@@ -1,5 +1,6 @@
 import { ProjectRepository } from "@/db/repositories/project.repository";
 import { Project } from "@/db/types";
+import { downloadJsonFile } from "@/util/download.json";
 
 export class ProjectService {
   private static repository: ProjectRepository = new ProjectRepository();
@@ -32,5 +33,14 @@ export class ProjectService {
   }
   static async reorder(projects: Project[]): Promise<void> {
     return this.repository.reorderProjects(projects);
+  }
+  static async exportToJson(id: string): Promise<void> {
+    const json = await this.repository.exportProjectToJson(id);
+    if (json) {
+      const filename = `projeto-${id}.json`;
+      downloadJsonFile(json, filename);
+    } else {
+      console.error("Projeto não encontrado.");
+    }
   }
 }
