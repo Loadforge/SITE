@@ -15,7 +15,6 @@ import { DocsRepository } from "./docs.repository";
 import { HeadersRepository } from "./headers.repository";
 import { ParamsRepository } from "./params .repository";
 
-
 export class RequestRepository {
   private db?: IDBPDatabase;
   private bodyRepository: BodyRepository;
@@ -198,5 +197,27 @@ export class RequestRepository {
       params,
       headers,
     };
+  }
+  async duplicateAllRequestsByProjectId(
+    projectId: string,
+    newProjectId: string
+  ): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+    const index = store.index("projectIndex");
+
+    const requests = await index.getAll(projectId);
+    await tx.done;
+
+    for (const originalRequest of requests) {
+      const duplicatedRequest: Request = {
+        ...originalRequest,
+        projectId: newProjectId,
+        title: originalRequest.title,
+      };
+
+      await this.duplicate(duplicatedRequest);
+    }
   }
 }

@@ -34,6 +34,9 @@ export class ProjectService {
   static async reorder(projects: Project[]): Promise<void> {
     return this.repository.reorderProjects(projects);
   }
+  static async duplicate(id: string): Promise<Project> {
+    return this.repository.duplicateProject(id);
+  }
   static async exportToJson(id: string): Promise<void> {
     const json = await this.repository.exportProjectToJson(id);
     if (json) {

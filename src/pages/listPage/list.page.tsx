@@ -64,6 +64,26 @@ export function ListPage() {
         toast.error("Erro ao renomear o projeto. Tente novamente!");
       });
   };
+  const handleDuplicate = (id: string) => {
+    ProjectService.duplicate(id)
+      .then((project) => {
+        setProjects((prev) => [...prev, project]);
+        toast.success("Projeto duplicado com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao duplicar o projeto:", error);
+        toast.error("Erro ao duplicar o projeto. Tente novamente!");
+      });
+  };
+  const handleExport = (id:string) => {
+    ProjectService.exportToJson(id)
+      .then(() => {
+        console.log("Exportação concluída.");
+      })
+      .catch((error) => {
+        console.error("Erro ao exportar o projeto:", error);
+      });
+  };
   useEffect(() => {
     ProjectService.getAll()
       .then((data) => {
@@ -121,6 +141,8 @@ export function ListPage() {
                   {...project}
                   onClick={handleDelete}
                   onRename={handleRename}
+                  onDuplicate={handleDuplicate}
+                  onExport={handleExport}
                 />
               ))}
             </div>

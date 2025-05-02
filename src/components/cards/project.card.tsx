@@ -11,12 +11,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Project } from "@/db/types";
-import { ProjectService } from "@/services/project/project.service";
 
 type Props = Project & {
   onClick: (id: string) => void;
   onRename: (id: string, newTitle: string) => void;
+  onDuplicate: (id: string) => void;
+  onExport: (id: string) => void;
   listeners?: React.SVGAttributes<SVGElement>;
   attributes?: React.SVGAttributes<SVGElement>;
 };
@@ -30,11 +32,11 @@ export function ProjectCard({
   attributes,
   onClick,
   onRename,
+  onDuplicate,
+  onExport,
 }: Props) {
   const navigate = useNavigate();
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
-    null
-  );
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +60,7 @@ export function ProjectCard({
     }
   };
 
-  const stopPropagation = (e: React.MouseEvent<SVGElement>) => {
+  const stopPropagation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 
@@ -71,17 +73,17 @@ export function ProjectCard({
       setIsRenaming(false);
     }
   };
-  const handleExport = (event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
 
-    ProjectService.exportToJson(id)
-      .then(() => {
-        console.log("Exportação concluída.");
-      })
-      .catch((error) => {
-        console.error("Erro ao exportar o projeto:", error);
-      });
+  const handleDuplicate = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDuplicate(id);
+  };
+
+  const handleExport = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onExport(id);
   };
 
   return (
@@ -92,11 +94,12 @@ export function ProjectCard({
       <div className="w-full flex justify-between text-text">
         <LuGrip
           size={16}
-          onClick={(e) => (e as React.MouseEvent<SVGElement>).stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
           className="cursor-grab hover:text-primary/80 transition-colors duration-200 ease-in-out"
           {...listeners}
           {...attributes}
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <MoreVertical
@@ -106,25 +109,26 @@ export function ProjectCard({
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="z-10">
-            <DropdownMenuItem
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                onClick(id);
-              }}
-            >
-              Excluir
-            </DropdownMenuItem>
-            <DropdownMenuItem>Duplicar</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDuplicate}>Duplicar</DropdownMenuItem>
             <DropdownMenuItem onClick={handleExport}>Exportar</DropdownMenuItem>
             <DropdownMenuItem
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 setIsRenaming(true);
               }}
             >
               Renomear
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-500"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClick(id);
+              }}
+            >
+              Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -147,9 +151,7 @@ export function ProjectCard({
             className="text-text text-md font-semibold bg-transparent border-b border-primary focus:outline-none text-center w-full"
           />
         ) : (
-          <span className="text-text text-md font-semibold text-center">
-            {title}
-          </span>
+          <span className="text-text text-md font-semibold text-center">{title}</span>
         )}
       </CardFooter>
     </Card>

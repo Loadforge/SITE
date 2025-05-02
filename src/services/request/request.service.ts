@@ -41,7 +41,6 @@ export class RequestService {
 
   static async sendRequest(id: string): Promise<any> {
     const fullRequest = await this.repository.getFullRequestById(id);
-
     const { request, body, auth, headers, params } = fullRequest;
 
     const headersObject =
@@ -65,6 +64,8 @@ export class RequestService {
       headersObject["Authorization"] = `Basic ${authString}`;
     }
 
+    const startTime = performance.now();
+
     const response = await axios({
       method: request.method.toLowerCase(),
       url: url.toString(),
@@ -72,6 +73,11 @@ export class RequestService {
       data,
     });
 
-    return response;
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+
+    console.log(`Tempo de resposta: ${duration}ms`);
+
+    return { response, duration };
   }
 }

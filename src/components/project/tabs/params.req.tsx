@@ -1,59 +1,62 @@
-import { Trash2, Plus, Pencil } from "lucide-react";
-import { useState, KeyboardEvent, useRef } from "react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button, Label } from "@/components/ui/index";
 import { Input } from "@/components/ui/input";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { Param } from "@/db/types/params.type";
+import { ParamsService } from "@/services/request/params.request.service";
 
-type QueryParam = {
+interface Props {
   id: string;
-  enabled: boolean;
-  name: string;
-  value: string;
-  isEditing: boolean;
-};
+  url: string;
+}
 
-export function ParamsReq() {
-  const [queryParams, setQueryParams] = useState<QueryParam[]>([]);
+export function ParamsReq({ id, url }: Props) {
+  const [queryParams, setQueryParams] = useState<Param[]>([]);
   const [, setEditingParamId] = useState<string | null>(null);
-  const nameInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  const keyInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
   const valueInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
   const handleAddParam = () => {
     const completelyEmptyParam = queryParams.find(
-      (param) => param.name.trim() === "" && param.value.trim() === ""
+      (param) => param.key.trim() === "" && param.value.trim() === ""
     );
 
     if (completelyEmptyParam) {
       setEditingParamId(completelyEmptyParam.id);
       setTimeout(() => {
         setQueryParams((prev) =>
-          prev.map((p) => (p.id === completelyEmptyParam.id ? { ...p, isEditing: true } : p))
+          prev.map((p) =>
+            p.id === completelyEmptyParam.id ? { ...p, isEditing: true } : p
+          )
         );
-        nameInputRefs.current.get(completelyEmptyParam.id)?.focus();
+        keyInputRefs.current.get(completelyEmptyParam.id)?.focus();
       }, 0);
       return;
     }
 
-    const newParam: QueryParam = {
+    const newParam: Param = {
       id: crypto.randomUUID(),
-      name: "",
+      requestId: id,
+      key: "",
       value: "",
       enabled: false,
-      isEditing: true,
+      index: queryParams.length,
     };
+
     setQueryParams((prev) => [...prev, newParam]);
     setEditingParamId(newParam.id);
     setTimeout(() => {
-      nameInputRefs.current.get(newParam.id)?.focus();
+      keyInputRefs.current.get(newParam.id)?.focus();
     }, 0);
   };
 
@@ -61,20 +64,22 @@ export function ParamsReq() {
     setQueryParams((prev) => prev.filter((param) => param.id !== id));
   };
 
-  const buildUrlPreview =(params: QueryParam[]) => {
+  const buildUrlPreview = (params: Param[]) => {
     const enabledParams = params.filter(
-      (p) => p.enabled && p.name.trim() && p.value.trim()
+      (p) => p.enabled && p.key.trim() && p.value.trim()
     );
     const queryString = enabledParams
-      .map((p) => `${encodeURIComponent(p.name)}=${encodeURIComponent(p.value)}`)
+      .map(
+        (p) => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`
+      )
       .join("&");
-  
-    return `http://localhost:8080/url_mock${queryString ? "?" + queryString : ""}`;
-  }
+
+    return `${url}${queryString ? "?" + queryString : ""}`;
+  };
 
   const updateQueryParam = (
     id: string,
-    field: "name" | "value" | "enabled",
+    field: "key" | "value" | "enabled",
     value: string | boolean
   ) => {
     setQueryParams((prev) =>
@@ -82,8 +87,8 @@ export function ParamsReq() {
         if (param.id === id) {
           const updatedParam = { ...param, [field]: value };
           if (
-            (field === "name" || field === "value") &&
-            (updatedParam.name.trim() === "" || updatedParam.value.trim() === "")
+            (field === "key" || field === "value") &&
+            (updatedParam.key.trim() === "" || updatedParam.value.trim() === "")
           ) {
             updatedParam.enabled = false;
           }
@@ -104,12 +109,12 @@ export function ParamsReq() {
         prev.map((p) => (p.id === id ? { ...p, isEditing: true } : p))
       );
       setTimeout(() => {
-        if (param.name.trim() === "") {
-          nameInputRefs.current.get(id)?.focus();
+        if (param.key.trim() === "") {
+          keyInputRefs.current.get(id)?.focus();
         } else if (param.value.trim() === "") {
           valueInputRefs.current.get(id)?.focus();
         } else {
-          nameInputRefs.current.get(id)?.focus();
+          keyInputRefs.current.get(id)?.focus();
         }
       }, 0);
     } else {
@@ -127,19 +132,25 @@ export function ParamsReq() {
     }
   };
 
+  useEffect(() => {
+    ParamsService.getByRequestId(id).then((params) => {
+      setQueryParams(params);
+    });
+  }, []);
+
   return (
     <div className="space-y-4">
       <div className="bg-muted rounded-md p-2 text-muted-foreground opacity-70 text-sm">
         <Label className="mb-1">URL Preview</Label>
         {buildUrlPreview(queryParams)}
       </div>
-      
-      <div className="overflow-y-auto max-h-[30vh]">
+
+      <div className="overflow-y-auto max-h-[35vh] max-w-4xl">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-background-secondary">
             <TableRow>
-              <TableHead className="w-[40px] border"></TableHead> 
-              <TableHead className="border">Name</TableHead>
+              <TableHead className="w-[40px] border"></TableHead>
+              <TableHead className="border">Key</TableHead>
               <TableHead className="border">Value</TableHead>
               <TableHead className="text-center border w-20">Actions</TableHead>
             </TableRow>
@@ -151,7 +162,9 @@ export function ParamsReq() {
                 <TableCell className="border text-center p-0">
                   <Checkbox
                     checked={param.enabled}
-                    disabled={param.name.trim() === "" || param.value.trim() === ""}
+                    disabled={
+                      param.key.trim() === "" || param.value.trim() === ""
+                    }
                     onCheckedChange={(checked) =>
                       updateQueryParam(param.id, "enabled", checked === true)
                     }
@@ -164,23 +177,23 @@ export function ParamsReq() {
                       <Input
                         ref={(el) => {
                           if (el) {
-                            nameInputRefs.current.set(param.id, el);
+                            keyInputRefs.current.set(param.id, el);
                           } else {
-                            nameInputRefs.current.delete(param.id);
+                            keyInputRefs.current.delete(param.id);
                           }
                         }}
-                        value={param.name}
+                        value={param.key}
                         onChange={(e) =>
-                          updateQueryParam(param.id, "name", e.target.value)
+                          updateQueryParam(param.id, "key", e.target.value)
                         }
                         onKeyDown={(e) => handleKeyDown(e, param.id)}
                         className={
-                          param.name.trim() === "" ? "border-destructive" : ""
+                          param.key.trim() === "" ? "border-destructive" : ""
                         }
                       />
                     ) : (
                       <span className="ml-3">
-                        {param.name || (
+                        {param.key || (
                           <span className="text-muted-foreground opacity-50">
                             Empty
                           </span>
@@ -251,4 +264,3 @@ export function ParamsReq() {
     </div>
   );
 }
-
