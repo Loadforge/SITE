@@ -39,11 +39,15 @@ export class ProjectService {
   }
   static async exportToJson(id: string): Promise<void> {
     const json = await this.repository.exportProjectToJson(id);
+    console.log("json", json);
     if (json) {
       const filename = `projeto-${id}.json`;
       downloadJsonFile(json, filename);
     } else {
       console.error("Projeto não encontrado.");
     }
+  }
+  static async importFromJson(file: File): Promise<Project> {
+    return await this.repository.importProjectFromJson(file);
   }
 }

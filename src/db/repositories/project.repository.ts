@@ -140,7 +140,27 @@ export class ProjectRepository {
     };
     await store.add(duplicatedProject);
     await tx.done;
-    await this.requestRepository.duplicateAllRequestsByProjectId(id, newProjectId);
+    await this.requestRepository.duplicateAllRequestsByProjectId(
+      id,
+      newProjectId
+    );
     return duplicatedProject;
+  }
+  async importProjectFromJson(file: File): Promise<Project> {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    const db = await this.getDb();
+    const tx = db.transaction("project", "readwrite");
+    const store = tx.objectStore("project");
+    const newProjectID = crypto.randomUUID();
+    const project: Project = {
+      ...data.project,
+      id: newProjectID,
+    };
+
+    await store.add(project);
+    await tx.done;
+    return project;
   }
 }
