@@ -20,8 +20,10 @@ interface Props {
   url: string;
 }
 
+type ParamWithEditing = Param & { isEditing?: boolean };
+
 export function ParamsReq({ id, url }: Props) {
-  const [queryParams, setQueryParams] = useState<Param[]>([]);
+  const [queryParams, setQueryParams] = useState<ParamWithEditing[]>([]);
   const [, setEditingParamId] = useState<string | null>(null);
   const keyInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
   const valueInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
@@ -44,34 +46,36 @@ export function ParamsReq({ id, url }: Props) {
       return;
     }
 
-    const newParam: Param = {
-      id: crypto.randomUUID(),
-      requestId: id,
-      key: "",
-      value: "",
-      enabled: false,
-      index: queryParams.length,
-    };
+    ParamsService.create(id)
+      .then((param) => {
+        const newParam: ParamWithEditing = {
+          ...param,
+          isEditing: true,
+        };
 
-    setQueryParams((prev) => [...prev, newParam]);
-    setEditingParamId(newParam.id);
-    setTimeout(() => {
-      keyInputRefs.current.get(newParam.id)?.focus();
-    }, 0);
+        setQueryParams((prev) => [...prev, newParam]);
+        setEditingParamId(newParam.id);
+
+        setTimeout(() => {
+          keyInputRefs.current.get(newParam.id)?.focus();
+        }, 0);
+      })
+      .catch((err) => {
+        console.error("Erro ao criar parâmetro:", err);
+      });
   };
 
   const removeQueryParam = (id: string) => {
+    ParamsService.deleteById(id).then(() => {});
     setQueryParams((prev) => prev.filter((param) => param.id !== id));
   };
 
-  const buildUrlPreview = (params: Param[]) => {
+  const buildUrlPreview = (params: ParamWithEditing[]) => {
     const enabledParams = params.filter(
       (p) => p.enabled && p.key.trim() && p.value.trim()
     );
     const queryString = enabledParams
-      .map(
-        (p) => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`
-      )
+      .map((p) => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`)
       .join("&");
 
     return `${url}${queryString ? "?" + queryString : ""}`;
@@ -82,21 +86,29 @@ export function ParamsReq({ id, url }: Props) {
     field: "key" | "value" | "enabled",
     value: string | boolean
   ) => {
-    setQueryParams((prev) =>
-      prev.map((param) => {
+    setQueryParams((prev) => {
+      return prev.map((param) => {
         if (param.id === id) {
           const updatedParam = { ...param, [field]: value };
+  
           if (
             (field === "key" || field === "value") &&
             (updatedParam.key.trim() === "" || updatedParam.value.trim() === "")
           ) {
             updatedParam.enabled = false;
           }
+  
+          const paramToSave = { ...updatedParam }; 
+          delete paramToSave.isEditing;
+          ParamsService.update(paramToSave).catch((err) =>
+            console.error("Erro ao atualizar parâmetro:", err)
+          );
+  
           return updatedParam;
         }
         return param;
-      })
-    );
+      });
+    });
   };
 
   const toggleEditQueryParam = (id: string) => {
@@ -134,9 +146,10 @@ export function ParamsReq({ id, url }: Props) {
 
   useEffect(() => {
     ParamsService.getByRequestId(id).then((params) => {
-      setQueryParams(params);
+      const enriched = params.map((p) => ({ ...p, isEditing: false }));
+      setQueryParams(enriched);
     });
-  }, []);
+  }, [id]);
 
   return (
     <div className="space-y-4">

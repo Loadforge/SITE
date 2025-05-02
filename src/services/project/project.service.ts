@@ -41,7 +41,7 @@ export class ProjectService {
     const json = await this.repository.exportProjectToJson(id);
     console.log("json", json);
     if (json) {
-      const filename = `projeto-${id}.json`;
+      const filename = `projeto-${id}`;
       downloadJsonFile(json, filename);
     } else {
       console.error("Projeto não encontrado.");

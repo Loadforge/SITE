@@ -4,7 +4,7 @@ import { Param } from "@/db/types/params.type";
 export class ParamsService {
   private static repository: ParamsRepository = new ParamsRepository();
 
-  static async create(requestId: string): Promise<void> {
+  static async create(requestId: string): Promise<Param> {
     return this.repository.createParam(requestId);
   }
 
