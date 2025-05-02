@@ -2,6 +2,11 @@ import { IDBPDatabase } from "idb";
 
 import { openDb } from "../initialize.db";
 
+import { RequestAuth, RequestBody } from "../types";
+import { RequestDocs } from "../types/docs.type";
+import { Header } from "../types/headers.type";
+import { Param } from "../types/params.type";
+
 import { Request } from "./../types/request.type";
 
 import { AuthRepository } from "./auth.repository";
@@ -59,7 +64,7 @@ export class RequestRepository {
     return index.getAll(projectId);
   }
 
-  async getRequestById(id: string): Promise<Request | undefined> {
+  async getRequestById(id: string): Promise<Request> {
     const db = await this.getDb();
     const tx = db.transaction("request", "readonly");
     const store = tx.objectStore("request");
@@ -164,5 +169,55 @@ export class RequestRepository {
     await this.headersrepository.duplicate(request.id, id);
 
     return duplicatedRequest;
+  }
+
+  async getFullRequestById(id: string): Promise<{
+    request: Request;
+    body: RequestBody;
+    auth: RequestAuth;
+    docs: RequestDocs;
+    params: Param[] | null;
+    headers: Header[] | null;
+  }> {
+    const request = await this.getRequestById(id);
+
+    const [body, auth, docs, params, headers] = await Promise.all([
+      this.bodyRepository.getBodyByRequestId(id),
+      this.authrepository.getAuthByRequestId(id),
+      this.docsRepository.getDocsByRequestId(id),
+      this.paramsrepository.getParamsByRequestId(id),
+      this.headersrepository.getHeadersByRequestId(id),
+    ]);
+
+    return {
+      request,
+      body,
+      auth,
+      docs,
+      params,
+      headers,
+    };
+  }
+  async duplicateAllRequestsByProjectId(
+    projectId: string,
+    newProjectId: string
+  ): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+    const index = store.index("projectIndex");
+
+    const requests = await index.getAll(projectId);
+    await tx.done;
+
+    for (const originalRequest of requests) {
+      const duplicatedRequest: Request = {
+        ...originalRequest,
+        projectId: newProjectId,
+        title: originalRequest.title,
+      };
+
+      await this.duplicate(duplicatedRequest);
+    }
   }
 }

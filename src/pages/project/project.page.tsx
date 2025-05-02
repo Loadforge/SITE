@@ -125,6 +125,9 @@ export function ProjectPage() {
         setRequests((prev) =>
           prev.map((r) => (r.id === id ? { ...r, url } : r))
         );
+        setSelectedRequest((prev) =>
+          prev && prev.id === id ? { ...prev, url } : prev
+        );
       })
       .catch((error) => {
         toast.error("Erro ao atualizar a URL da requisição: " + error.message);
@@ -186,7 +189,7 @@ export function ProjectPage() {
             </TabsList>
 
             <TabsContent value="params">
-              <ParamsReq />
+              <ParamsReq id={selectedRequest.id} url={selectedRequest.url} />
             </TabsContent>
             <TabsContent value="auth">
               <AuthReq id={selectedRequest.id} />

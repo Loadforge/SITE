@@ -13,7 +13,7 @@ export class ParamsRepository {
     return this.db;
   }
 
-  async createParam(requestId: string): Promise<void> {
+  async createParam(requestId: string): Promise<Param> {
     const db = await this.getDb();
     const tx = db.transaction("params", "readwrite");
     const store = tx.objectStore("params");
@@ -33,6 +33,7 @@ export class ParamsRepository {
 
     await store.add(param);
     await tx.done;
+    return param;
   }
 
   async getParamsByRequestId(requestId: string): Promise<Param[]> {

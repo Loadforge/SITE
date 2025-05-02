@@ -101,4 +101,66 @@ export class ProjectRepository {
       await this.updateProject(project);
     }
   }
+  async exportProjectToJson(id: string): Promise<string | null> {
+    const project = await this.getProjectById(id);
+    if (!project) return null;
+
+    const requests = await this.requestRepository.getRequestsByProjectId(
+      project.id
+    );
+
+    const fullRequests = [];
+    for (const request of requests) {
+      const fullRequest = await this.requestRepository.getFullRequestById(
+        request.id
+      );
+      fullRequests.push(fullRequest);
+    }
+
+    const exportData = {
+      project,
+      requests: fullRequests,
+    };
+
+    return JSON.stringify(exportData, null, 2);
+  }
+  async duplicateProject(id: string): Promise<Project> {
+    const db = await this.getDb();
+    const tx = db.transaction("project", "readwrite");
+    const store = tx.objectStore("project");
+
+    const project = await store.get(id);
+    if (!project) throw new Error("Project not found");
+    const newProjectId = crypto.randomUUID();
+    const duplicatedProject: Project = {
+      ...project,
+      id: newProjectId,
+      index: project.index + 1,
+      title: `${project.title} (Copy)`,
+    };
+    await store.add(duplicatedProject);
+    await tx.done;
+    await this.requestRepository.duplicateAllRequestsByProjectId(
+      id,
+      newProjectId
+    );
+    return duplicatedProject;
+  }
+  async importProjectFromJson(file: File): Promise<Project> {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    const db = await this.getDb();
+    const tx = db.transaction("project", "readwrite");
+    const store = tx.objectStore("project");
+    const newProjectID = crypto.randomUUID();
+    const project: Project = {
+      ...data.project,
+      id: newProjectID,
+    };
+
+    await store.add(project);
+    await tx.done;
+    return project;
+  }
 }

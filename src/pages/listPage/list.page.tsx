@@ -64,6 +64,39 @@ export function ListPage() {
         toast.error("Erro ao renomear o projeto. Tente novamente!");
       });
   };
+  const handleDuplicate = (id: string) => {
+    ProjectService.duplicate(id)
+      .then((project) => {
+        setProjects((prev) => [...prev, project]);
+        toast.success("Projeto duplicado com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao duplicar o projeto:", error);
+        toast.error("Erro ao duplicar o projeto. Tente novamente!");
+      });
+  };
+  const handleExport = (id:string) => {
+    ProjectService.exportToJson(id)
+      .then(() => {
+        console.log("Exportação concluída.");
+      })
+      .catch((error) => {
+        console.error("Erro ao exportar o projeto:", error);
+      });
+  };
+  const handleImport = (file: File) => {
+    ProjectService.importFromJson(file)
+      .then((project) => {
+        toast.success("Projeto importado com sucesso!");
+        setProjects((prev) => [...prev, project]);
+      })
+      .catch((error) => {
+        console.error("Erro ao importar o projeto:", error);
+        toast.error("Erro ao importar o projeto. Tente novamente!");
+      });
+  }
+
+
   useEffect(() => {
     ProjectService.getAll()
       .then((data) => {
@@ -114,13 +147,15 @@ export function ListPage() {
           >
             <div className="hidden lg:grid lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 justify-items-center gap-10 p-4">
               <NewProjectButton onClick={handleAddProject} />
-              <ImportProjectButton />
+              <ImportProjectButton handleImport={handleImport} />
               {projects.map((project) => (
                 <SortableCard
                   key={project.id}
                   {...project}
                   onClick={handleDelete}
                   onRename={handleRename}
+                  onDuplicate={handleDuplicate}
+                  onExport={handleExport}
                 />
               ))}
             </div>
