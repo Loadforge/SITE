@@ -221,4 +221,42 @@ export class RequestRepository {
       await this.duplicate(duplicatedRequest);
     }
   }
+  async importRequestsFromJson(
+    requests: any[],
+    projectId: string
+  ): Promise<void> {
+    for (const request of requests) {
+      const newRequestId = crypto.randomUUID();
+      const newRequest: Request = {
+        title: request.request.title,
+        method: request.request.method,
+        url: request.request.url,
+        id: newRequestId,
+        projectId: projectId,
+      };
+
+      await this.importRequestFromJson(newRequest);
+
+      await this.bodyRepository.importBodyFromJson(request.body, newRequestId);
+      await this.authrepository.importAuthFromJson(request.auth, newRequest.id);
+      await this.docsRepository.importDocsFromJson(request.docs, newRequest.id);
+      await this.paramsrepository.importParamsFromJson(
+        request.params,
+        newRequest.id
+      );
+      await this.headersrepository.importHeadersFromJson(
+        request.headers,
+        newRequest.id
+      );
+    }
+  }
+
+  async importRequestFromJson(request: Request): Promise<void> {
+
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readwrite");
+    const store = tx.objectStore("request");
+    await store.add(request);
+    await tx.done;
+  }
 }

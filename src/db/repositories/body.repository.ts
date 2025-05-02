@@ -76,5 +76,16 @@ export class BodyRepository {
   
     await tx.done;
   }
-  
+  async importBodyFromJson(body:RequestBody, newRequestId: string): Promise<void> {
+      const db = await this.getDb();
+      const tx = db.transaction("body", "readwrite");
+      const store = tx.objectStore("body");
+      const importedBody: RequestBody = {
+        ...body,
+        id: crypto.randomUUID(),
+        requestId: newRequestId,
+      };
+      await store.add(importedBody);
+      await tx.done;
+    }
 }

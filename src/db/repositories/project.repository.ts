@@ -161,6 +161,10 @@ export class ProjectRepository {
 
     await store.add(project);
     await tx.done;
+    await this.requestRepository.importRequestsFromJson(
+      data.requests,
+      newProjectID
+    );
     return project;
   }
 }

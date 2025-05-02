@@ -58,7 +58,7 @@ export class AuthRepository {
 
     await tx.done;
   }
-  
+
   async duplicate(requestId: string, newRequestId: string): Promise<void> {
     const db = await this.getDb();
     const tx = db.transaction("auth", "readwrite");
@@ -76,6 +76,21 @@ export class AuthRepository {
       await store.add(duplicatedAuth);
     }
 
+    await tx.done;
+  }
+  async importAuthFromJson(
+    auth: RequestAuth,
+    newRequestId: string
+  ): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("auth", "readwrite");
+    const store = tx.objectStore("auth");
+    const importedAuth: RequestAuth = {
+      ...auth,
+      id: crypto.randomUUID(),
+      requestId: newRequestId,
+    };
+    await store.add(importedAuth);
     await tx.done;
   }
 }
