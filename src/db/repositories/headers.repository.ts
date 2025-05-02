@@ -13,7 +13,7 @@ export class HeadersRepository {
     return this.db;
   }
 
-  async createHeader(requestId: string): Promise<void> {
+  async createHeader(requestId: string): Promise<Header> {
     const db = await this.getDb();
     const tx = db.transaction("headers", "readwrite");
     const store = tx.objectStore("headers");
@@ -31,12 +31,13 @@ export class HeadersRepository {
       enabled: false,
       key: "newHeader",
       value: "newHeader",
-      description: "",
+      description: "newHeader",
       index: maxIndex + 1,
     };
 
     await store.add(header);
     await tx.done;
+    return header;
   }
 
   async getHeadersByRequestId(requestId: string): Promise<Header[]> {
