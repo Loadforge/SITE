@@ -53,6 +53,7 @@ export class RequestRepository {
     await this.bodyRepository.createBody(request.id);
     await this.docsRepository.createDocs(request.id);
     await this.authrepository.createAuth(request.id);
+    await this.headersrepository.initializeDefaultHeaders(request.id);
     return request;
   }
 

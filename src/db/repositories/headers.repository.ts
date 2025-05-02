@@ -13,7 +13,7 @@ export class HeadersRepository {
     return this.db;
   }
 
-  async createHeader(requestId: string): Promise<void> {
+  async createHeader(requestId: string): Promise<Header> {
     const db = await this.getDb();
     const tx = db.transaction("headers", "readwrite");
     const store = tx.objectStore("headers");
@@ -31,12 +31,13 @@ export class HeadersRepository {
       enabled: false,
       key: "newHeader",
       value: "newHeader",
-      description: "",
+      description: "newHeader",
       index: maxIndex + 1,
     };
 
     await store.add(header);
     await tx.done;
+    return header;
   }
 
   async getHeadersByRequestId(requestId: string): Promise<Header[]> {
@@ -96,6 +97,39 @@ export class HeadersRepository {
         requestId: newRequestId,
       };
       await store.add(duplicated);
+    }
+
+    await tx.done;
+  }
+  async initializeDefaultHeaders(requestId: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("headers", "readwrite");
+    const store = tx.objectStore("headers");
+
+    const defaultHeaders: Header[] = [
+      {
+        id: crypto.randomUUID(),
+        requestId,
+        enabled: true,
+        key: "Content-Type",
+        value: "application/json",
+        description: "Defines the content type of the request",
+        index: 0,
+      },
+
+      {
+        id: crypto.randomUUID(),
+        requestId,
+        enabled: true,
+        key: "Cache-Control",
+        value: "no-cache",
+        description: "Prevents caching of the response",
+        index: 1,
+      },
+    ];
+
+    for (const header of defaultHeaders) {
+      await store.add(header);
     }
 
     await tx.done;
