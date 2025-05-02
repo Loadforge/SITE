@@ -134,4 +134,20 @@ export class HeadersRepository {
 
     await tx.done;
   }
+  async importHeadersFromJson(headers: Header[], newRequestId: string): Promise<void> {
+      const db = await this.getDb();
+      const tx = db.transaction("headers", "readwrite");
+      const store = tx.objectStore("headers");
+    
+      for (const header of headers) {
+        const importedHeader: Header = {
+          ...header,
+          id: crypto.randomUUID(), 
+          requestId: newRequestId, 
+        };
+        await store.add(importedHeader);
+      }
+    
+      await tx.done;
+    }
 }

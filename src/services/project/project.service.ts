@@ -37,11 +37,11 @@ export class ProjectService {
   static async duplicate(id: string): Promise<Project> {
     return this.repository.duplicateProject(id);
   }
-  static async exportToJson(id: string): Promise<void> {
+  static async exportToJson(id: string, filename:string): Promise<void> {
     const json = await this.repository.exportProjectToJson(id);
     console.log("json", json);
     if (json) {
-      const filename = `projeto-${id}`;
+      filename = `${filename}-LoadForge`;
       downloadJsonFile(json, filename);
     } else {
       console.error("Projeto não encontrado.");

@@ -75,8 +75,11 @@ export function ListPage() {
         toast.error("Erro ao duplicar o projeto. Tente novamente!");
       });
   };
-  const handleExport = (id:string) => {
-    ProjectService.exportToJson(id)
+  const handleExport = (id: string) => {
+    ProjectService.exportToJson(
+      id,
+      projects.find((p) => p.id === id)?.title || ""
+    )
       .then(() => {
         console.log("Exportação concluída.");
       })
@@ -94,8 +97,7 @@ export function ListPage() {
         console.error("Erro ao importar o projeto:", error);
         toast.error("Erro ao importar o projeto. Tente novamente!");
       });
-  }
-
+  };
 
   useEffect(() => {
     ProjectService.getAll()

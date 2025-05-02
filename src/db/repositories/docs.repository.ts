@@ -79,4 +79,19 @@ export class DocsRepository {
   
     await tx.done;
   }
+  async importDocsFromJson(
+      docs: RequestDocs,
+      newRequestId: string
+    ): Promise<void> {
+      const db = await this.getDb();
+      const tx = db.transaction("docs", "readwrite");
+      const store = tx.objectStore("docs");
+      const importedDocs: RequestDocs = {
+        ...docs,
+        id: crypto.randomUUID(),
+        requestId: newRequestId,
+      };
+      await store.add(importedDocs);
+      await tx.done;
+    }
 }

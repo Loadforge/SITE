@@ -96,4 +96,21 @@ export class ParamsRepository {
 
     await tx.done;
   }
+  
+  async importParamsFromJson(params: Param[], newRequestId: string): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("params", "readwrite");
+    const store = tx.objectStore("params");
+  
+    for (const param of params) {
+      const importedParam: Param = {
+        ...param,
+        id: crypto.randomUUID(), 
+        requestId: newRequestId, 
+      };
+      await store.add(importedParam);
+    }
+  
+    await tx.done;
+  }
 }
