@@ -1,125 +1,129 @@
-import { Trash2, Plus, Pencil } from "lucide-react";
-import { useState, KeyboardEvent, useRef } from "react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/index";
 import { Input } from "@/components/ui/input";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { Header } from "@/db/types/headers.type";
+import { HeadersService } from "@/services/request/headers.service";
 
-type QueryParam = {
+interface Props {
   id: string;
-  enabled: boolean;
-  key: string;
-  value: string;
-  description : string;
-  isEditing: boolean;
-};
+}
 
-export function HeadersReq() {
+type HeaderWithEditing = Header & { isEditing?: boolean };
 
-  const [queryParams, setQueryParams] = useState<QueryParam[]>([]);
-  const [, setEditingParamId] = useState<string | null>(null);
+export function HeadersReq({ id }: Props) {
+  const [headers, setHeaders] = useState<HeaderWithEditing[]>([]);
+  const [, setEditingHeaderId] = useState<string | null>(null);
   const keyInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
   const valueInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  const descriptionInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
-const handleAddParam = () => {
-    const emptyParam = queryParams.find(
-      (param) => param.key.trim() === "" || param.value.trim() === ""
+  const handleAddHeader = () => {
+    const completelyEmptyHeader = headers.find(
+      (header) => header.key.trim() === "" && header.value.trim() === ""
     );
 
-    if (emptyParam) {
-      setEditingParamId(emptyParam.id);
+    if (completelyEmptyHeader) {
+      setEditingHeaderId(completelyEmptyHeader.id);
       setTimeout(() => {
-        setQueryParams((prev) =>
-          prev.map((p) => (p.id === emptyParam.id ? { ...p, isEditing: true } : p))
+        setHeaders((prev) =>
+          prev.map((h) =>
+            h.id === completelyEmptyHeader.id ? { ...h, isEditing: true } : h
+          )
         );
-          
-      const param = queryParams.find((p) => p.id === emptyParam.id);
-      if (!param) return;
-
-      setTimeout(() => {
-        if (param.key.trim() === "") {
-          keyInputRefs.current.get(emptyParam.id)?.focus();
-        } else if (param.value.trim() === "") {
-          valueInputRefs.current.get(emptyParam.id)?.focus();
-        } else {
-          keyInputRefs.current.get(emptyParam.id)?.focus();
-        }
-        }, 0);
+        keyInputRefs.current.get(completelyEmptyHeader.id)?.focus();
       }, 0);
       return;
     }
 
-    const newParam: QueryParam = {
-      id: crypto.randomUUID(),
-      key: "",
-      value: "",
-      description: "",
-      enabled: false,
-      isEditing: true,
-    };
-    setQueryParams((prev) => [...prev, newParam]);
-    setEditingParamId(newParam.id);
-    setTimeout(() => {
-      keyInputRefs.current.get(newParam.id)?.focus();
-    }, 0);
+    HeadersService.create(id)
+      .then((header) => {
+        const newHeader: HeaderWithEditing = {
+          ...header,
+          isEditing: true,
+        };
+
+        setHeaders((prev) => [...prev, newHeader]);
+        setEditingHeaderId(newHeader.id);
+
+        setTimeout(() => {
+          keyInputRefs.current.get(newHeader.id)?.focus();
+        }, 0);
+      })
+      .catch((err) => {
+        console.error("Erro ao criar cabeçalho:", err);
+      });
   };
 
-  const removeQueryParam = (id: string) => {
-    setQueryParams((prev) => prev.filter((param) => param.id !== id));
+  const removeHeader = (id: string) => {
+    HeadersService.deleteById(id).then(() => {});
+    setHeaders((prev) => prev.filter((header) => header.id !== id));
   };
 
-  const updateQueryParam = (
+  const updateHeader = (
     id: string,
-    field: "key" | "value" | "description" |"enabled",
+    field: "key" | "value" | "enabled" | "description",
     value: string | boolean
   ) => {
-    setQueryParams((prev) =>
-      prev.map((param) => {
-        if (param.id === id) {
-          const updatedParam = { ...param, [field]: value };
+    setHeaders((prev) => {
+      return prev.map((header) => {
+        if (header.id === id) {
+          const updatedHeader = { ...header, [field]: value };
+
           if (
             (field === "key" || field === "value") &&
-            (updatedParam.key.trim() === "" || updatedParam.value.trim() === "")
+            (updatedHeader.key.trim() === "" || updatedHeader.value.trim() === "")
           ) {
-            updatedParam.enabled = false;
+            updatedHeader.enabled = false;
           }
-          return updatedParam;
+
+          const headerToSave = { ...updatedHeader };
+          delete headerToSave.isEditing;
+          HeadersService.update(headerToSave).catch((err) =>
+            console.error("Erro ao atualizar cabeçalho:", err)
+          );
+
+          return updatedHeader;
         }
-        return param;
-      })
-    );
+        return header;
+      });
+    });
   };
 
-  const toggleEditQueryParam = (id: string) => {
-    const param = queryParams.find((p) => p.id === id);
-    if (!param) return;
+  const toggleEditHeader = (id: string) => {
+    const header = headers.find((h) => h.id === id);
+    if (!header) return;
 
-    if (!param.isEditing) {
-      setEditingParamId(id);
-      setQueryParams((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isEditing: true } : p))
+    if (!header.isEditing) {
+      setEditingHeaderId(id);
+      setHeaders((prev) =>
+        prev.map((h) => (h.id === id ? { ...h, isEditing: true } : h))
       );
       setTimeout(() => {
-        if (param.key.trim() === "") {
+        if (header.key.trim() === "") {
           keyInputRefs.current.get(id)?.focus();
-        } else if (param.value.trim() === "") {
+        } else if (header.value.trim() === "") {
           valueInputRefs.current.get(id)?.focus();
+        } else if (header.description.trim() === "") {
+          descriptionInputRefs.current.get(id)?.focus();
         } else {
           keyInputRefs.current.get(id)?.focus();
         }
       }, 0);
     } else {
-      setEditingParamId(null);
-      setQueryParams((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isEditing: false } : p))
+      setEditingHeaderId(null);
+      setHeaders((prev) =>
+        prev.map((h) => (h.id === id ? { ...h, isEditing: false } : h))
       );
     }
   };
@@ -127,15 +131,22 @@ const handleAddParam = () => {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, id: string) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      toggleEditQueryParam(id);
+      toggleEditHeader(id);
     }
   };
 
+  useEffect(() => {
+    HeadersService.getByRequestId(id).then((headers) => {
+      const enriched = headers.map((h) => ({ ...h, isEditing: false }));
+      setHeaders(enriched);
+    });
+  }, [id]);
+
   return (
     <div className="space-y-4">
-    <div className="overflow-y-auto max-h-[40vh]">
-    <Table>
-          <TableHeader>
+      <div className="overflow-y-auto max-h-[35vh] max-w-6xl">
+        <Table>
+          <TableHeader className="bg-background-secondary">
             <TableRow>
               <TableHead className="w-[40px] border"></TableHead>
               <TableHead className="border">Key</TableHead>
@@ -146,41 +157,43 @@ const handleAddParam = () => {
           </TableHeader>
 
           <TableBody>
-            {queryParams.map((param) => (
-              <TableRow key={param.id}>
+            {headers.map((header) => (
+              <TableRow key={header.id}>
                 <TableCell className="border text-center p-0">
                   <Checkbox
-                    checked={param.enabled}
-                    disabled={param.key.trim() === "" || param.value.trim() === ""}
+                    checked={header.enabled}
+                    disabled={
+                      header.key.trim() === "" || header.value.trim() === ""
+                    }
                     onCheckedChange={(checked) =>
-                      updateQueryParam(param.id, "enabled", checked === true)
+                      updateHeader(header.id, "enabled", checked === true)
                     }
                   />
                 </TableCell>
 
                 <TableCell className="border w-80">
                   <div className="flex items-center">
-                    {param.isEditing ? (
+                    {header.isEditing ? (
                       <Input
                         ref={(el) => {
                           if (el) {
-                            keyInputRefs.current.set(param.id, el);
+                            keyInputRefs.current.set(header.id, el);
                           } else {
-                            keyInputRefs.current.delete(param.id);
+                            keyInputRefs.current.delete(header.id);
                           }
                         }}
-                        value={param.key}
+                        value={header.key}
                         onChange={(e) =>
-                          updateQueryParam(param.id, "key", e.target.value)
+                          updateHeader(header.id, "key", e.target.value)
                         }
-                        onKeyDown={(e) => handleKeyDown(e, param.id)}
+                        onKeyDown={(e) => handleKeyDown(e, header.id)}
                         className={
-                          param.key.trim() === "" ? "border-destructive" : ""
+                          header.key.trim() === "" ? "border-destructive" : ""
                         }
                       />
                     ) : (
                       <span className="ml-3">
-                        {param.key || (
+                        {header.key || (
                           <span className="text-muted-foreground opacity-50">
                             Empty
                           </span>
@@ -191,27 +204,27 @@ const handleAddParam = () => {
                 </TableCell>
 
                 <TableCell className="border w-80">
-                  {param.isEditing ? (
+                  {header.isEditing ? (
                     <Input
                       ref={(el) => {
                         if (el) {
-                          valueInputRefs.current.set(param.id, el);
+                          valueInputRefs.current.set(header.id, el);
                         } else {
-                          valueInputRefs.current.delete(param.id);
+                          valueInputRefs.current.delete(header.id);
                         }
                       }}
-                      value={param.value}
+                      value={header.value}
                       onChange={(e) =>
-                        updateQueryParam(param.id, "value", e.target.value)
+                        updateHeader(header.id, "value", e.target.value)
                       }
-                      onKeyDown={(e) => handleKeyDown(e, param.id)}
+                      onKeyDown={(e) => handleKeyDown(e, header.id)}
                       className={
-                        param.value.trim() === "" ? "border-destructive" : ""
+                        header.value.trim() === "" ? "border-destructive" : ""
                       }
                     />
                   ) : (
                     <span className="ml-3">
-                      {param.value || (
+                      {header.value || (
                         <span className="text-muted-foreground opacity-50">
                           Empty
                         </span>
@@ -219,18 +232,29 @@ const handleAddParam = () => {
                     </span>
                   )}
                 </TableCell>
+
                 <TableCell className="border w-80">
-                {param.isEditing ? (
-                  <Input
-                    value={param.description}
-                    onChange={(e) =>
-                      updateQueryParam(param.id, "description", e.target.value)
-                    }
-                    onKeyDown={(e) => handleKeyDown(e, param.id)}
-                  />
+                  {header.isEditing ? (
+                    <Input
+                      ref={(el) => {
+                        if (el) {
+                          descriptionInputRefs.current.set(header.id, el);
+                        } else {
+                          descriptionInputRefs.current.delete(header.id);
+                        }
+                      }}
+                      value={header.description}
+                      onChange={(e) =>
+                        updateHeader(header.id, "description", e.target.value)
+                      }
+                      onKeyDown={(e) => handleKeyDown(e, header.id)}
+                      className={
+                        header.description.trim() === "" ? "border-destructive" : ""
+                      }
+                    />
                   ) : (
                     <span className="ml-3">
-                      {param.description || (
+                      {header.description || (
                         <span className="text-muted-foreground opacity-50">
                           Empty
                         </span>
@@ -238,19 +262,20 @@ const handleAddParam = () => {
                     </span>
                   )}
                 </TableCell>
+
                 <TableCell className="border text-center space-x-2">
                   <Button
-                    className={`${param.isEditing ? "bg-primary" : ""}`}
+                    className={`${header.isEditing ? "bg-primary" : ""}`}
                     variant="ghost"
                     size="icon"
-                    onClick={() => toggleEditQueryParam(param.id)}
+                    onClick={() => toggleEditHeader(header.id)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => removeQueryParam(param.id)}
+                    onClick={() => removeHeader(header.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -259,14 +284,13 @@ const handleAddParam = () => {
             ))}
           </TableBody>
         </Table>
-    </div>
+      </div>
+
       <div className="flex justify-start">
-        <Button onClick={handleAddParam} size="sm">
+        <Button onClick={handleAddHeader} size="sm">
           <Plus className="h-4 w-4" /> New
         </Button>
       </div>
-      </div>
-      
-    
+    </div>
   );
 }

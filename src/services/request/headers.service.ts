@@ -1,7 +1,7 @@
 import { HeadersRepository } from "@/db/repositories/headers.repository";
 import { Header } from "@/db/types/headers.type";
 
-export class ParamsService {
+export class HeadersService {
   private static repository: HeadersRepository = new HeadersRepository();
 
   static async create(requestId: string): Promise<Header> {

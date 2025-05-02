@@ -195,7 +195,7 @@ export function ProjectPage() {
               <AuthReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="headers">
-              <HeadersReq />
+              <HeadersReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="body">
               <BodyReq id={selectedRequest.id} />
