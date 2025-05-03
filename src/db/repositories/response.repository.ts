@@ -4,7 +4,6 @@ import { openDb } from "../initialize.db";
 
 import { RequestRepository } from "./request.repository";
 
-
 export class ResponseRepository {
   private db?: IDBPDatabase;
   private requestRepository: RequestRepository;
@@ -33,6 +32,7 @@ export class ResponseRepository {
       headers: responseData.headers,
       data: responseData.data,
       duration: responseData.duration,
+      dataSize: responseData.dataSize, 
     };
 
     await store.put(responseObject);
@@ -110,9 +110,15 @@ export class ResponseRepository {
     const duration = endTime - startTime;
 
     const contentType = res.headers.get("Content-Type") || "";
-    const responseData = contentType.includes("application/json")
-      ? await res.json()
-      : await res.text();
+    let responseData: any;
+    if (contentType.includes("application/json")) {
+      responseData = await res.json();
+    } else {
+      responseData = await res.text();
+    }
+
+    
+    const dataSize = new TextEncoder().encode(responseData).length;
 
     const response = {
       status: res.status,
@@ -120,6 +126,7 @@ export class ResponseRepository {
       headers: Object.fromEntries(res.headers.entries()),
       data: responseData,
       duration,
+      dataSize, 
     };
 
     await this.createResponse(requestId, response);
