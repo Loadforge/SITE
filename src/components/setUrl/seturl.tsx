@@ -13,6 +13,8 @@ import { Method, Request } from "@/db/types";
 
 import { RequestService } from "@/services/request/request.service";
 
+import { ResponseService } from "@/services/request/response.service";
+
 import { Button, Input, Skeleton } from "../ui";
 
 interface Props {
@@ -56,7 +58,7 @@ export function SetUrl({
   const handleSendRequest = () => {
     if (!request) return;
   
-    RequestService.sendRequest(request.id)
+    ResponseService.sendRequest(request.id)
       .then((response) => {
         console.log("Resposta da requisição:", response);
       })

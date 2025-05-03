@@ -252,11 +252,11 @@ export class RequestRepository {
   }
 
   async importRequestFromJson(request: Request): Promise<void> {
-
     const db = await this.getDb();
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
     await store.add(request);
     await tx.done;
   }
+  
 }
