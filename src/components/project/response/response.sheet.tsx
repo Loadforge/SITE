@@ -6,6 +6,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { NotResponse } from "./not.response";
+import { BodyResponseTab } from "./tabs/body.response.tab";
+import { HeadersResponseTab } from "./tabs/headers.response.tab";
 
 interface Props {
   response: any;
@@ -55,7 +57,7 @@ export function ResponseSheet({ response }: Props) {
                         <TabsTrigger value="body">Body</TabsTrigger>
                         <TabsTrigger value="headers">Headers</TabsTrigger>
                       </div>
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <div className="flex items-center gap-2 text-sm font-medium text-separators">
                         <HttpStatuBadge
                           code={response.status}
                           status={response.statusText}
@@ -68,8 +70,12 @@ export function ResponseSheet({ response }: Props) {
                     </div>
                   </TabsList>
                   <div className="px-4">
-                    <TabsContent value="body">Body</TabsContent>
-                    <TabsContent value="headers">Headers</TabsContent>
+                    <TabsContent value="body">
+                      <BodyResponseTab responseBody={response.data} />
+                    </TabsContent>
+                    <TabsContent value="headers">
+                      <HeadersResponseTab responseHeaders={response.headers} />
+                    </TabsContent>
                   </div>
                 </Tabs>
               </>
