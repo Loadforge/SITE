@@ -32,7 +32,7 @@ export class ResponseRepository {
       headers: responseData.headers,
       data: responseData.data,
       duration: responseData.duration,
-      dataSize: responseData.dataSize, 
+      dataSize: responseData.dataSize,
     };
 
     await store.put(responseObject);
@@ -117,16 +117,12 @@ export class ResponseRepository {
       responseData = await res.text();
     }
 
-    
-    const dataSize = new TextEncoder().encode(responseData).length;
-
     const response = {
       status: res.status,
       statusText: res.statusText,
       headers: Object.fromEntries(res.headers.entries()),
       data: responseData,
       duration,
-      dataSize, 
     };
 
     await this.createResponse(requestId, response);
