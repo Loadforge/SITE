@@ -8,7 +8,7 @@ export function HeadersResponseTab({ responseHeaders }: Props) {
   const headers = Object.entries(responseHeaders);
 
   return (
-    <div className="h-full overflow-y-auto p-4">
+    <div className="h-full overflow-y-auto ">
       <Table>
         <TableHeader className="bg-background">
           <TableRow>
@@ -19,8 +19,8 @@ export function HeadersResponseTab({ responseHeaders }: Props) {
         <TableBody>
           {headers.map(([key, value]) => (
             <TableRow key={key}>
-              <TableCell className="border text-start">
-                <span className="ml-3">
+              <TableCell className="border text-start w-1/2">
+                <span className="ml-1">
                   {key || (
                     <span className="text-muted-foreground opacity-50">
                       Empty
@@ -29,8 +29,8 @@ export function HeadersResponseTab({ responseHeaders }: Props) {
                 </span>
               </TableCell>
 
-              <TableCell className="border w-80">
-                <span className="ml-3">
+              <TableCell className="border w-full">
+                <span className="ml-1">
                   {value || (
                     <span className="text-muted-foreground opacity-50">
                       Empty

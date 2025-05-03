@@ -57,7 +57,7 @@ export function ResponseSheet({ response }: Props) {
                         <TabsTrigger value="body">Body</TabsTrigger>
                         <TabsTrigger value="headers">Headers</TabsTrigger>
                       </div>
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <div className="flex items-center gap-2 text-sm font-medium text-separators">
                         <HttpStatuBadge
                           code={response.status}
                           status={response.statusText}
