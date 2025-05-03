@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
+import { HttpStatuBadge } from "@/components/badge/http.badge";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function ResponseSheet({ response }: Props) {
+  console.log("ResponseSheet", response);
   const panelRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
@@ -20,9 +22,7 @@ export function ResponseSheet({ response }: Props) {
   };
 
   useEffect(() => {
-    if (response) {
-      setIsOpen(true);
-    }
+    setIsOpen(true);
   }, [response]);
 
   return (
@@ -46,17 +46,38 @@ export function ResponseSheet({ response }: Props) {
         <div className="h-0.5 bg-separators/25" />
 
         {isOpen && (
-          <div className=" overflow-auto max-h-[calc(60dvh-2rem)]">
+          <div>
             {response ? (
-              <Tabs defaultValue="body" className="w-full">
-                <TabsList>
-                  <TabsTrigger value="headers">Headers</TabsTrigger>
-                  <TabsTrigger value="body">Body</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="body">Body</TabsContent>
-                <TabsContent value="headers">Headers</TabsContent>
-              </Tabs>
+              <>
+                <Tabs defaultValue="body" className="w-full">
+                  <TabsList>
+                    <div className="flex justify-between items-center w-full">
+                      <div>
+                        <TabsTrigger value="body">Body</TabsTrigger>
+                        <TabsTrigger value="headers">Headers</TabsTrigger>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <HttpStatuBadge
+                          code={response.status}
+                          status={response.statusText}
+                        />
+                        <span className="mx-2 text-2xl text-separators">•</span>
+                        <span className="text-text font-bold">
+                          {Math.round(response.duration)}ms
+                        </span>
+                        <span className="mx-2 text-2xl text-separators">•</span>
+                        <span className="text-text font-bold mr-6">
+                          {Math.round(response.dataSize)}KB
+                        </span>
+                      </div>
+                    </div>
+                  </TabsList>
+                  <div className="px-4">
+                    <TabsContent value="body">Body</TabsContent>
+                    <TabsContent value="headers">Headers</TabsContent>
+                  </div>
+                </Tabs>
+              </>
             ) : (
               <NotResponse />
             )}
