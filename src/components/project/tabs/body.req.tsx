@@ -3,6 +3,7 @@ import { xml } from "@codemirror/lang-xml";
 import CodeMirror from "@uiw/react-codemirror";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next"; 
 
 import {
   Select,
@@ -14,11 +15,13 @@ import {
 import { useTheme } from "@/contexts";
 import { RequestBody } from "@/db/types";
 import { RequestBodyService } from "@/services/request/body.request.service";
+
 interface Props {
   id: string;
 }
 
 export function BodyReq({ id }: Props) {
+  const { t } = useTranslation(); 
   const [body, setBody] = useState<RequestBody>();
   const [format, setFormat] = useState<"json" | "xml" | "none">("none");
   const [content, setContent] = useState<string>("");
@@ -31,6 +34,7 @@ export function BodyReq({ id }: Props) {
     indentBy: "  ",
     ignoreAttributes: false,
   });
+
   useEffect(() => {
     RequestBodyService.getBodyByRequestId(id).then((body) => {
       setBody(body);
@@ -50,7 +54,7 @@ export function BodyReq({ id }: Props) {
       };
 
       RequestBodyService.update(updatedBody).catch((err) => {
-        setError("Erro ao salvar corpo da requisição.");
+        setError(t("saveError")); 
         console.error(err);
       });
     }
@@ -65,12 +69,13 @@ export function BodyReq({ id }: Props) {
       if (body) {
         const updatedBody: RequestBody = {
           ...body,
+          type: "none",
         };
 
         RequestBodyService.update(updatedBody)
           .then(() => {})
           .catch((err) => {
-            setError("Erro ao salvar corpo da requisição.");
+            setError(t("saveError")); 
             console.error(err);
           });
       }
@@ -102,7 +107,7 @@ export function BodyReq({ id }: Props) {
         };
 
         RequestBodyService.update(updatedBody).catch((err) => {
-          setError("Erro ao salvar corpo da requisição.");
+          setError(t("saveError")); 
           console.error(err);
         });
       }
@@ -111,7 +116,7 @@ export function BodyReq({ id }: Props) {
     } catch (err) {
       console.error("Erro na conversão:", err);
       setError(
-        `Erro: ${format.toUpperCase()} inválido. Corrija antes de trocar o formato.`
+        t("invalidFormat", { format: format.toUpperCase() }) 
       );
     }
   };
@@ -124,13 +129,13 @@ export function BodyReq({ id }: Props) {
           handleFormatChange(value as "json" | "xml" | "none")
         }
       >
-        <SelectTrigger className="w-24 border border-separators/50">
-          <SelectValue />
+        <SelectTrigger className=" border border-separators/50">
+          <SelectValue placeholder={t("format")} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="json">JSON</SelectItem>
           <SelectItem value="xml">XML</SelectItem>
-          <SelectItem value="none">None</SelectItem>
+          <SelectItem value="none">{t("none")}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -140,7 +145,7 @@ export function BodyReq({ id }: Props) {
 
       {format === "none" ? (
         <div className="h-[240px] flex items-center justify-center border rounded-xl text-muted-foreground text-center text-sm bg-muted/30">
-          Sem corpo na requisição.
+          {t("noContent")}
         </div>
       ) : (
         <CodeMirror

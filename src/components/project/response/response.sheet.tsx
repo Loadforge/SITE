@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 import { HttpStatuBadge } from "@/components/badge/http.badge";
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function ResponseSheet({ response }: Props) {
+  const { t } = useTranslation(); 
   const panelRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
@@ -40,22 +42,24 @@ export function ResponseSheet({ response }: Props) {
           onClick={togglePanel}
           className="p-2 bg-transparent text-text rounded absolute top-[-25px] z-20 flex items-center justify-center gap-2"
         >
-          <span className="ml-2 text-xs">Response</span>
+          <span className="ml-2 text-xs">{t("response")}</span>
           {isOpen ? <IoIosArrowDown size={14} /> : <IoIosArrowUp size={14} />}
         </button>
 
         <div className="h-0.5 bg-separators/25" />
 
         {isOpen && (
-          <div>
+          <div className="h-full overflow-y-auto p-4">
             {response ? (
               <>
                 <Tabs defaultValue="body" className="w-full">
                   <TabsList>
                     <div className="flex justify-between items-center w-full">
                       <div>
-                        <TabsTrigger value="body">Body</TabsTrigger>
-                        <TabsTrigger value="headers">Headers</TabsTrigger>
+                        <TabsTrigger value="body">{t("body")}</TabsTrigger>
+                        <TabsTrigger value="headers">
+                          {t("headers")}
+                        </TabsTrigger>
                       </div>
                       <div className="flex items-center gap-2 text-sm font-medium text-separators">
                         <HttpStatuBadge

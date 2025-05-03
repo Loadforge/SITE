@@ -1,6 +1,8 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/index";
 import { Input } from "@/components/ui/input";
@@ -15,6 +17,7 @@ import {
 import { Header } from "@/db/types/headers.type";
 import { HeadersService } from "@/services/request/headers.service";
 
+
 interface Props {
   id: string;
 }
@@ -22,6 +25,7 @@ interface Props {
 type HeaderWithEditing = Header & { isEditing?: boolean };
 
 export function HeadersReq({ id }: Props) {
+  const { t } = useTranslation();
   const [headers, setHeaders] = useState<HeaderWithEditing[]>([]);
   const [, setEditingHeaderId] = useState<string | null>(null);
   const keyInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
@@ -82,7 +86,8 @@ export function HeadersReq({ id }: Props) {
 
           if (
             (field === "key" || field === "value") &&
-            (updatedHeader.key.trim() === "" || updatedHeader.value.trim() === "")
+            (updatedHeader.key.trim() === "" ||
+              updatedHeader.value.trim() === "")
           ) {
             updatedHeader.enabled = false;
           }
@@ -149,10 +154,12 @@ export function HeadersReq({ id }: Props) {
           <TableHeader className="bg-background-secondary">
             <TableRow>
               <TableHead className="w-[40px] border"></TableHead>
-              <TableHead className="border">Key</TableHead>
-              <TableHead className="border">Value</TableHead>
-              <TableHead className="border">Description</TableHead>
-              <TableHead className="text-center border w-20">Actions</TableHead>
+              <TableHead className="border">{t("Key")}</TableHead>
+              <TableHead className="border">{t("Value")}</TableHead>
+              <TableHead className="border">{t("Description")}</TableHead>
+              <TableHead className="text-center border w-20">
+                {t("Actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
 
@@ -195,7 +202,7 @@ export function HeadersReq({ id }: Props) {
                       <span className="ml-3">
                         {header.key || (
                           <span className="text-muted-foreground opacity-50">
-                            Empty
+                            {t("Empty")}
                           </span>
                         )}
                       </span>
@@ -226,7 +233,7 @@ export function HeadersReq({ id }: Props) {
                     <span className="ml-3">
                       {header.value || (
                         <span className="text-muted-foreground opacity-50">
-                          Empty
+                          {t("Empty")}
                         </span>
                       )}
                     </span>
@@ -249,14 +256,16 @@ export function HeadersReq({ id }: Props) {
                       }
                       onKeyDown={(e) => handleKeyDown(e, header.id)}
                       className={
-                        header.description.trim() === "" ? "border-destructive" : ""
+                        header.description.trim() === ""
+                          ? "border-destructive"
+                          : ""
                       }
                     />
                   ) : (
                     <span className="ml-3">
                       {header.description || (
                         <span className="text-muted-foreground opacity-50">
-                          Empty
+                          {t("Empty")}
                         </span>
                       )}
                     </span>
@@ -288,7 +297,7 @@ export function HeadersReq({ id }: Props) {
 
       <div className="flex justify-start">
         <Button onClick={handleAddHeader} size="sm">
-          <Plus className="h-4 w-4" /> New
+          <Plus className="h-4 w-4" /> {t("New")}
         </Button>
       </div>
     </div>

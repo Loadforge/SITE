@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function AuthReq({ id }: Props) {
+  const { t } = useTranslation(); 
   const [auth, setAuth] = useState<RequestAuth>();
   const [type, setType] = useState<Type>("none");
   const [showPassword, setShowPassword] = useState(false);
@@ -99,19 +101,19 @@ export function AuthReq({ id }: Props) {
   return (
     <div className="space-y-6 p-1 w-full">
       <div className="flex items-center gap-3">
-        <Label>Auth Type</Label>
+        <Label>{t("authType")}</Label>
         <Select
           value={type}
           onValueChange={(value) => updateType(value as Type)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select" />
+            <SelectValue placeholder={t("select")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">None</SelectItem>
-            <SelectItem value="apiKey">API Key</SelectItem>
-            <SelectItem value="basic">Basic Auth</SelectItem>
-            <SelectItem value="bearer">Bearer Token</SelectItem>
+            <SelectItem value="none">{t("none")}</SelectItem>
+            <SelectItem value="apiKey">{t("apiKey")}</SelectItem>
+            <SelectItem value="basic">{t("basic_auth")}</SelectItem>
+            <SelectItem value="bearer">{t("bearer")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -119,7 +121,7 @@ export function AuthReq({ id }: Props) {
       {type === "apiKey" && (
         <div className="space-y-5">
           <div className="flex items-center gap-3">
-            <Label htmlFor="api-key-enabled">Enabled</Label>
+            <Label htmlFor="api-key-enabled">{t("enabled")}</Label>
             <Checkbox
               id="api-key-enabled"
               className="border-primary"
@@ -133,7 +135,7 @@ export function AuthReq({ id }: Props) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Label className="w-20">Key</Label>
+            <Label className="w-20">{t("key")}</Label>
             <Input
               className="w-full"
               value={key}
@@ -145,7 +147,7 @@ export function AuthReq({ id }: Props) {
           </div>
 
           <div className="flex items-center gap-3 relative">
-            <Label className="w-20">Value</Label>
+            <Label className="w-20">{t("value")}</Label>
             <Input
               type={showPassword ? "text" : "password"}
               className="w-full"
@@ -164,7 +166,7 @@ export function AuthReq({ id }: Props) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Label className="w-20">Add To</Label>
+            <Label className="w-20">{t("addTo")}</Label>
             <Select
               value={addTo}
               onValueChange={(val) => {
@@ -173,11 +175,11 @@ export function AuthReq({ id }: Props) {
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select" />
+                <SelectValue placeholder={t("select")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="header">Header</SelectItem>
-                <SelectItem value="query">Query Params</SelectItem>
+                <SelectItem value="header">{t("header")}</SelectItem>
+                <SelectItem value="query">{t("queryParams")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -187,7 +189,7 @@ export function AuthReq({ id }: Props) {
       {type === "basic" && (
         <div className="space-y-5">
           <div className="flex items-center gap-3">
-            <Label htmlFor="basic-enabled">Enabled</Label>
+            <Label htmlFor="basic-enabled">{t("enabled")}</Label>
             <Checkbox
               id="basic-enabled"
               className="border-primary"
@@ -201,7 +203,7 @@ export function AuthReq({ id }: Props) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Label className="w-24">Username</Label>
+            <Label className="w-24">{t("username")}</Label>
             <Input
               className="w-full"
               value={username}
@@ -213,7 +215,7 @@ export function AuthReq({ id }: Props) {
           </div>
 
           <div className="flex items-center gap-3 relative">
-            <Label className="w-24">Password</Label>
+            <Label className="w-24">{t("password")}</Label>
             <Input
               type={showPassword ? "text" : "password"}
               className="w-full"
@@ -236,7 +238,7 @@ export function AuthReq({ id }: Props) {
       {type === "bearer" && (
         <div className="space-y-5">
           <div className="flex items-center gap-3">
-            <Label htmlFor="bearer-enabled">Enabled</Label>
+            <Label htmlFor="bearer-enabled">{t("enabled")}</Label>
             <Checkbox
               id="bearer-enabled"
               className="border-primary"
@@ -250,7 +252,7 @@ export function AuthReq({ id }: Props) {
           </div>
 
           <div className="flex items-center gap-3 relative">
-            <Label className="w-20">Token</Label>
+            <Label className="w-20">{t("token")}</Label>
             <Input
               type={showPassword ? "text" : "password"}
               className="w-full"

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import {
@@ -10,7 +11,6 @@ import {
 } from "@/components/ui/select";
 
 import { Method, Request } from "@/db/types";
-
 import { RequestService } from "@/services/request/request.service";
 
 import { Button, Input, Skeleton } from "../ui";
@@ -29,6 +29,7 @@ export function SetUrl({
   handleSendResponse,
 }: Props) {
   const [request, setRequest] = useState<Request>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     RequestService.getById(id)
@@ -36,9 +37,9 @@ export function SetUrl({
         setRequest(res);
       })
       .catch(() => {
-        toast.error("Erro ao buscar a requisição!");
+        toast.error(t("request.fetch.error"));
       });
-  }, [id]);
+  }, [id, t]);
 
   const handleMethodChange = (newMethod: Method) => {
     if (!request) return;
@@ -48,7 +49,7 @@ export function SetUrl({
 
   const handleUrlChange = (newUrl: string) => {
     if (!request) {
-      toast.error("ID da requisição não encontrado!");
+      toast.error(t("request.id.notFound"));
       return;
     }
 
@@ -70,7 +71,7 @@ export function SetUrl({
     <div className="flex items-center w-full">
       <Select value={request.method} onValueChange={handleMethodChange}>
         <SelectTrigger className="w-24 border rounded-r-none border-separators/50">
-          <SelectValue placeholder="Método" />
+          <SelectValue placeholder={t("placeholder.method")} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="GET">GET</SelectItem>
@@ -85,16 +86,14 @@ export function SetUrl({
         className="rounded-l-none w-full mr-5 border-separators/50 placeholder:text-text/50"
         value={request.url}
         onChange={(e) => handleUrlChange(e.target.value)}
-        placeholder="https://"
+        placeholder={t("placeholder.url")}
       />
 
       <Button
         className="w-25 font-bold text-xl"
-        onClick={() => {
-          handleSendResponse(id);
-        }}
+        onClick={() => handleSendResponse(id)}
       >
-        Send
+        {t("button.send")}
       </Button>
     </div>
   );

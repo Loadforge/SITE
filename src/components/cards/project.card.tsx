@@ -1,5 +1,6 @@
 import { MoreVertical } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import * as FaIcons from "react-icons/fa";
 import { LuGrip } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +37,7 @@ export function ProjectCard({
   onExport,
 }: Props) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -60,7 +62,7 @@ export function ProjectCard({
     }
   };
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const handleStopPropagation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 
@@ -94,7 +96,7 @@ export function ProjectCard({
       <div className="w-full flex justify-between text-text">
         <LuGrip
           size={16}
-          onClick={(e) => e.stopPropagation()}
+          onClick={handleStopPropagation}
           className="cursor-grab hover:text-primary/80 transition-colors duration-200 ease-in-out"
           {...listeners}
           {...attributes}
@@ -104,13 +106,14 @@ export function ProjectCard({
           <DropdownMenuTrigger asChild>
             <MoreVertical
               size={16}
-              onClick={stopPropagation}
+              onClick={handleStopPropagation}
               className="cursor-pointer hover:text-primary/80 transition-colors duration-200 ease-in-out"
+              aria-label={t("More_Actions")}
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="z-10">
-            <DropdownMenuItem onClick={handleDuplicate}>Duplicar</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleExport}>Exportar</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDuplicate}>{t("Duplicate")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExport}>{t("Export")}</DropdownMenuItem>
             <DropdownMenuItem
               onClick={(e) => {
                 e.preventDefault();
@@ -118,7 +121,7 @@ export function ProjectCard({
                 setIsRenaming(true);
               }}
             >
-              Renomear
+              {t("Rename")}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-500"
@@ -128,7 +131,7 @@ export function ProjectCard({
                 onClick(id);
               }}
             >
-              Excluir
+              {t("Delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

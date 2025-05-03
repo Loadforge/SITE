@@ -1,34 +1,34 @@
 import { Laptop, Moon, Sun } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Separator } from "@/components/ui";
 import { useTheme } from "@/contexts";
 
-
-
 export function ThemeToggle() {
+  const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
 
   const options = [
     {
       value: "light",
-      label: "Light",
+      label: t("Light"),
       icon: <Sun size={34} />,
     },
     {
       value: "dark",
-      label: "Dark",
+      label: t("Dark"),
       icon: <Moon size={34} />,
     },
     {
       value: "system",
-      label: "System",
+      label: t("System"),
       icon: <Laptop size={34} />,
     },
   ] as const;
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-lg font-bold mb-4 text-text">Appearance</h2>
+      <h2 className="text-lg font-bold mb-4 text-text">{t("Appearance")}</h2>
       <div className="flex justify-between gap-10 w-full">
         {options.map(({ value, label, icon }) => {
           const isSelected = theme === value;
@@ -48,7 +48,7 @@ export function ThemeToggle() {
               onClick={() => setTheme(value)}
             >
               <div className="flex items-center justify-center pt-6">{icon}</div>
-              <Separator className="bg-separators/50"/>
+              <Separator className="bg-separators/50" />
               <span className="text-md font-semibold text-text pt-4">{label}</span>
               <div className="mt-1">
                 {isSelected ? (

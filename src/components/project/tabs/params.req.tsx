@@ -1,6 +1,8 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button, Label } from "@/components/ui/index";
 import { Input } from "@/components/ui/input";
@@ -23,6 +25,8 @@ interface Props {
 type ParamWithEditing = Param & { isEditing?: boolean };
 
 export function ParamsReq({ id, url }: Props) {
+  const { t } = useTranslation();
+
   const [queryParams, setQueryParams] = useState<ParamWithEditing[]>([]);
   const [, setEditingParamId] = useState<string | null>(null);
   const keyInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
@@ -90,20 +94,20 @@ export function ParamsReq({ id, url }: Props) {
       return prev.map((param) => {
         if (param.id === id) {
           const updatedParam = { ...param, [field]: value };
-  
+
           if (
             (field === "key" || field === "value") &&
             (updatedParam.key.trim() === "" || updatedParam.value.trim() === "")
           ) {
             updatedParam.enabled = false;
           }
-  
-          const paramToSave = { ...updatedParam }; 
+
+          const paramToSave = { ...updatedParam };
           delete paramToSave.isEditing;
           ParamsService.update(paramToSave).catch((err) =>
             console.error("Erro ao atualizar parâmetro:", err)
           );
-  
+
           return updatedParam;
         }
         return param;
@@ -154,7 +158,7 @@ export function ParamsReq({ id, url }: Props) {
   return (
     <div className="space-y-4">
       <div className="bg-muted rounded-md p-2 text-muted-foreground opacity-70 text-sm">
-        <Label className="mb-1">URL Preview</Label>
+        <Label className="mb-1">{t("URLPreview")}</Label>
         {buildUrlPreview(queryParams)}
       </div>
 
@@ -163,9 +167,11 @@ export function ParamsReq({ id, url }: Props) {
           <TableHeader className="bg-background-secondary">
             <TableRow>
               <TableHead className="w-[40px] border"></TableHead>
-              <TableHead className="border">Key</TableHead>
-              <TableHead className="border">Value</TableHead>
-              <TableHead className="text-center border w-20">Actions</TableHead>
+              <TableHead className="border">{t("Key")}</TableHead>
+              <TableHead className="border">{t("Value")}</TableHead>
+              <TableHead className="text-center border w-20">
+                {t("Actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
 
@@ -208,7 +214,7 @@ export function ParamsReq({ id, url }: Props) {
                       <span className="ml-3">
                         {param.key || (
                           <span className="text-muted-foreground opacity-50">
-                            Empty
+                            {t("Empty")}
                           </span>
                         )}
                       </span>
@@ -239,7 +245,7 @@ export function ParamsReq({ id, url }: Props) {
                     <span className="ml-3">
                       {param.value || (
                         <span className="text-muted-foreground opacity-50">
-                          Empty
+                          {t("Empty")}
                         </span>
                       )}
                     </span>
@@ -248,7 +254,6 @@ export function ParamsReq({ id, url }: Props) {
 
                 <TableCell className="border text-center space-x-2">
                   <Button
-                    className={`${param.isEditing ? "bg-primary" : ""}`}
                     variant="ghost"
                     size="icon"
                     onClick={() => toggleEditQueryParam(param.id)}
@@ -271,7 +276,7 @@ export function ParamsReq({ id, url }: Props) {
 
       <div className="flex justify-start">
         <Button onClick={handleAddParam} size="sm">
-          <Plus className="h-4 w-4" /> New
+          <Plus className="h-4 w-4" /> {t("New")}
         </Button>
       </div>
     </div>
