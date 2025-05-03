@@ -12,7 +12,6 @@ interface Props {
 }
 
 export function ResponseSheet({ response }: Props) {
-  console.log("ResponseSheet", response);
   const panelRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
@@ -62,12 +61,8 @@ export function ResponseSheet({ response }: Props) {
                           status={response.statusText}
                         />
                         <span className="mx-2 text-2xl text-separators">•</span>
-                        <span className="text-text font-bold">
+                        <span className="text-text font-bold mr-4">
                           {Math.round(response.duration)}ms
-                        </span>
-                        <span className="mx-2 text-2xl text-separators">•</span>
-                        <span className="text-text font-bold mr-6">
-                          {Math.round(response.dataSize)}KB
                         </span>
                       </div>
                     </div>
