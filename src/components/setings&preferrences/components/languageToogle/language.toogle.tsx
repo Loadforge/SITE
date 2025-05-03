@@ -3,28 +3,28 @@ import { useTranslation } from "react-i18next";
 
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
 export function LanguageToggle() {
   const { t, i18n } = useTranslation();
 
-  const [lang, setLang] = useState<string>(
-    i18n.language === "en" ? "English" : "Portuguese"
-  );
+  
+  const [lang, setLang] = useState<string>(i18n.language === "en" ? "English" : "Portuguese");
 
   const handleLanguageChange = (value: string) => {
     const langCode = value === "English" ? "en" : "pt";
     i18n.changeLanguage(langCode);
   };
 
+  
   useEffect(() => {
     setLang(i18n.language === "en" ? "English" : "Portuguese");
-    i18n.changeLanguage(lang === "English" ? "en" : "pt");
   }, [i18n.language]);
+
   return (
     <div className="flex items-center gap-2 text-lg text-text font-bold">
       <span>{t("Language")}:</span>
