@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -11,20 +12,22 @@ import {
 export function LanguageToggle() {
   const { t, i18n } = useTranslation();
 
-  const currentLang = i18n.language;
+  const [lang, setLang] = useState<string>(
+    i18n.language === "en" ? "English" : "Portuguese"
+  );
 
   const handleLanguageChange = (value: string) => {
     const langCode = value === "English" ? "en" : "pt";
     i18n.changeLanguage(langCode);
   };
 
+  useEffect(() => {
+    setLang(i18n.language === "en" ? "English" : "Portuguese");
+  }, [i18n.language]);
   return (
     <div className="flex items-center gap-2 text-lg text-text font-bold">
       <span>{t("Language")}:</span>
-      <Select
-        value={currentLang === "en" ? "English" : "Portuguese"}
-        onValueChange={handleLanguageChange}
-      >
+      <Select value={lang} onValueChange={handleLanguageChange}>
         <SelectTrigger className="w-[180px] bg-background border-none text-sm text-text p-2 rounded-md focus:outline-none">
           <SelectValue placeholder={t("Select_language")} />
         </SelectTrigger>
