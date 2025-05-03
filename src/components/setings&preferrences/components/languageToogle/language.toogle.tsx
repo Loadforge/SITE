@@ -23,6 +23,7 @@ export function LanguageToggle() {
 
   useEffect(() => {
     setLang(i18n.language === "en" ? "English" : "Portuguese");
+    i18n.changeLanguage(lang === "English" ? "en" : "pt");
   }, [i18n.language]);
   return (
     <div className="flex items-center gap-2 text-lg text-text font-bold">
