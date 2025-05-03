@@ -13,20 +13,20 @@ import { Method, Request } from "@/db/types";
 
 import { RequestService } from "@/services/request/request.service";
 
-import { ResponseService } from "@/services/request/response.service";
-
 import { Button, Input, Skeleton } from "../ui";
 
 interface Props {
   id: string;
   handleUpdateMethodRequest: (id: string, method: string) => void;
   handleUpdateUrlRequest: (id: string, url: string) => void;
+  handleSendResponse: (requestId: string) => void;
 }
 
 export function SetUrl({
   id,
   handleUpdateMethodRequest,
   handleUpdateUrlRequest,
+  handleSendResponse,
 }: Props) {
   const [request, setRequest] = useState<Request>();
 
@@ -55,19 +55,6 @@ export function SetUrl({
     handleUpdateUrlRequest(request.id, newUrl);
     setRequest({ ...request, url: newUrl });
   };
-  const handleSendRequest = () => {
-    if (!request) return;
-  
-    ResponseService.sendRequest(request.id)
-      .then((response) => {
-        console.log("Resposta da requisição:", response);
-      })
-      .catch((error) => {
-        toast.error(`Erro ao enviar: ${error.message || "Erro desconhecido"}`);
-        console.error("Erro ao enviar requisição:", error);
-      });
-  };
-
 
   if (!request) {
     return (
@@ -101,7 +88,12 @@ export function SetUrl({
         placeholder="https://"
       />
 
-      <Button className="w-25 font-bold text-xl" onClick={handleSendRequest}>
+      <Button
+        className="w-25 font-bold text-xl"
+        onClick={() => {
+          handleSendResponse(id);
+        }}
+      >
         Send
       </Button>
     </div>

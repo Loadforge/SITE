@@ -4,6 +4,7 @@ import { openDb } from "../initialize.db";
 
 import { RequestRepository } from "./request.repository";
 
+
 export class ResponseRepository {
   private db?: IDBPDatabase;
   private requestRepository: RequestRepository;
@@ -125,16 +126,13 @@ export class ResponseRepository {
     return response;
   }
 
-  async getByRequestId(requestId: string): Promise<any | undefined> {
+  async getByRequestId(requestId: string): Promise<any> {
     const db = await this.getDb();
     const tx = db.transaction("response", "readonly");
     const store = tx.objectStore("response");
 
-    const index = store.index("requestId");
-
-    const response = await index.get(requestId);
+    const result = await store.get(requestId);
     await tx.done;
-
-    return response;
+    return result;
   }
 }
