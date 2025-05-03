@@ -1,35 +1,37 @@
-import { useRef, useState } from "react";
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { useEffect, useRef, useState } from "react";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 import { useSidebar } from "@/components/ui/sidebar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { NotResponse } from "./not.response";
 
-type ResponseEntity = {
-  message: string;
-  timestamp: string;
-};
-
-interface ResponseSheetProps {
-  response?: ResponseEntity;
+interface Props {
+  response: any;
 }
 
-export function ResponseSheet({ response }: ResponseSheetProps) {
+export function ResponseSheet({ response }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(30);
+  const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
 
   const togglePanel = () => {
-    setHeight(height === 30 ? 300 : 30);
+    setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if (response) {
+      setIsOpen(true);
+    }
+  }, [response]);
 
   return (
     <div className="relative">
       <div
         ref={panelRef}
-        className="fixed bottom-0 right-0 bg-background-secondary z-10 transition-all duration-200"
+        className="fixed bottom-0 right-0 bg-background-secondary z-10 transition-all duration-200 shadow-lg border-t border-border"
         style={{
-          height,
+          height: isOpen ? "60dvh" : "5dvh",
           left: open ? "16rem" : "0",
         }}
       >
@@ -38,18 +40,27 @@ export function ResponseSheet({ response }: ResponseSheetProps) {
           className="p-2 bg-transparent text-text rounded absolute top-[-25px] z-20 flex items-center justify-center gap-2"
         >
           <span className="ml-2 text-xs">Response</span>
-          {height === 30 ? (
-            <IoIosArrowUp size={14} />
-            
-          ) : (
-            <IoIosArrowDown size={14} />
-
-          )}
+          {isOpen ? <IoIosArrowDown size={14} /> : <IoIosArrowUp size={14} />}
         </button>
 
-        <div className="h-0.5  bg-separators/25" />
-        {height > 30 && (
-          <div className="p-4">{response ? <></> : <NotResponse />}</div>
+        <div className="h-0.5 bg-separators/25" />
+
+        {isOpen && (
+          <div className=" overflow-auto max-h-[calc(60dvh-2rem)]">
+            {response ? (
+              <Tabs defaultValue="body" className="w-full">
+                <TabsList>
+                  <TabsTrigger value="headers">Headers</TabsTrigger>
+                  <TabsTrigger value="body">Body</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="body">Body</TabsContent>
+                <TabsContent value="headers">Headers</TabsContent>
+              </Tabs>
+            ) : (
+              <NotResponse />
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -24,8 +24,11 @@ import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 import { RequestService } from "@/services/request/request.service";
+import { ResponseService } from "@/services/request/response.service";
 
 export function ProjectPage() {
+  const [response, setResponse] = useState<any>();
+
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
@@ -140,11 +143,28 @@ export function ProjectPage() {
       toast.success("Requisição Duplicada");
     });
   }
+  function handleSendResponse(requestId: string) {
+    ResponseService.sendRequest(requestId)
+      .then((response) => {
+        setResponse(response);
+      })
+      .catch((error) => {
+        toast.error(`Erro ao enviar: ${error.message || "Erro desconhecido"}`);
+        console.error("Erro ao enviar requisição:", error);
+      });
+  }
   useEffect(() => {
     if (projectId) {
       RequestService.getByProjectId(projectId).then(setRequests);
     }
   }, [projectId]);
+
+  useEffect(() => {
+    if (!selectedRequest) return;
+    ResponseService.getResponse(selectedRequest.id).then((res) => {
+      setResponse(res);
+    });
+  }, [selectedRequest]);
 
   return (
     <ProjectPageLayout
@@ -167,6 +187,7 @@ export function ProjectPage() {
             id={selectedRequest.id}
             handleUpdateMethodRequest={handleUpdateMethodRequest}
             handleUpdateUrlRequest={handleUpdateUrlRequest}
+            handleSendResponse={handleSendResponse}
           />
 
           <Tabs defaultValue="body">
@@ -210,7 +231,7 @@ export function ProjectPage() {
               <InDevelopment />
             </TabsContent>
           </Tabs>
-          <ResponseSheet />
+          <ResponseSheet response={response} />
         </div>
       )}
     </ProjectPageLayout>
