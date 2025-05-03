@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next"; 
 import * as FaIcons from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ import {
   TooltipTrigger,
 } from "../ui";
 
+
 interface Props {
   project: Project;
   handleProjectRename: (id: string, newTitle: string) => void;
@@ -29,9 +31,9 @@ export function ProjectHeader({
   handleProjectRename,
   handleProjectIconChange,
 }: Props) {
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
-    null
-  );
+  const { t } = useTranslation(); 
+
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
   const { theme } = useTheme();
   const navigate = useNavigate();
   const Logo = theme === "light" ? LogoBlack : LogoDefault;
@@ -39,7 +41,6 @@ export function ProjectHeader({
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(project.title);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -111,7 +112,7 @@ export function ProjectHeader({
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Voltar para a página inicial</p>
+              <p>{t("backToHome")}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -128,7 +129,7 @@ export function ProjectHeader({
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Clique para alterar o ícone</p>
+                <p>{t("clickToChangeIcon")}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -156,7 +157,7 @@ export function ProjectHeader({
               </span>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Clique para editar o título</p>
+              <p>{t("clickToEditTitle")}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -166,16 +167,14 @@ export function ProjectHeader({
             ref={dropdownRef}
             className="fixed bg-background top-10 left-20 border border-separators/25 p-2 mt-2 rounded-md shadow-lg z-20 w-56"
           >
-            <div className="grid grid-cols-4 gap-3  max-h-60 overflow-y-auto">
+            <div className="grid grid-cols-4 gap-3 max-h-60 overflow-y-auto">
               {Object.keys(FaIcons).map((iconKey) => (
                 <button
                   key={iconKey}
                   onClick={() => handleIconChange(iconKey)}
                   className="text-2xl text-text/80 hover:text-text/50"
                 >
-                  {React.createElement(
-                    FaIcons[iconKey as keyof typeof FaIcons]
-                  )}
+                  {React.createElement(FaIcons[iconKey as keyof typeof FaIcons])}
                 </button>
               ))}
             </div>

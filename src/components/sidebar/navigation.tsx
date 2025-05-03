@@ -2,6 +2,7 @@
 
 import { MoreHorizontal, Plus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   SidebarGroup,
@@ -43,9 +44,8 @@ export function Navigation({
   handleRenameRequest,
   handleDuplicateRequest,
 }: Props) {
-  const [renamingRequestId, setRenamingRequestId] = useState<string | null>(
-    null
-  );
+  const { t } = useTranslation();
+  const [renamingRequestId, setRenamingRequestId] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
 
   function handleRenameStart(req: Request) {
@@ -63,7 +63,7 @@ export function Navigation({
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="flex items-center justify-between text-sm">
-        Requests
+        {t("requests")}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -72,7 +72,7 @@ export function Navigation({
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Criar Requisição</p>
+              <p>{t("createRequest")}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -138,18 +138,16 @@ export function Navigation({
 
                     <DropdownMenuContent align="start">
                       <DropdownMenuItem onClick={() => handleRenameStart(req)}>
-                        Renomear
+                        {t("rename")}
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleDuplicateRequest(req)}
-                      >
-                        Duplicar
+                      <DropdownMenuItem onClick={() => handleDuplicateRequest(req)}>
+                        {t("duplicate")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handleDeleteRequest(req.id)}
                         className="text-red-500"
                       >
-                        Deletar
+                        {t("delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

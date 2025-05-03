@@ -1,5 +1,5 @@
 import { Bug } from "lucide-react";
-
+import { useTranslation } from 'react-i18next';
 
 import { ExternalLinkService } from "@/services";
 
@@ -7,6 +7,8 @@ import { Button } from "../ui/button";
 
 
 export function BugButton() {
+const { t } = useTranslation();
+
   const handleClick = () => {
     ExternalLinkService.reportBug();
   };
@@ -18,7 +20,7 @@ export function BugButton() {
       onClick={handleClick}
     >
       <Bug className="text-xl" />
-      <span className="font-bold text-md">Report a Bug</span>
+      <span className="font-bold text-md">{t('Bug_Report')}</span>
     </Button>
   );
 }

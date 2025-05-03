@@ -72,7 +72,7 @@ export function BodyResponseTab({ responseBody }: Props) {
 
   return (
     <div className="h-full ">
-      <div className="absolute top-17 right-10 z-10 opacity-50 hover:opacity-100 transition-opacity duration-500">
+      <div className="absolute top-20 right-10 z-10 opacity-50 hover:opacity-100 transition-opacity duration-500">
         <Select
           value={format}
           onValueChange={(value: string) =>

@@ -26,7 +26,7 @@ function SettingsPreferencesTabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "flex flex-col justify-between bg--background-secondary  border-r border-separators/50 text-text w-40 py-4 pt-10",
+        "flex flex-col justify-between bg--background-secondary  border-r border-separators/50 text-text w-50 py-4 pt-10",
         className
       )}
       {...props}

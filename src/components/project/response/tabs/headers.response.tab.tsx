@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface Props {
@@ -5,6 +7,7 @@ interface Props {
 }
 
 export function HeadersResponseTab({ responseHeaders }: Props) {
+  const { t } = useTranslation(); 
   const headers = Object.entries(responseHeaders);
 
   return (
@@ -12,8 +15,8 @@ export function HeadersResponseTab({ responseHeaders }: Props) {
       <Table>
         <TableHeader className="bg-background">
           <TableRow>
-            <TableHead className="border">Key</TableHead>
-            <TableHead className="border">Value</TableHead>
+            <TableHead className="border">{t("key")}</TableHead> 
+            <TableHead className="border">{t("value")}</TableHead> 
           </TableRow>
         </TableHeader>
         <TableBody>

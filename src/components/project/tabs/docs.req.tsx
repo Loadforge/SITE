@@ -1,6 +1,6 @@
 import CodeMirror from "@uiw/react-codemirror";
 import { useEffect, useState } from "react";
-
+import { useTranslation } from "react-i18next"; 
 import { toast } from "sonner";
 
 import { useTheme } from "@/contexts";
@@ -14,6 +14,7 @@ interface Props {
 export function DocsReq({ id }: Props) {
   const { resolvedTheme } = useTheme();
   const [docs, setDocs] = useState<RequestDocs>();
+  const { t } = useTranslation(); 
 
   useEffect(() => {
     RequestdocsService.getdocsByRequestId(id).then((docs) => {
@@ -22,14 +23,14 @@ export function DocsReq({ id }: Props) {
   }, [id]);
 
   const handleContentChange = (value: string) => {
-    if (!docs) return; 
+    if (!docs) return;
 
     const updatedDocs = { ...docs, coments: value };
-    setDocs(updatedDocs); 
+    setDocs(updatedDocs);
 
     RequestdocsService.update(updatedDocs)
       .catch(() => {
-        toast.error("Erro ao salvar automaticamente");
+        toast.error(t("errorSave")); 
       });
   };
 
@@ -39,7 +40,7 @@ export function DocsReq({ id }: Props) {
         value={docs?.coments || ""}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
         height="50dvh"
-        placeholder="Write a comment"
+        placeholder={t("commentPlaceholder")} 
         onChange={(value) => handleContentChange(value)}
         basicSetup={{
           lineNumbers: true,
