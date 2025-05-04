@@ -5,5 +5,6 @@ export interface Request {
   projectId: string;
   title: string;
   method: Method;
+  index: number;
   url: string;
 }
