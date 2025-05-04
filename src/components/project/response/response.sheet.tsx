@@ -53,7 +53,7 @@ export function ResponseSheet({ response }: Props) {
         <div className="h-0.5 bg-separators/25" />
 
         {isOpen && (
-          <div className="h-full overflow-y-auto p-4">
+          <div className="h-full overflow-y-auto ">
             {response ? (
               <>
                 <Tabs defaultValue="body" className="w-full">
