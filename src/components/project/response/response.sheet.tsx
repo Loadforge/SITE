@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function ResponseSheet({ response }: Props) {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
@@ -25,7 +25,11 @@ export function ResponseSheet({ response }: Props) {
   };
 
   useEffect(() => {
-    setIsOpen(true);
+    if (response != undefined) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
   }, [response]);
 
   return (
