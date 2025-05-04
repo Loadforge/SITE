@@ -33,6 +33,7 @@ export class ResponseRepository {
       data: responseData.data,
       duration: responseData.duration,
       dataSize: responseData.dataSize,
+      headersSize: responseData.headersSize,
     };
 
     await store.put(responseObject);
@@ -105,7 +106,6 @@ export class ResponseRepository {
     };
 
     const startTime = performance.now();
-
     let response: any;
 
     try {
@@ -121,12 +121,16 @@ export class ResponseRepository {
         responseData = await res.text();
       }
 
+      const headersResult = Object.fromEntries(res.headers.entries());
+
       response = {
         status: res.status,
         statusText: res.statusText,
-        headers: Object.fromEntries(res.headers.entries()),
+        headers: headersResult,
         data: responseData,
         duration,
+        dataSize: roughSizeOfObject(responseData),
+        headersSize: roughSizeOfObject(headersResult),
       };
     } catch (error) {
       const endTime = performance.now();
@@ -138,6 +142,8 @@ export class ResponseRepository {
         headers: {},
         data: error instanceof Error ? error.message : String(error),
         duration,
+        dataSize: roughSizeOfObject(error),
+        headersSize: 0,
       };
     }
 
@@ -154,4 +160,32 @@ export class ResponseRepository {
     await tx.done;
     return result;
   }
+}
+function roughSizeOfObject(object: any): number {
+  const objectList: any[] = [];
+  const stack: any[] = [object];
+  let bytes = 0;
+
+  while (stack.length) {
+    const value = stack.pop();
+
+    if (typeof value === "boolean") {
+      bytes += 4;
+    } else if (typeof value === "string") {
+      bytes += value.length * 2;
+    } else if (typeof value === "number") {
+      bytes += 8;
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !objectList.includes(value)
+    ) {
+      objectList.push(value);
+      for (const i in value) {
+        stack.push(value[i]);
+      }
+    }
+  }
+
+  return bytes;
 }

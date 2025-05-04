@@ -32,6 +32,10 @@ export function ResponseSheet({ response }: Props) {
     }
   }, [response]);
 
+  const convertBytesToKB = (bytes: number) => {
+    return (bytes / 1024).toFixed(2); 
+  };
+
   return (
     <div className="relative">
       <div
@@ -73,6 +77,10 @@ export function ResponseSheet({ response }: Props) {
                         <span className="mx-2 text-2xl text-separators">•</span>
                         <span className="text-text font-bold mr-4">
                           {Math.round(response.duration)}ms
+                        </span>
+                        <span className="mx-2 text-2xl text-separators">•</span>
+                        <span className="text-text font-bold mr-4">
+                          {convertBytesToKB(response.dataSize)} KB
                         </span>
                       </div>
                     </div>
