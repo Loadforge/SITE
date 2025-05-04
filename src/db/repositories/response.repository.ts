@@ -33,6 +33,7 @@ export class ResponseRepository {
       data: responseData.data,
       duration: responseData.duration,
       dataSize: responseData.dataSize,
+      headersSize: responseData.headersSize,
     };
 
     await store.put(responseObject);
@@ -105,25 +106,46 @@ export class ResponseRepository {
     };
 
     const startTime = performance.now();
-    const res = await fetch(url.toString(), fetchOptions);
-    const endTime = performance.now();
-    const duration = endTime - startTime;
+    let response: any;
 
-    const contentType = res.headers.get("Content-Type") || "";
-    let responseData: any;
-    if (contentType.includes("application/json")) {
-      responseData = await res.json();
-    } else {
-      responseData = await res.text();
+    try {
+      const res = await fetch(url.toString(), fetchOptions);
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      const contentType = res.headers.get("Content-Type") || "";
+      let responseData: any;
+      if (contentType.includes("application/json")) {
+        responseData = await res.json();
+      } else {
+        responseData = await res.text();
+      }
+
+      const headersResult = Object.fromEntries(res.headers.entries());
+
+      response = {
+        status: res.status,
+        statusText: res.statusText,
+        headers: headersResult,
+        data: responseData,
+        duration,
+        dataSize: roughSizeOfObject(responseData),
+        headersSize: roughSizeOfObject(headersResult),
+      };
+    } catch (error) {
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      response = {
+        status: 404,
+        statusText: "Not Found",
+        headers: {},
+        data: error instanceof Error ? error.message : String(error),
+        duration,
+        dataSize: roughSizeOfObject(error),
+        headersSize: 0,
+      };
     }
-
-    const response = {
-      status: res.status,
-      statusText: res.statusText,
-      headers: Object.fromEntries(res.headers.entries()),
-      data: responseData,
-      duration,
-    };
 
     await this.createResponse(requestId, response);
     return response;
@@ -138,4 +160,32 @@ export class ResponseRepository {
     await tx.done;
     return result;
   }
+}
+function roughSizeOfObject(object: any): number {
+  const objectList: any[] = [];
+  const stack: any[] = [object];
+  let bytes = 0;
+
+  while (stack.length) {
+    const value = stack.pop();
+
+    if (typeof value === "boolean") {
+      bytes += 4;
+    } else if (typeof value === "string") {
+      bytes += value.length * 2;
+    } else if (typeof value === "number") {
+      bytes += 8;
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !objectList.includes(value)
+    ) {
+      objectList.push(value);
+      for (const i in value) {
+        stack.push(value[i]);
+      }
+    }
+  }
+
+  return bytes;
 }

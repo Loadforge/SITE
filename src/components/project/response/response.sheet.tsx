@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function ResponseSheet({ response }: Props) {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
@@ -25,8 +25,16 @@ export function ResponseSheet({ response }: Props) {
   };
 
   useEffect(() => {
-    setIsOpen(true);
+    if (response != undefined) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
   }, [response]);
+
+  const convertBytesToKB = (bytes: number) => {
+    return (bytes / 1024).toFixed(2); 
+  };
 
   return (
     <div className="relative">
@@ -49,7 +57,7 @@ export function ResponseSheet({ response }: Props) {
         <div className="h-0.5 bg-separators/25" />
 
         {isOpen && (
-          <div className="h-full overflow-y-auto p-4">
+          <div className="h-full overflow-y-auto ">
             {response ? (
               <>
                 <Tabs defaultValue="body" className="w-full">
@@ -69,6 +77,10 @@ export function ResponseSheet({ response }: Props) {
                         <span className="mx-2 text-2xl text-separators">•</span>
                         <span className="text-text font-bold mr-4">
                           {Math.round(response.duration)}ms
+                        </span>
+                        <span className="mx-2 text-2xl text-separators">•</span>
+                        <span className="text-text font-bold mr-4">
+                          {convertBytesToKB(response.dataSize)} KB
                         </span>
                       </div>
                     </div>
