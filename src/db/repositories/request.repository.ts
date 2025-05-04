@@ -42,18 +42,31 @@ export class RequestRepository {
     const db = await this.getDb();
     const tx = db.transaction("request", "readwrite");
     const store = tx.objectStore("request");
+
+    const allRequests: Request[] = await store.getAll();
+    const projectRequests = allRequests.filter((r) => r.projectId === id);
+
+    const maxIndex = projectRequests.reduce(
+      (max, r) => (r.index > max ? r.index : max),
+      -1
+    );
+    const newIndex = maxIndex + 1;
+
     const request: Request = {
       id: crypto.randomUUID(),
       projectId: id,
+      index: newIndex,
       title: "Nova Requisição",
       method: "GET",
       url: "",
     };
+
     await store.add(request);
     await this.bodyRepository.createBody(request.id);
     await this.docsRepository.createDocs(request.id);
     await this.authrepository.createAuth(request.id);
     await this.headersrepository.initializeDefaultHeaders(request.id);
+
     return request;
   }
 
@@ -61,8 +74,11 @@ export class RequestRepository {
     const db = await this.getDb();
     const tx = db.transaction("request", "readonly");
     const store = tx.objectStore("request");
-    const index = store.index("projectIndex");
-    return index.getAll(projectId);
+
+    const allRequests: Request[] = await store.getAll();
+    return allRequests
+      .filter((r) => r.projectId === projectId)
+      .sort((a, b) => a.index - b.index);
   }
 
   async getRequestById(id: string): Promise<Request> {
@@ -225,6 +241,19 @@ export class RequestRepository {
     requests: any[],
     projectId: string
   ): Promise<void> {
+    const db = await this.getDb();
+    const tx = db.transaction("request", "readonly");
+    const store = tx.objectStore("request");
+    const allRequests: Request[] = await store.getAll();
+    const existingProjectRequests = allRequests.filter(
+      (r) => r.projectId === projectId
+    );
+    let currentIndex =
+      existingProjectRequests.reduce(
+        (max, r) => (r.index > max ? r.index : max),
+        -1
+      ) + 1;
+
     for (const request of requests) {
       const newRequestId = crypto.randomUUID();
       const newRequest: Request = {
@@ -233,20 +262,20 @@ export class RequestRepository {
         url: request.request.url,
         id: newRequestId,
         projectId: projectId,
+        index: currentIndex++,
       };
 
       await this.importRequestFromJson(newRequest);
-
       await this.bodyRepository.importBodyFromJson(request.body, newRequestId);
-      await this.authrepository.importAuthFromJson(request.auth, newRequest.id);
-      await this.docsRepository.importDocsFromJson(request.docs, newRequest.id);
+      await this.authrepository.importAuthFromJson(request.auth, newRequestId);
+      await this.docsRepository.importDocsFromJson(request.docs, newRequestId);
       await this.paramsrepository.importParamsFromJson(
         request.params,
-        newRequest.id
+        newRequestId
       );
       await this.headersrepository.importHeadersFromJson(
         request.headers,
-        newRequest.id
+        newRequestId
       );
     }
   }
@@ -258,5 +287,4 @@ export class RequestRepository {
     await store.add(request);
     await tx.done;
   }
-  
 }
