@@ -12,18 +12,24 @@ import {
 export function LanguageToggle() {
   const { t, i18n } = useTranslation();
 
-  
-  const [lang, setLang] = useState<string>(i18n.language === "en" ? "English" : "Portuguese");
+  const [lang, setLang] = useState<string>("");
 
   const handleLanguageChange = (value: string) => {
     const langCode = value === "English" ? "en" : "pt";
     i18n.changeLanguage(langCode);
+    setLang(value);
+    localStorage.setItem("appLanguage", langCode); 
   };
 
-  
   useEffect(() => {
-    setLang(i18n.language === "en" ? "English" : "Portuguese");
-  }, [i18n.language]);
+    const storedLang = localStorage.getItem("appLanguage");
+    if (storedLang) {
+      i18n.changeLanguage(storedLang);
+      setLang(storedLang === "en" ? "English" : "Portuguese");
+    } else {
+      setLang(i18n.language === "en" ? "English" : "Portuguese");
+    }
+  }, []);
 
   return (
     <div className="flex items-center gap-2 text-lg text-text font-bold">
