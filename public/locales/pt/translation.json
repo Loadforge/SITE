@@ -92,5 +92,7 @@
   "Empty": "Vazio",
   "New": "Novo",
   "Edit": "Editar",
-  "URLPreview": "Visualização da URL"
+  "URLPreview": "Visualização da URL",
+  "title": "Desculpe pelo transtorno!",
+  "message": "Nosso aplicativo é otimizado para uma melhor experiência em dispositivos maiores, como computadores. Para uma melhor experiência, por favor use um desktop."
 }

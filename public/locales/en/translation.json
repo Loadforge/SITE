@@ -92,5 +92,7 @@
   "Empty": "Empty",
   "New": "New",
   "Edit": "Edit",
-  "URLPreview": "URL Preview"
+  "URLPreview": "URL Preview",
+  "title": "Apologies for the inconvenience!",
+  "message": "Our application is optimized for a better experience on larger devices like computers. For the best experience, please use a desktop."
 }
