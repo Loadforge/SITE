@@ -105,25 +105,41 @@ export class ResponseRepository {
     };
 
     const startTime = performance.now();
-    const res = await fetch(url.toString(), fetchOptions);
-    const endTime = performance.now();
-    const duration = endTime - startTime;
 
-    const contentType = res.headers.get("Content-Type") || "";
-    let responseData: any;
-    if (contentType.includes("application/json")) {
-      responseData = await res.json();
-    } else {
-      responseData = await res.text();
+    let response: any;
+
+    try {
+      const res = await fetch(url.toString(), fetchOptions);
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      const contentType = res.headers.get("Content-Type") || "";
+      let responseData: any;
+      if (contentType.includes("application/json")) {
+        responseData = await res.json();
+      } else {
+        responseData = await res.text();
+      }
+
+      response = {
+        status: res.status,
+        statusText: res.statusText,
+        headers: Object.fromEntries(res.headers.entries()),
+        data: responseData,
+        duration,
+      };
+    } catch (error) {
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      response = {
+        status: 404,
+        statusText: "Not Found",
+        headers: {},
+        data: error instanceof Error ? error.message : String(error),
+        duration,
+      };
     }
-
-    const response = {
-      status: res.status,
-      statusText: res.statusText,
-      headers: Object.fromEntries(res.headers.entries()),
-      data: responseData,
-      duration,
-    };
 
     await this.createResponse(requestId, response);
     return response;
