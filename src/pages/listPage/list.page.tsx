@@ -5,7 +5,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
-
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ import { ListPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 
 export function ListPage() {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<Project[]>([]);
   const navigate = useNavigate();
 
@@ -30,8 +31,8 @@ export function ListPage() {
         });
       })
       .catch((error) => {
-        console.error("Erro ao adicionar o projeto:", error);
-        toast.error("Erro ao adicionar o projeto. Tente novamente!");
+        console.error(t("errors.addProject"), error);
+        toast.error(t("errors.addProjectToast"));
       });
   };
 
@@ -41,15 +42,15 @@ export function ListPage() {
     ProjectService.delete(id)
       .then(() => {
         setProjects(projects.filter((project) => project.id !== id));
-        toast.success("Projeto Excluido com Sucesso");
+        toast.success(t("success.projectDeleted"));
       })
       .catch((error) => {
-        console.error("Erro ao excluir o projeto:", error);
+        console.error(t("errors.deleteProject"), error);
       });
   };
+
   const handleRename = (id: string, newTitle: string) => {
     const updatedProject = projects.find((p) => p.id === id);
-
     if (!updatedProject) return;
 
     ProjectService.rename(id, newTitle)
@@ -57,67 +58,66 @@ export function ListPage() {
         setProjects((prev) =>
           prev.map((p) => (p.id === id ? { ...p, title: newTitle } : p))
         );
-        toast.success("Projeto renomeado com sucesso!");
+        toast.success(t("success.projectRenamed"));
       })
       .catch((error) => {
-        console.error("Erro ao renomear o projeto:", error);
-        toast.error("Erro ao renomear o projeto. Tente novamente!");
+        console.error(t("errors.renameProject"), error);
+        toast.error(t("errors.renameProjectToast"));
       });
   };
+
   const handleDuplicate = (id: string) => {
     ProjectService.duplicate(id)
       .then((project) => {
         setProjects((prev) => [...prev, project]);
-        toast.success("Projeto duplicado com sucesso!");
+        toast.success(t("success.projectDuplicated"));
       })
       .catch((error) => {
-        console.error("Erro ao duplicar o projeto:", error);
-        toast.error("Erro ao duplicar o projeto. Tente novamente!");
+        console.error(t("errors.duplicateProject"), error);
+        toast.error(t("errors.duplicateProjectToast"));
       });
   };
+
   const handleExport = (id: string) => {
     ProjectService.exportToJson(
       id,
       projects.find((p) => p.id === id)?.title || ""
     )
       .then(() => {
-        console.log("Exportação concluída.");
+        console.log(t("success.projectExported"));
       })
       .catch((error) => {
-        console.error("Erro ao exportar o projeto:", error);
+        console.error(t("errors.exportProject"), error);
       });
   };
+
   const handleImport = (file: File) => {
     ProjectService.importFromJson(file)
       .then((project) => {
-        toast.success("Projeto importado com sucesso!");
+        toast.success(t("success.projectImported"));
         setProjects((prev) => [...prev, project]);
       })
       .catch((error) => {
-        console.error("Erro ao importar o projeto:", error);
-        toast.error("Erro ao importar o projeto. Tente novamente!");
+        console.error(t("errors.importProject"), error);
+        toast.error(t("errors.importProjectToast"));
       });
   };
 
   useEffect(() => {
     ProjectService.getAll()
-      .then((data) => {
-        setProjects(data);
-      })
+      .then(setProjects)
       .catch((error) => {
-        console.error("Erro ao carregar os projetos:", error);
+        console.error(t("errors.loadProjects"), error);
       });
-  }, []);
+  }, [t]);
 
   const handleDragEnd = (event: import("@dnd-kit/core").DragEndEvent) => {
     const { active, over } = event;
-
     if (!over) return;
 
     if (active.id !== over.id) {
       const oldIndex = projects.findIndex((p) => p.id === active.id);
       const newIndex = projects.findIndex((p) => p.id === over.id);
-
       const newProjects = arrayMove(projects, oldIndex, newIndex);
 
       const reorderedProjects = newProjects.map((project, index) => ({
@@ -127,12 +127,10 @@ export function ListPage() {
 
       setProjects(reorderedProjects);
 
-      ProjectService.reorder(reorderedProjects)
-        .then(() => {})
-        .catch((error) => {
-          console.error("Erro ao reordenar os projetos:", error);
-          toast.error("Erro ao reordenar os projetos. Tente novamente!");
-        });
+      ProjectService.reorder(reorderedProjects).catch((error) => {
+        console.error(t("errors.reorderProjects"), error);
+        toast.error(t("errors.reorderProjectsToast"));
+      });
     }
   };
 

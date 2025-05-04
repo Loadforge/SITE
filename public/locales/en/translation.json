@@ -94,5 +94,27 @@
   "Edit": "Edit",
   "URLPreview": "URL Preview",
   "title": "Apologies for the inconvenience!",
-  "message": "Our application is optimized for a better experience on larger devices like computers. For the best experience, please use a desktop."
+  "message": "Our application is optimized for a better experience on larger devices like computers. For the best experience, please use a desktop.",
+  "success": {
+    "projectDeleted": "Project successfully deleted!",
+    "projectRenamed": "Project renamed successfully!",
+    "projectDuplicated": "Project duplicated successfully!",
+    "projectImported": "Project imported successfully!",
+    "projectExported": "Export completed."
+  },
+  "errors": {
+    "addProject": "Error adding project",
+    "addProjectToast": "Failed to add project. Please try again!",
+    "deleteProject": "Error deleting project",
+    "renameProject": "Error renaming project",
+    "renameProjectToast": "Failed to rename project. Please try again!",
+    "duplicateProject": "Error duplicating project",
+    "duplicateProjectToast": "Failed to duplicate project. Please try again!",
+    "exportProject": "Error exporting project",
+    "importProject": "Error importing project",
+    "importProjectToast": "Failed to import project. Please try again!",
+    "loadProjects": "Error loading projects",
+    "reorderProjects": "Error reordering projects",
+    "reorderProjectsToast": "Failed to reorder projects. Please try again!"
+  }
 }
