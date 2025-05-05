@@ -14,21 +14,33 @@ export function LanguageToggle() {
 
   const [lang, setLang] = useState<string>("");
 
-  const handleLanguageChange = (value: string) => {
-    const langCode = value === "English" ? "en" : "pt";
-    i18n.changeLanguage(langCode);
-    setLang(value);
-    localStorage.setItem("appLanguage", langCode); 
+  const languageLabels: Record<string, string> = {
+    "en-US": "English",
+    "pt-BR": "Português(BR)",
+  };
+
+  const handleLanguageChange = (label: string) => {
+    const selectedCode = Object.entries(languageLabels).find(
+      ([, value]) => value === label
+    )?.[0];
+
+    if (selectedCode) {
+      i18n.changeLanguage(selectedCode);
+      localStorage.setItem("appLanguage", selectedCode);
+      setLang(label);
+    }
   };
 
   useEffect(() => {
     const storedLang = localStorage.getItem("appLanguage");
-    if (storedLang) {
-      i18n.changeLanguage(storedLang);
-      setLang(storedLang === "en" ? "English" : "Portuguese");
-    } else {
-      setLang(i18n.language === "en" ? "English" : "Portuguese");
-    }
+    const browserLang = navigator.language;
+
+    const initialLang = storedLang || browserLang;
+    const matchedLang =
+      initialLang.startsWith("pt") ? "pt-BR" : "en-US";
+
+    i18n.changeLanguage(matchedLang);
+    setLang(languageLabels[matchedLang]);
   }, []);
 
   return (
@@ -40,7 +52,7 @@ export function LanguageToggle() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="English">English</SelectItem>
-          <SelectItem value="Portuguese">Português(BR)</SelectItem>
+          <SelectItem value="Português(BR)">Português(BR)</SelectItem>
         </SelectContent>
       </Select>
     </div>
