@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ import { Button, Input, Skeleton } from "../ui";
 
 interface Props {
   id: string;
+  loading?: boolean;
   handleUpdateMethodRequest: (id: string, method: string) => void;
   handleUpdateUrlRequest: (id: string, url: string) => void;
   handleSendResponse: (requestId: string) => void;
@@ -24,6 +26,7 @@ interface Props {
 
 export function SetUrl({
   id,
+  loading,
   handleUpdateMethodRequest,
   handleUpdateUrlRequest,
   handleSendResponse,
@@ -90,10 +93,17 @@ export function SetUrl({
       />
 
       <Button
-        className="w-25 font-bold text-xl"
+        className="w-25 font-bold text-xl flex items-center justify-center gap-2"
         onClick={() => handleSendResponse(id)}
+        disabled={loading}
       >
-        {t("button.send")}
+        {loading ? (
+          <>
+            <Loader2 className="animate-spin w-5 h-5" />
+          </>
+        ) : (
+          t("button.send")
+        )}
       </Button>
     </div>
   );

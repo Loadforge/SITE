@@ -29,6 +29,8 @@ import { ResponseService } from "@/services/request/response.service";
 export function ProjectPage() {
   const { t } = useTranslation();
   const [response, setResponse] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
+
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
@@ -146,6 +148,7 @@ export function ProjectPage() {
   }
 
   function handleSendResponse(requestId: string) {
+    setIsLoading(true);
     ResponseService.sendRequest(requestId)
       .then((response) => {
         setResponse(response);
@@ -155,6 +158,9 @@ export function ProjectPage() {
           `${t("request.send.error")}: ${error.message || t("error.unknown")}`
         );
         console.error("Erro ao enviar requisição:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
@@ -190,6 +196,7 @@ export function ProjectPage() {
         <div className="flex flex-col gap-4 ">
           <SetUrl
             id={selectedRequest.id}
+            loading={isLoading}
             handleUpdateMethodRequest={handleUpdateMethodRequest}
             handleUpdateUrlRequest={handleUpdateUrlRequest}
             handleSendResponse={handleSendResponse}
