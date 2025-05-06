@@ -46,6 +46,10 @@ export class ResponseRepository {
     );
     const { request, body, auth, headers, params } = fullRequest;
 
+    if (request.method === "GET" && body?.content) {
+      throw new Error("GET requests cannot have a body.");
+      return;
+    }
     const headersObject =
       headers?.reduce((acc: Record<string, string>, h: any) => {
         if (h.key && h.value) acc[h.key] = h.value;
