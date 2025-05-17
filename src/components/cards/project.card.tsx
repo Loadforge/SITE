@@ -38,7 +38,9 @@ export function ProjectCard({
 }: Props) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(
+    null
+  );
   const [isRenaming, setIsRenaming] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +60,7 @@ export function ProjectCard({
 
   const handleNavigate = () => {
     if (!isRenaming) {
-      navigate("/project", { state: { id, title, icon, index } });
+      navigate(`/project/${id}`, { state: { title, icon, index } });
     }
   };
 
@@ -112,8 +114,12 @@ export function ProjectCard({
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="z-10">
-            <DropdownMenuItem onClick={handleDuplicate}>{t("Duplicate")}</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleExport}>{t("Export")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDuplicate}>
+              {t("Duplicate")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExport}>
+              {t("Export")}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={(e) => {
                 e.preventDefault();
@@ -154,7 +160,9 @@ export function ProjectCard({
             className="text-text text-md font-semibold bg-transparent border-b border-primary focus:outline-none text-center w-full"
           />
         ) : (
-          <span className="text-text text-md font-semibold text-center">{title}</span>
+          <span className="text-text text-md font-semibold text-center">
+            {title}
+          </span>
         )}
       </CardFooter>
     </Card>

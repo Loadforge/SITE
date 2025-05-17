@@ -26,8 +26,8 @@ export function ListPage() {
   const handleAddProject = () => {
     ProjectService.create()
       .then((project) => {
-        navigate("/project", {
-          state: { id: project.id, title: project.title, icon: project.icon },
+        navigate(`/project/${project.id}`, {
+          state: { title: project.title, icon: project.icon },
         });
       })
       .catch((error) => {
