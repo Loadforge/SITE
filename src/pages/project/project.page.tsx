@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaHistory } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import {
@@ -34,11 +34,12 @@ export function ProjectPage() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
+  const { id: projectId } = useParams();
   const location = useLocation();
-  const { id: projectId, title, icon, index } = location.state || {};
 
+  const { title, icon, index } = location.state || {};
   const [project, setProject] = useState({
-    id: projectId,
+    id: projectId || '',
     title: title || "",
     icon: icon || "",
     index: index || 0,
@@ -75,6 +76,7 @@ export function ProjectPage() {
   };
 
   function handleCreateRequest() {
+    if (!projectId) return;
     RequestService.create(projectId).then((req) => {
       setRequests((prev) => [...prev, req]);
       setSelectedRequest(req);
