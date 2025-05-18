@@ -60,7 +60,7 @@ export function ProjectCard({
 
   const handleNavigate = () => {
     if (!isRenaming) {
-      navigate(`/project/${id}`, { state: { title, icon, index } });
+      navigate(`/project/${id}`, { state: { index } });
     }
   };
 

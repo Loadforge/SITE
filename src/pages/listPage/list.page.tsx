@@ -26,9 +26,7 @@ export function ListPage() {
   const handleAddProject = () => {
     ProjectService.create()
       .then((project) => {
-        navigate(`/project/${project.id}`, {
-          state: { title: project.title, icon: project.icon },
-        });
+        navigate(`/project/${project.id}`);
       })
       .catch((error) => {
         console.error(t("errors.addProject"), error);

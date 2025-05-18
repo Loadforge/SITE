@@ -13,7 +13,7 @@ export class ProjectService {
     return this.repository.getAllProjects();
   }
 
-  static async getById(id: string): Promise<Project | undefined> {
+  static async getById(id: string): Promise<Project> {
     return this.repository.getProjectById(id);
   }
 
