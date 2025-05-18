@@ -50,7 +50,7 @@ export class ProjectRepository {
     return projects.sort((a, b) => a.index - b.index);
   }
 
-  async getProjectById(id: string): Promise<Project | undefined> {
+  async getProjectById(id: string): Promise<Project> {
     const db = await this.getDb();
     const tx = db.transaction("project", "readonly");
     const store = tx.objectStore("project");

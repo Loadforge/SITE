@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaHistory } from "react-icons/fa";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import {
@@ -20,6 +20,7 @@ import {
 } from "@/components";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
+import { Project } from "@/db/types";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
@@ -28,6 +29,7 @@ import { ResponseService } from "@/services/request/response.service";
 
 export function ProjectPage() {
   const { t } = useTranslation();
+  const [project, setProject] = useState<Project>({} as Project);
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,15 +37,20 @@ export function ProjectPage() {
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
   const { id: projectId } = useParams();
-  const location = useLocation();
 
-  const { title, icon, index } = location.state || {};
-  const [project, setProject] = useState({
-    id: projectId || '',
-    title: title || "",
-    icon: icon || "",
-    index: index || 0,
-  });
+    useEffect(() => {
+    if (projectId) {
+      ProjectService.getById(projectId)
+        .then((project) => {
+          setProject(project);
+        })
+        .catch((error) => {
+          console.error("Erro ao obter o projeto:", error);
+        });
+      RequestService.getByProjectId(projectId).then(setRequests);
+    }
+  }, [projectId]);
+
 
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
@@ -166,11 +173,7 @@ export function ProjectPage() {
       });
   }
 
-  useEffect(() => {
-    if (projectId) {
-      RequestService.getByProjectId(projectId).then(setRequests);
-    }
-  }, [projectId]);
+
 
   useEffect(() => {
     if (!selectedRequest) return;
