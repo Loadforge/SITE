@@ -38,7 +38,7 @@ export function ProjectPage() {
 
   const { id: projectId } = useParams();
 
-    useEffect(() => {
+  useEffect(() => {
     if (projectId) {
       ProjectService.getById(projectId)
         .then((project) => {
@@ -50,7 +50,25 @@ export function ProjectPage() {
       RequestService.getByProjectId(projectId).then(setRequests);
     }
   }, [projectId]);
+  
+  useEffect(() => {
+    if (selectedRequest) {
+      localStorage.setItem(
+        `selectedRequest_${projectId}`,
+        JSON.stringify(selectedRequest.id)
+      );
+    }
+  }, [selectedRequest, projectId]);
 
+  useEffect(() => {
+    if (requests.length && projectId) {
+      const savedId = localStorage.getItem(`selectedRequest_${projectId}`);
+      if (savedId) {
+        const found = requests.find((r) => r.id === JSON.parse(savedId));
+        if (found) setSelectedRequest(found);
+      }
+    }
+  }, [requests, projectId]);
 
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
@@ -172,8 +190,6 @@ export function ProjectPage() {
         setIsLoading(false);
       });
   }
-
-
 
   useEffect(() => {
     if (!selectedRequest) return;
