@@ -26,7 +26,7 @@ export function BodyResponseTab({ responseBody }: Props) {
   const parser = new XMLParser();
   const builder = new XMLBuilder({
     format: true,
-    indentBy: "  ",
+    indentBy: " ",
     ignoreAttributes: false,
   });
 
@@ -95,6 +95,7 @@ export function BodyResponseTab({ responseBody }: Props) {
           height="45dvh"
           theme={resolvedTheme === "dark" ? "dark" : "light"}
           extensions={[format === "json" ? json() : xml()]}
+          indentWithTab={true}
           readOnly={true}
           className="text-separators rounded-xl text-[16px] overflow-hidden border"
         />
