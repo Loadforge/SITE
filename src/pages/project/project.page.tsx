@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaHistory } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -10,7 +9,6 @@ import {
   BodyReq,
   DocsReq,
   HeadersReq,
-  InDevelopment,
   NotReqSelected,
   ParamsReq,
   Tabs,
@@ -50,7 +48,7 @@ export function ProjectPage() {
       RequestService.getByProjectId(projectId).then(setRequests);
     }
   }, [projectId]);
-  
+
   useEffect(() => {
     if (selectedRequest) {
       localStorage.setItem(
@@ -231,15 +229,6 @@ export function ProjectPage() {
               <TabsTrigger value="body">{t("tabs.body")}</TabsTrigger>
               <TabsTrigger value="advanced">{t("tabs.advanced")}</TabsTrigger>
               <TabsTrigger value="docs">{t("tabs.docs")}</TabsTrigger>
-              <TabsTrigger
-                value="history"
-                className="ml-auto text-sm font-semibold"
-              >
-                <div className="flex items-center gap-2">
-                  <FaHistory />
-                  {t("tabs.history")}
-                </div>
-              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="params">
@@ -259,9 +248,6 @@ export function ProjectPage() {
             </TabsContent>
             <TabsContent value="docs">
               <DocsReq id={selectedRequest.id} />
-            </TabsContent>
-            <TabsContent value="history">
-              <InDevelopment />
             </TabsContent>
           </Tabs>
           <ResponseSheet response={response} />
