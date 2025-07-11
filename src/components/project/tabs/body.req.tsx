@@ -3,7 +3,7 @@ import { xml } from "@codemirror/lang-xml";
 import CodeMirror from "@uiw/react-codemirror";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next"; 
+import { useTranslation } from "react-i18next";
 
 import {
   Select,
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export function BodyReq({ id }: Props) {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [body, setBody] = useState<RequestBody>();
   const [format, setFormat] = useState<"json" | "xml" | "none">("none");
   const [content, setContent] = useState<string>("");
@@ -44,17 +44,33 @@ export function BodyReq({ id }: Props) {
   }, [id]);
 
   const handleContentChange = (value: string) => {
-    setContent(value);
+    const withoutEmptyLines = value
+      .split("\n")
+      .filter((line) => line.trim() !== "")
+      .join("\n");
+
+    let formattedValue = withoutEmptyLines;
+
+    try {
+      if (format === "json") {
+        const parsed = JSON.parse(withoutEmptyLines);
+        formattedValue = JSON.stringify(parsed, null, 2);
+      }
+    } catch (err) {
+      console.warn("Erro ao tentar formatar conteúdo:", err);
+    }
+
+    setContent(formattedValue);
 
     if (body) {
       const updatedBody: RequestBody = {
         ...body,
         type: format,
-        content: value,
+        content: formattedValue,
       };
 
       RequestBodyService.update(updatedBody).catch((err) => {
-        setError(t("saveError")); 
+        setError(t("saveError"));
         console.error(err);
       });
     }
@@ -75,7 +91,7 @@ export function BodyReq({ id }: Props) {
         RequestBodyService.update(updatedBody)
           .then(() => {})
           .catch((err) => {
-            setError(t("saveError")); 
+            setError(t("saveError"));
             console.error(err);
           });
       }
@@ -107,7 +123,7 @@ export function BodyReq({ id }: Props) {
         };
 
         RequestBodyService.update(updatedBody).catch((err) => {
-          setError(t("saveError")); 
+          setError(t("saveError"));
           console.error(err);
         });
       }
@@ -115,9 +131,7 @@ export function BodyReq({ id }: Props) {
       setError(null);
     } catch (err) {
       console.error("Erro na conversão:", err);
-      setError(
-        t("invalidFormat", { format: format.toUpperCase() }) 
-      );
+      setError(t("invalidFormat", { format: format.toUpperCase() }));
     }
   };
 
