@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaHistory } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
