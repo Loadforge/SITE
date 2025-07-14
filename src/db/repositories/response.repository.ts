@@ -141,10 +141,12 @@ export class ResponseRepository {
       const duration = endTime - startTime;
 
       response = {
-        status: 404,
-        statusText: "Not Found",
+        status: 0,
+        statusText: "Network Error",
         headers: {},
-        data: error instanceof Error ? error.message : String(error),
+        data: {
+          message: error instanceof Error ? error.message : String(error),
+        },
         duration,
         dataSize: roughSizeOfObject(error),
         headersSize: 0,
