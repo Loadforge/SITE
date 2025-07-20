@@ -1,9 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaSyncAlt } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -22,8 +21,6 @@ export function FormApiConnect() {
     defaultValues: {
       apiUri: "https://localhost:8080/",
       apiToken: "token",
-      keepConnected: true,
-      autoSync: true,
     },
   });
 
@@ -70,42 +67,6 @@ export function FormApiConnect() {
                   {showToken ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                 </div>
               </div>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="keepConnected"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <FormLabel className="text-lg font-bold">
-                Keep connected
-              </FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="border-primary"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="autoSync"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <FormLabel className="text-lg font-bold flex items-center gap-1">
-                Auto Sync <FaSyncAlt size={12} />
-              </FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="border-primary"
-                />
-              </FormControl>
             </FormItem>
           )}
         />
