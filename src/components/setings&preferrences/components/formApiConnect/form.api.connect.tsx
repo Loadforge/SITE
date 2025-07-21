@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+import { Button } from "@/components/ui";
 import {
   Form,
   FormControl,
@@ -11,21 +12,25 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { ApiConnectFormData, apiConnectSchema } from "@/validators";
 
 export function FormApiConnect() {
   const [showToken, setShowToken] = useState(false);
 
+  const connect = useWebSocketStore((state) => state.connect);
+  const isConnected = useWebSocketStore((state) => state.isConnected);
+
   const form = useForm<ApiConnectFormData>({
     resolver: yupResolver(apiConnectSchema),
     defaultValues: {
-      apiUri: "https://localhost:8080/",
-      apiToken: "token",
+      apiUri: "http://localhost:8080",
+      apiToken: "meu-token",
     },
   });
 
   function onSubmit(values: ApiConnectFormData) {
-    console.log("Dados enviados:", values);
+    connect(values.apiUri, values.apiToken);
   }
 
   return (
@@ -38,7 +43,7 @@ export function FormApiConnect() {
           control={form.control}
           name="apiUri"
           render={({ field }) => (
-            <FormItem className="gap-5">
+            <FormItem>
               <FormLabel className="text-lg font-bold">Api URI</FormLabel>
               <FormControl>
                 <Input {...field} className="w-3/4 border-separators/50" />
@@ -50,7 +55,7 @@ export function FormApiConnect() {
           control={form.control}
           name="apiToken"
           render={({ field }) => (
-            <FormItem className="gap-5">
+            <FormItem>
               <FormLabel className="text-lg font-bold">Api Token</FormLabel>
               <div className="relative w-3/4">
                 <FormControl>
@@ -70,6 +75,14 @@ export function FormApiConnect() {
             </FormItem>
           )}
         />
+        <Button
+          type="submit"
+          className="w-25 font-bold text-xl flex items-center justify-center gap-2"
+          disabled={isConnected}
+          title={isConnected ? "Já conectado" : "Conectar"}
+        >
+          {isConnected ? "Já conectado" : "Conectar"}
+        </Button>
       </form>
     </Form>
   );
