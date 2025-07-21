@@ -18,15 +18,10 @@ import { ApiConnectFormData, apiConnectSchema } from "@/validators";
 export function FormApiConnect() {
   const [showToken, setShowToken] = useState(false);
 
-  const connect = useWebSocketStore((state) => state.connect);
-  const isConnected = useWebSocketStore((state) => state.isConnected);
+  const { isConnected, connect } = useWebSocketStore();
 
   const form = useForm<ApiConnectFormData>({
     resolver: yupResolver(apiConnectSchema),
-    defaultValues: {
-      apiUri: "http://localhost:8080",
-      apiToken: "meu-token",
-    },
   });
 
   function onSubmit(values: ApiConnectFormData) {
@@ -81,7 +76,7 @@ export function FormApiConnect() {
           disabled={isConnected}
           title={isConnected ? "Já conectado" : "Conectar"}
         >
-          {isConnected ? "Já conectado" : "Conectar"}
+          {isConnected ? "Conectado" : "Conectar"}
         </Button>
       </form>
     </Form>
