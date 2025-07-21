@@ -35,11 +35,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
         toast.warning("Já está conectado ao Executor");
         return;
       }
-
-      if (get().socket) {
-        get().socket.close();
-      }
-
+      
       if (token) {
         connectionStorage.setToken(token);
         set({ token });
@@ -56,7 +52,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
       set({ uri: baseUrl });
 
       const cleanBase = baseUrl.replace(/\/+$/, "");
-      const url = `${cleanBase.replace(/^http/, "ws")}/ws?token=${token}`;
+      const url = `${cleanBase}?token=${token}`;
 
       const socket = new WebSocket(url);
 
