@@ -5,7 +5,7 @@
   "Settings_Preferences": "Configurações e Preferências",
   "Docs": "Documentação",
   "basic": "Básico",
-  "advanced": "Completo",
+  "advanced": "Avançado",
   "New_Project": "Novo Projeto",
   "Import_Project": "Importar Projeto",
   "Preferences": "Preferências",
@@ -119,5 +119,4 @@
     "reorderProjects": "Erro ao reordenar os projetos",
     "reorderProjectsToast": "Erro ao reordenar os projetos. Tente novamente!"
   }
-
 }
