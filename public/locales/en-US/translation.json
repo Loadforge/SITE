@@ -1,4 +1,6 @@
 {
+  "connected": "Connected",
+  "disconnected": "Disconnected",
   "Bug_Report": "Report a Bug",
   "Settings_Preferences": "Settings & Preferences",
   "Docs": "Docs",
@@ -117,4 +119,6 @@
     "reorderProjects": "Error reordering projects",
     "reorderProjectsToast": "Failed to reorder projects. Please try again!"
   }
+  
+
 }

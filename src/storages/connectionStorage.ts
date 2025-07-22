@@ -32,6 +32,15 @@ export const connectionStorage = {
     localStorage.removeItem(URI_KEY);
   },
 
+  has(): boolean {
+    if (typeof window === "undefined") return false;
+
+    const token = localStorage.getItem(TOKEN_KEY);
+    const uri = localStorage.getItem(URI_KEY);
+
+    return !!token && !!uri; 
+  },
+
   clearAll(): void {
     if (typeof window === "undefined") return;
     localStorage.removeItem(TOKEN_KEY);

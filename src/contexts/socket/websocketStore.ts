@@ -35,7 +35,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
         toast.warning("Já está conectado ao Executor");
         return;
       }
-      
+
       if (token) {
         connectionStorage.setToken(token);
         set({ token });
@@ -57,7 +57,6 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
       const socket = new WebSocket(url);
 
       socket.onopen = () => {
-        console.log("Conectado ao Executor:", url);
         toast.success("Conectado ao Executor");
         set({ isConnected: true });
       };
@@ -67,13 +66,15 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
           const data = JSON.parse(event.data);
           set((state) => ({ messages: [...state.messages, data] }));
         } catch {
-          console.warn("Mensagem recebida não está no formato JSON:", event.data);
+          console.warn(
+            "Mensagem recebida não está no formato JSON:",
+            event.data
+          );
           toast.warning("Mensagem recebida inválida.");
         }
       };
 
       socket.onclose = () => {
-        console.log("Executor desconectado");
         toast.error("Executor desconectado");
         set({ isConnected: false, socket: null });
       };
