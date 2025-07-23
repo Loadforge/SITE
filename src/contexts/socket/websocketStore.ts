@@ -3,14 +3,8 @@ import { create } from "zustand";
 
 import { connectionStorage } from "@/storages/connectionStorage";
 
-type Message = {
-  id: string;
-  text: string;
-};
-
 type WebSocketStore = {
   socket: WebSocket | null;
-  messages: Message[];
   isConnected: boolean;
   runTest: boolean;
   setRunTest: (value: boolean) => void;
@@ -18,7 +12,7 @@ type WebSocketStore = {
   uri: string | null;
   connect: (baseUrl: string, token?: string) => void;
   disconnect: () => void;
-  sendMessage: (text: string) => void;
+  sendMessage: (text: any) => void;
 };
 
 export const useWebSocketStore = create<WebSocketStore>((set, get) => {
@@ -27,10 +21,9 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
   return {
     socket: null,
-    messages: [],
     isConnected: false,
     runTest: false,
-    setRunTest: (value: boolean) => set({ runTest: value }), 
+    setRunTest: (value: boolean) => set({ runTest: value }),
     token: savedToken,
     uri: savedUri,
 
@@ -67,8 +60,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
       socket.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data);
-          set((state) => ({ messages: [...state.messages, data] }));
+          toast.success(event.data);
         } catch {
           console.warn(
             "Mensagem recebida não está no formato JSON:",
@@ -102,8 +94,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     sendMessage: (text) => {
       const sock = get().socket;
       if (sock?.readyState === WebSocket.OPEN) {
-        const msg = { id: crypto.randomUUID(), text };
-        sock.send(JSON.stringify(msg));
+        sock.send(JSON.stringify(text));
         toast.success("Mensagem enviada");
       } else {
         toast.error("Não conectado ao WebSocket");

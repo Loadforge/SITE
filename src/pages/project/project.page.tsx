@@ -83,7 +83,7 @@ export function ProjectPage() {
       }
     );
   }, [selectedRequest, setRunTest]);
-  
+
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
       .then(() => {
@@ -189,17 +189,16 @@ export function ProjectPage() {
   }
 
   function handleSendResponse(requestId: string) {
-    console.log(runTest);
-
     if (runTest) {
       if (!isConnected) {
         toast.error("Executor desconectado");
         return;
       }
-      RequestService.getFullRequestById(requestId).then((request) => {
+      SendService.getConfigByRequestId(requestId).then((request) => {
         console.log(request);
+        sendMessage(request);
       });
-      sendMessage("runTest");
+
       return;
     }
     setIsLoading(true);

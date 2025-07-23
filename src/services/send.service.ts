@@ -1,3 +1,4 @@
+import { DslConfig } from "@/@entities";
 import { RequestRepository } from "@/db/repositories/request.repository";
 import { ResponseRepository } from "@/db/repositories/response.repository";
 
@@ -6,6 +7,79 @@ export class SendService {
   private static responseRepository: ResponseRepository =
     new ResponseRepository();
 
+  static async getConfigByRequestId(requestId: string): Promise<DslConfig> {
+    let parsedBody: any = null;
+    let parsedAuth: any = null;
+
+    const fullRequest = await this.requestRepository.getFullRequestById(
+      requestId
+    );
+
+    if (!fullRequest) {
+      throw new Error("Request not found");
+    }
+
+    const { request, body, auth, params, advanced } = fullRequest;
+
+    const queryParams: Record<string, string> = {};
+    if (params) {
+      for (const param of params) {
+        queryParams[param.key] = param.value;
+      }
+    }
+
+    if (body?.type === "json") {
+      parsedBody = { type: "Json", content: JSON.parse(body.content) };
+    } else if (body?.type === "xml") {
+      parsedBody = { type: "Xml", content: body.content };
+    }
+
+    switch (auth?.type) {
+      case "none":
+        parsedAuth = { type: "None" };
+        break;
+      case "basic":
+        parsedAuth = {
+          type: "Basic",
+          credentials: {
+            username: auth.value.username,
+            password: auth.value.password,
+          },
+        };
+        break;
+      case "bearer":
+        parsedAuth = {
+          type: "Bearer",
+          credentials: {
+            token: auth.value.token,
+          },
+        };
+        break;
+      case "apiKey":
+        parsedAuth = {
+          type: "ApiKey",
+          credentials: {
+            key_name: auth.value.key,
+            key_value: auth.value.value,
+            in_header: auth.value.addTo === "header",
+          },
+        };
+        break;
+    }
+
+    return {
+      name: request.title,
+      target: request.url,
+      method: request.method,
+      concurrency: advanced?.concurrency ?? 1,
+      duration: advanced?.duration ?? 10,
+      timeout: advanced?.timeout ?? undefined,
+      body: parsedBody,
+      auth: parsedAuth,
+      query_params:
+        Object.keys(queryParams).length > 0 ? queryParams : undefined,
+    };
+  }
   static async sendRequest(requestId: string): Promise<any> {
     const fullRequest = await this.requestRepository.getFullRequestById(
       requestId
