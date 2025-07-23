@@ -12,6 +12,8 @@ type WebSocketStore = {
   socket: WebSocket | null;
   messages: Message[];
   isConnected: boolean;
+  runTest: boolean;
+  setRunTest: (value: boolean) => void;
   token: string | null;
   uri: string | null;
   connect: (baseUrl: string, token?: string) => void;
@@ -27,6 +29,8 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     socket: null,
     messages: [],
     isConnected: false,
+    runTest: false,
+    setRunTest: (value: boolean) => set({ runTest: value }), 
     token: savedToken,
     uri: savedUri,
 

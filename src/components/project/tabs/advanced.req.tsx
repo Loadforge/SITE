@@ -7,15 +7,17 @@ import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { RequestAdvanced } from "@/db/types/advanced.type";
 import { RequestAdvancedService } from "@/services/request/advanced.request.service";
-
 
 interface Props {
   id: string;
 }
 
 export function AdvancedReq({ id }: Props) {
+  const { setRunTest } = useWebSocketStore();
+
   const { t } = useTranslation();
 
   const [advanced, setAdvanced] = useState<RequestAdvanced | null>(null);
@@ -41,6 +43,12 @@ export function AdvancedReq({ id }: Props) {
       setAdvanced(data);
     });
   }, [id]);
+  
+  useEffect(() => {
+    if (advanced) {
+      setRunTest(advanced.runTest);
+    }
+  }, [advanced?.runTest, setRunTest]);
 
   if (!advanced) return null;
 
@@ -50,9 +58,10 @@ export function AdvancedReq({ id }: Props) {
         <Checkbox
           id="run-test"
           checked={advanced.runTest}
-          onCheckedChange={(checked) =>
-            handleUpdate("runTest", checked === true)
-          }
+          onCheckedChange={(checked) => {
+            const value = checked === true;
+            handleUpdate("runTest", value);
+          }}
         />
         <Label htmlFor="run-test" className="cursor-pointer">
           Executar teste

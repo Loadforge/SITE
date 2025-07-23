@@ -18,6 +18,7 @@ import {
 } from "@/components";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Project } from "@/db/types";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
@@ -28,6 +29,7 @@ import { SendService } from "@/services/send.service";
 
 export function ProjectPage() {
   const { t } = useTranslation();
+  const { runTest, sendMessage } = useWebSocketStore();
   const [project, setProject] = useState<Project>({} as Project);
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
@@ -174,6 +176,15 @@ export function ProjectPage() {
   }
 
   function handleSendResponse(requestId: string) {
+    console.log(runTest);
+
+    if (runTest) {
+      RequestService.getFullRequestById(requestId).then((request) => {
+        console.log(request);
+      });
+      sendMessage("runTest");
+      return;
+    }
     setIsLoading(true);
     SendService.sendRequest(requestId)
       .then((response) => {
