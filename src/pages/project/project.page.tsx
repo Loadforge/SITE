@@ -16,6 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
+import { ConfirmExecutionModal } from "@/components/confirmationModal/ConfirmExecutionModal";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
@@ -34,6 +35,8 @@ export function ProjectPage() {
   const [project, setProject] = useState<Project>({} as Project);
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
 
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
@@ -194,29 +197,32 @@ export function ProjectPage() {
         toast.error("Executor desconectado");
         return;
       }
-      SendService.getConfigByRequestId(requestId).then((request) => {
-        console.log(request);
-        sendMessage(request);
-      });
 
+      setPendingRequestId(requestId);
+      setIsModalOpen(true);
       return;
     }
+
     setIsLoading(true);
     SendService.sendRequest(requestId)
-      .then((response) => {
-        setResponse(response);
-      })
+      .then((response) => setResponse(response))
       .catch((error) => {
         toast.error(
           `${t("request.send.error")}: ${error.message || t("error.unknown")}`
         );
         console.error("Erro ao enviar requisição:", error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .finally(() => setIsLoading(false));
   }
+  function handleRunTest() {
+    if (!pendingRequestId) return;
 
+    SendService.getConfigByRequestId(pendingRequestId).then((request) => {
+      sendMessage(request);
+    });
+
+    setIsModalOpen(false);
+  }
   useEffect(() => {
     if (!selectedRequest) return;
     ResponseService.getResponse(selectedRequest.id).then((res) => {
@@ -281,6 +287,11 @@ export function ProjectPage() {
           <ResponseSheet response={response} />
         </div>
       )}
+      <ConfirmExecutionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleRunTest}
+      />
     </ProjectPageLayout>
   );
 }
