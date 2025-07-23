@@ -24,6 +24,7 @@ import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
+import { SendService } from "@/services/send.service";
 
 export function ProjectPage() {
   const { t } = useTranslation();
@@ -174,7 +175,7 @@ export function ProjectPage() {
 
   function handleSendResponse(requestId: string) {
     setIsLoading(true);
-    ResponseService.sendRequest(requestId)
+    SendService.sendRequest(requestId)
       .then((response) => {
         setResponse(response);
       })
