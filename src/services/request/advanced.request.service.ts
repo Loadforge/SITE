@@ -1,14 +1,14 @@
-import { AuthRepository } from "@/db/repositories/auth.repository";
-import { RequestAuth } from "@/db/types";
+import { AdvancedRepository } from "@/db/repositories/advanced.repository";
+import { RequestAdvanced } from "@/db/types/advanced.type";
 
 export class RequestAdvancedService {
-  private static repository: AuthRepository = new AuthRepository();
+  private static repository: AdvancedRepository = new AdvancedRepository();
 
-  static async getAuthByRequestId(requestId: string): Promise<RequestAuth> {
-    return this.repository.getAuthByRequestId(requestId);
+  static async getAdvancedByRequestId(requestId: string): Promise<RequestAdvanced> {
+    return this.repository.getAdvancedByRequestId(requestId);
   }
 
-  static async update(auth: RequestAuth): Promise<void> {
-    return this.repository.updateauth(auth);
+  static async update(advanced: RequestAdvanced): Promise<void> {
+    return this.repository.updateAdvanced(advanced);
   }
 }

@@ -244,7 +244,7 @@ export function ProjectPage() {
               <BodyReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="advanced">
-              <AdvancedReq />
+              <AdvancedReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="docs">
               <DocsReq id={selectedRequest.id} />
