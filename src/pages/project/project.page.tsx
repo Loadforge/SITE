@@ -23,13 +23,14 @@ import { Project } from "@/db/types";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
+import { RequestAdvancedService } from "@/services/request/advanced.request.service";
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
 import { SendService } from "@/services/send.service";
 
 export function ProjectPage() {
   const { t } = useTranslation();
-  const { runTest, sendMessage } = useWebSocketStore();
+  const { runTest, sendMessage, isConnected, setRunTest } = useWebSocketStore();
   const [project, setProject] = useState<Project>({} as Project);
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +72,18 @@ export function ProjectPage() {
     }
   }, [requests, projectId]);
 
+  useEffect(() => {
+    if (!selectedRequest) return;
+
+    RequestAdvancedService.getAdvancedByRequestId(selectedRequest.id).then(
+      (advanced) => {
+        if (advanced) {
+          setRunTest(advanced.runTest);
+        }
+      }
+    );
+  }, [selectedRequest, setRunTest]);
+  
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
       .then(() => {
@@ -179,6 +192,10 @@ export function ProjectPage() {
     console.log(runTest);
 
     if (runTest) {
+      if (!isConnected) {
+        toast.error("Executor desconectado");
+        return;
+      }
       RequestService.getFullRequestById(requestId).then((request) => {
         console.log(request);
       });
