@@ -25,7 +25,7 @@ export function Header() {
         <BugButton />
         <SettingsPreferencesButton />
         <DocsButton />
-        <StatusBadge mode="basic" />
+        <StatusBadge  />
       </div>
     </header>
   );

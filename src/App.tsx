@@ -6,6 +6,7 @@ import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./contexts/theme/theme";
 import { openDb } from "./db/initialize.db";
 import { Router } from "./router";
+import { SocketConnector } from "./socket.connector";
 
 export function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -33,7 +34,7 @@ export function App() {
   }, []);
 
   return (
-    <ThemeProvider defaultTheme={theme}>
+     <ThemeProvider defaultTheme={theme}>
       <BrowserRouter>
         {isMobile && (
           <div className="fixed top-0 left-0 bg-background w-full h-full right-0 bottom-0 flex items-center justify-center p-6 z-50">
@@ -45,6 +46,9 @@ export function App() {
             </div>
           </div>
         )}
+
+        <SocketConnector /> 
+
         <Router />
         <Toaster
           position="bottom-left"

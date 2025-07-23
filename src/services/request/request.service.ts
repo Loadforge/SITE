@@ -37,5 +37,8 @@ export class RequestService {
   static async duplicate(request: Request): Promise<Request> {
     return this.repository.duplicate(request);
   }
+  static async getFullRequestById(id: string): Promise<any> {
+    return this.repository.getFullRequestById(id);
+  }
 
 }

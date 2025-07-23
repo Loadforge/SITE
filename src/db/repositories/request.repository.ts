@@ -3,12 +3,14 @@ import { IDBPDatabase } from "idb";
 import { openDb } from "../initialize.db";
 
 import { RequestAuth, RequestBody } from "../types";
+import { RequestAdvanced } from "../types/advanced.type";
 import { RequestDocs } from "../types/docs.type";
 import { Header } from "../types/headers.type";
 import { Param } from "../types/params.type";
 
 import { Request } from "./../types/request.type";
 
+import { AdvancedRepository } from "./advanced.repository";
 import { AuthRepository } from "./auth.repository";
 import { BodyRepository } from "./body.repository";
 import { DocsRepository } from "./docs.repository";
@@ -22,6 +24,7 @@ export class RequestRepository {
   private authrepository: AuthRepository;
   private paramsrepository: ParamsRepository;
   private headersrepository: HeadersRepository;
+  private advancedRepository: AdvancedRepository;
 
   constructor() {
     this.bodyRepository = new BodyRepository();
@@ -29,6 +32,7 @@ export class RequestRepository {
     this.authrepository = new AuthRepository();
     this.paramsrepository = new ParamsRepository();
     this.headersrepository = new HeadersRepository();
+    this.advancedRepository = new AdvancedRepository();
   }
 
   private async getDb(): Promise<IDBPDatabase> {
@@ -66,6 +70,7 @@ export class RequestRepository {
     await this.docsRepository.createDocs(request.id);
     await this.authrepository.createAuth(request.id);
     await this.headersrepository.initializeDefaultHeaders(request.id);
+    await this.advancedRepository.createAdvanced(request.id);
 
     return request;
   }
@@ -105,6 +110,7 @@ export class RequestRepository {
     await this.authrepository.deleteAuthByRequestId(id);
     await this.paramsrepository.deleteParamsByRequestId(id);
     await this.headersrepository.deleteHeadersByRequestId(id);
+    await this.advancedRepository.deleteAdvancedByRequestId(id);
   }
   async deleteAllRequestsByProjectId(id: string): Promise<void> {
     const db = await this.getDb();
@@ -184,6 +190,7 @@ export class RequestRepository {
     await this.docsRepository.duplicate(request.id, id);
     await this.paramsrepository.duplicate(request.id, id);
     await this.headersrepository.duplicate(request.id, id);
+    await this.advancedRepository.duplicate(request.id, id);
 
     return duplicatedRequest;
   }
@@ -195,15 +202,17 @@ export class RequestRepository {
     docs: RequestDocs;
     params: Param[] | null;
     headers: Header[] | null;
+    advanced: RequestAdvanced;
   }> {
     const request = await this.getRequestById(id);
 
-    const [body, auth, docs, params, headers] = await Promise.all([
+    const [body, auth, docs, params, headers, advanced] = await Promise.all([
       this.bodyRepository.getBodyByRequestId(id),
       this.authrepository.getAuthByRequestId(id),
       this.docsRepository.getDocsByRequestId(id),
       this.paramsrepository.getParamsByRequestId(id),
       this.headersrepository.getHeadersByRequestId(id),
+      this.advancedRepository.getAdvancedByRequestId(id),
     ]);
 
     return {
@@ -213,6 +222,7 @@ export class RequestRepository {
       docs,
       params,
       headers,
+      advanced,
     };
   }
   async duplicateAllRequestsByProjectId(
@@ -275,6 +285,10 @@ export class RequestRepository {
       );
       await this.headersrepository.importHeadersFromJson(
         request.headers,
+        newRequestId
+      );
+      await this.advancedRepository.importFromJson(
+        request.advanced,
         newRequestId
       );
     }

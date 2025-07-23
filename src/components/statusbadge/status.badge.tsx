@@ -1,19 +1,20 @@
 import { useTranslation } from "react-i18next";
-import { FaCrown, FaCircle } from "react-icons/fa";
+import { FaCircle, FaCrown } from "react-icons/fa";
+
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
 import { Badge } from "../ui/badge";
 
-interface StatusBadgeProps {
-  mode: "basic" | "full";
-}
-
-export function StatusBadge({ mode }: StatusBadgeProps) {
+export function StatusBadge() {
   const { t } = useTranslation();
+  const {isConnected} = useWebSocketStore();
+
+  const mode = isConnected ? "full" : "basic";
 
   return (
     <Badge
       variant={mode === "full" ? "default" : "basic"}
-      className="flex items-center  gap-2 text-sm font-bold"
+      className="flex items-center gap-2 text-sm font-bold"
     >
       {mode === "full" ? (
         <>
@@ -22,7 +23,7 @@ export function StatusBadge({ mode }: StatusBadgeProps) {
         </>
       ) : (
         <>
-          <FaCircle className="text-text text-xs" />
+          <FaCircle className="text-zinc-400 text-xs" />
           {t("basic")}
         </>
       )}
