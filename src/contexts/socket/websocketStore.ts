@@ -8,11 +8,13 @@ type WebSocketStore = {
   isConnected: boolean;
   runTest: boolean;
   setRunTest: (value: boolean) => void;
+  setTest: (value: boolean) => void;
   token: string | null;
   uri: string | null;
   connect: (baseUrl: string, token?: string) => void;
   disconnect: () => void;
   sendMessage: (text: any) => void;
+  test: boolean;
 };
 
 export const useWebSocketStore = create<WebSocketStore>((set, get) => {
@@ -26,6 +28,8 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     setRunTest: (value: boolean) => set({ runTest: value }),
     token: savedToken,
     uri: savedUri,
+    test: false,
+    setTest: (value: boolean) => set({ test: value }),
 
     connect: (baseUrl, token) => {
       if (get().isConnected) {
@@ -60,7 +64,17 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
       socket.onmessage = (event) => {
         try {
-          toast.success(event.data);
+          const data = JSON.parse(event.data);
+
+          if (data.status === "start-config") {
+            set({ test: true });
+            set({ runTest: true });
+          }
+
+          if (data.status === "final-metrics" || data.status === "aborted") {
+            set({ runTest: false });
+          }
+          console.log(event.data);
         } catch {
           console.warn(
             "Mensagem recebida não está no formato JSON:",

@@ -3,12 +3,16 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 
 import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner"
 import { ThemeProvider } from "./contexts/theme/theme";
 import { openDb } from "./db/initialize.db";
 import { Router } from "./router";
 import { SocketConnector } from "./socket.connector";
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
 export function App() {
+  const toastId = "test-execution-toast";
+  const { test } = useWebSocketStore();
   const [isMobile, setIsMobile] = useState(false);
   const theme: "light" | "dark" | "system" = "system";
   const { t } = useTranslation(); 
@@ -32,6 +36,25 @@ export function App() {
 
     init();
   }, []);
+
+useEffect(() => {
+
+      if (test === true) {
+        toast.custom(() => (
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-md p-4 w-[300px] shadow">
+            <p className="font-medium text-sm"> Teste de carga em execução...</p>
+          </div>
+        ), {
+          id: toastId,
+          position: "top-right",
+          duration: Infinity,
+        });
+      }
+
+      if (test === false) {
+        toast.dismiss(toastId);
+      }
+    }, [test]);
 
   return (
      <ThemeProvider defaultTheme={theme}>
