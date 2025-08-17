@@ -16,7 +16,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
-import { ConfirmExecutionModal } from "@/components/confirmationModal/ConfirmExecutionModal";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
@@ -28,6 +27,7 @@ import { RequestAdvancedService } from "@/services/request/advanced.request.serv
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
 import { SendService } from "@/services/send.service";
+import { ConfirmModal } from "@/components/confirmationModal/ConfirmModal";
 
 export function ProjectPage() {
   const { t } = useTranslation();
@@ -287,11 +287,13 @@ export function ProjectPage() {
           <ResponseSheet response={response} />
         </div>
       )}
-      <ConfirmExecutionModal
+      <ConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleRunTest}
-      />
+        onConfirm={handleRunTest} 
+        title={"Executar teste de carga"} 
+        message={"Deseja iniciar o teste de carga com a configuração atual?"}
+        confirmLabel="Executar"/>
     </ProjectPageLayout>
   );
 }
