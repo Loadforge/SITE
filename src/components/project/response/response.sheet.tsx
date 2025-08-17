@@ -40,10 +40,11 @@ export function ResponseSheet({ response }: Props) {
     <div className="relative">
       <div
         ref={panelRef}
-        className="fixed bottom-0 right-0 bg-background-secondary z-10 transition-all duration-200 shadow-lg border-t border-border"
+        className="fixed bottom-0 right-0 bg-background-secondary  transition-all duration-200 shadow-lg border-t border-border"
         style={{
           height: isOpen ? "60dvh" : "5dvh",
           left: open ? "16rem" : "0",
+          zIndex: isOpen ? "10" : "0",
         }}
       >
         <button

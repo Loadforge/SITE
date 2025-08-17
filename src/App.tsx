@@ -2,20 +2,24 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 
+import { toast } from "sonner";
+
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
+
 import { Toaster } from "./components/ui/sonner";
-import { toast } from "sonner"
+
 import { ThemeProvider } from "./contexts/theme/theme";
 import { openDb } from "./db/initialize.db";
 import { Router } from "./router";
 import { SocketConnector } from "./socket.connector";
-import { useWebSocketStore } from "@/contexts/socket/websocketStore";
+
 
 export function App() {
   const toastId = "test-execution-toast";
   const { test } = useWebSocketStore();
   const [isMobile, setIsMobile] = useState(false);
   const theme: "light" | "dark" | "system" = "system";
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   useEffect(() => {
     const init = async () => {
@@ -37,27 +41,32 @@ export function App() {
     init();
   }, []);
 
-useEffect(() => {
-
-      if (test === true) {
-        toast.custom(() => (
+  useEffect(() => {
+    if (test === true) {
+      toast.custom(
+        () => (
           <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-md p-4 w-[300px] shadow">
-            <p className="font-medium text-sm"> Teste de carga em execução...</p>
+            <p className="font-medium text-sm">
+              {" "}
+              Teste de carga em execução...
+            </p>
           </div>
-        ), {
+        ),
+        {
           id: toastId,
           position: "top-right",
           duration: Infinity,
-        });
-      }
+        }
+      );
+    }
 
-      if (test === false) {
-        toast.dismiss(toastId);
-      }
-    }, [test]);
+    if (test === false) {
+      toast.dismiss(toastId);
+    }
+  }, [test]);
 
   return (
-     <ThemeProvider defaultTheme={theme}>
+    <ThemeProvider defaultTheme={theme}>
       <BrowserRouter>
         {isMobile && (
           <div className="fixed top-0 left-0 bg-background w-full h-full right-0 bottom-0 flex items-center justify-center p-6 z-50">
@@ -70,7 +79,7 @@ useEffect(() => {
           </div>
         )}
 
-        <SocketConnector /> 
+        <SocketConnector />
 
         <Router />
         <Toaster

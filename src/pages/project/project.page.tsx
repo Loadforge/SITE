@@ -17,6 +17,7 @@ import {
   TabsTrigger,
 } from "@/components";
 import { ConfirmExecutionModal } from "@/components/confirmationModal/ConfirmExecutionModal";
+import { ResponseChargeSheet } from "@/components/project/chargeResponse/charge.response.sheet";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
@@ -285,6 +286,8 @@ export function ProjectPage() {
             </TabsContent>
           </Tabs>
           <ResponseSheet response={response} />
+          <ResponseChargeSheet response={response}  />
+
         </div>
       )}
       <ConfirmExecutionModal
