@@ -4,6 +4,8 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { useSidebar } from "@/components/ui/sidebar";
 
 import { DataTable } from "./table/data-table";
+import { AbortButton } from "@/components/abortButton";
+import { TestTimer } from "@/components/testTimer";
 
 interface Props {
   response: any;
@@ -56,8 +58,9 @@ export function ResponseChargeSheet({ response }: Props) {
 
         {isOpen && (
           <div className="h-full overflow-y-auto">
-            <div className="flex justify-between items-center w-full p-4">
-              Aqui vai outra coisa
+            <div className="flex justify-end gap-4 items-center w-full p-4">
+              <AbortButton></AbortButton>
+              <TestTimer></TestTimer>
             </div>
 
             <div className="p-2">{test && <DataTable columns={columns} data={mockData} />}</div>
