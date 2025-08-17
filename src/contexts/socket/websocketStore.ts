@@ -15,6 +15,7 @@ type WebSocketStore = {
   disconnect: () => void;
   sendMessage: (text: any) => void;
   test: boolean;
+  duration: number;
 };
 
 export const useWebSocketStore = create<WebSocketStore>((set, get) => {
@@ -29,6 +30,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     token: savedToken,
     uri: savedUri,
     test: false,
+    duration: 0,
     setTest: (value: boolean) => set({ test: value }),
 
     connect: (baseUrl, token) => {
@@ -69,10 +71,11 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
           if (data.status === "start-config") {
             set({ test: true });
             set({ runTest: true });
+            set({ duration: event.data.duration});
           }
 
-          if (data.status === "final-metrics" || data.status === "aborted") {
-            set({ runTest: false });
+          if (data.status === "final-metrics") {
+            set({ test: false });
           }
           console.log(event.data);
         } catch {

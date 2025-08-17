@@ -37,7 +37,7 @@ export function ProjectPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
-
+  
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
@@ -220,7 +220,6 @@ export function ProjectPage() {
     SendService.getConfigByRequestId(pendingRequestId).then((request) => {
       sendMessage(request);
     });
-
     setIsModalOpen(false);
   }
   useEffect(() => {

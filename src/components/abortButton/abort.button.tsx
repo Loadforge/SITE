@@ -5,11 +5,11 @@ import { useState } from 'react';
 import { useWebSocketStore } from '@/contexts/socket/websocketStore';
 
 export function AbortButton() {
-const { runTest, sendMessage } = useWebSocketStore();    
+const { test, sendMessage } = useWebSocketStore();    
 const [isModalOpen, setIsModalOpen] = useState(false);
 const { t } = useTranslation();
 
-if(!runTest) return null;
+if(!test) return null;
 
 function handleAbort(){
     sendMessage("abort");
