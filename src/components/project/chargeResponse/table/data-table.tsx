@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
-import { HttpStatuBadge } from "@/components/badge/http.badge"
+import { HttpStatuBadge } from "@/components/badge/http.badge";
 import {
   Table,
   TableBody,
@@ -15,11 +15,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<
@@ -30,10 +30,10 @@ export function DataTable<
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  });
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+    <div className="overflow-hidden bg-background shadow-sm max-h-70 overflow-y-auto ">
       <Table>
         <TableHeader className="bg-muted/40">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -67,8 +67,8 @@ export function DataTable<
                 `}
               >
                 {row.getVisibleCells().map((cell) => {
-                  const columnId = cell.column.id
-                  const value = cell.getValue()
+                  const columnId = cell.column.id;
+                  const value = cell.getValue();
 
                   return (
                     <TableCell
@@ -77,15 +77,22 @@ export function DataTable<
                     >
                       {columnId === "status" ? (
                         <HttpStatuBadge
-                          code={typeof value === 'number' ? value : Number(value) || 0}
+                          code={
+                            typeof value === "number"
+                              ? value
+                              : Number(value) || 0
+                          }
                         />
                       ) : columnId === "duration" ? (
                         <span>{String(value)} ms</span>
                       ) : (
-                        flexRender(cell.column.columnDef.cell, cell.getContext())
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
                       )}
                     </TableCell>
-                  )
+                  );
                 })}
               </TableRow>
             ))
@@ -102,5 +109,5 @@ export function DataTable<
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

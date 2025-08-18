@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import { Button } from "../ui";
 
@@ -22,7 +21,6 @@ export function ConfirmModal({
   message,
   confirmLabel = "Confirmar",
 }: ConfirmModalProps) {
-  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
