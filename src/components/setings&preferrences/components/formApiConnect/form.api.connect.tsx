@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Eye, EyeOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,13 @@ type FormValues = {
   apiToken: string;
 };
 
-export function FormApiConnect() {
+type TypeProps = {
+  onClose: () => void;
+}
+export function FormApiConnect({onClose}:TypeProps) {
   const [showToken, setShowToken] = useState(false);
-  const { isConnected, connect } = useWebSocketStore();
-
+  const { isConnected, connect, disconnect } = useWebSocketStore();
+  const hasRun = useRef(false);
   const form = useForm<FormValues>({
     resolver: yupResolver(apiConnectSchema),
     defaultValues: {
@@ -38,9 +41,21 @@ export function FormApiConnect() {
       apiToken: savedToken ?? "",
     });
   }, [form]);
+  
+  useEffect(()=>{
+    if(isConnected && hasRun.current){
+      hasRun.current = false;
+      onClose();
+    }
+  },[isConnected]);
 
   function onSubmit(values: FormValues) {
-    connect(values.apiUri, values.apiToken);
+    if(!isConnected){
+      connect(values.apiUri, values.apiToken);
+      hasRun.current = true;
+    }else{
+      disconnect();
+    }
   }
 
   return (
@@ -92,8 +107,8 @@ export function FormApiConnect() {
           )}
         />
 
-        <Button type="submit" disabled={isConnected} className="w-full">
-          {isConnected ? "Conectado" : "Conectar"}
+        <Button type="submit" className="w-full">
+          {isConnected ? "Desconectar" : "Conectar"}
         </Button>
       </form>
     </Form>
