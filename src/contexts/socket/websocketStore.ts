@@ -16,6 +16,7 @@ type WebSocketStore = {
   sendMessage: (text: any) => void;
   test: boolean;
   duration: number;
+  isConnecting: boolean;
 };
 
 export const useWebSocketStore = create<WebSocketStore>((set, get) => {
@@ -32,36 +33,31 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     test: false,
     duration: 0,
     setTest: (value: boolean) => set({ test: value }),
+    isConnecting: false,
 
     connect: (baseUrl, token) => {
-      if (get().isConnected) {
-        toast.warning("Já está conectado ao Executor");
-        return;
-      }
+      if (get().isConnected || get().isConnecting) return;
 
-      if (token) {
-        connectionStorage.setToken(token);
-        set({ token });
-      } else {
-        token = get().token || undefined;
-      }
+      set({ isConnecting: true });
 
-      if (!token) {
+      const finalToken = token || get().token;
+      if (!finalToken) {
         toast.error("Token necessário para conectar");
+        set({ isConnecting: false });
         return;
       }
 
+      connectionStorage.setToken(finalToken);
       connectionStorage.setUri(baseUrl);
-      set({ uri: baseUrl });
+      set({ token: finalToken, uri: baseUrl });
 
       const cleanBase = baseUrl.replace(/\/+$/, "");
-      const url = `${cleanBase}?token=${token}`;
-
+      const url = `${cleanBase}?token=${finalToken}`;
       const socket = new WebSocket(url);
 
       socket.onopen = () => {
+        set({ isConnected: true, isConnecting: false, socket });
         toast.success("Conectado ao Executor");
-        set({ isConnected: true });
       };
 
       socket.onmessage = (event) => {
@@ -69,14 +65,13 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
           const data = JSON.parse(event.data);
 
           if (data.status === "start-config") {
-            set({ test: true });
-            set({ runTest: true });
-            set({ duration: event.data.duration});
+            set({ test: true, runTest: true, duration: data.duration });
           }
 
           if (data.status === "final-metrics") {
             set({ test: false });
           }
+
           console.log(event.data);
         } catch {
           console.warn(
@@ -88,24 +83,22 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
       };
 
       socket.onclose = () => {
+        set({ isConnected: false, isConnecting: false, socket: null });
         toast.error("Executor desconectado");
-        set({ isConnected: false, socket: null });
       };
 
       socket.onerror = (err) => {
         console.error("Erro Executor:", err);
+        set({ isConnecting: false });
         toast.error("Erro na conexão com o Executor");
-        socket.close();
       };
-
-      set({ socket });
     },
 
     disconnect: () => {
       get().socket?.close();
       connectionStorage.clearAll();
+      set({ socket: null, isConnected: false, isConnecting: false, token: null, uri: null });
       toast.info("Conexão encerrada");
-      set({ socket: null, isConnected: false, token: null, uri: null });
     },
 
     sendMessage: (text) => {
@@ -118,4 +111,4 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
       }
     },
   };
-})
+});
