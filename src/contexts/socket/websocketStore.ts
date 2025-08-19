@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 
 import { connectionStorage } from "@/storages/connectionStorage";
+import { RequestFormData } from "@/validators";
 
 type WebSocketStore = {
   socket: WebSocket | null;
@@ -16,6 +17,9 @@ type WebSocketStore = {
   sendMessage: (text: any) => void;
   test: boolean;
   duration: number;
+  startconfigData: any | null;
+  processData: RequestFormData[] | null;
+  finalMetrics: any | null;
 };
 
 export const useWebSocketStore = create<WebSocketStore>((set, get) => {
@@ -32,6 +36,9 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     test: false,
     duration: 0,
     setTest: (value: boolean) => set({ test: value }),
+    startconfigData: null,
+    processData: null,
+    finalMetrics: null,
 
     connect: (baseUrl, token) => {
       if (get().isConnected) {
@@ -70,12 +77,23 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
           if (data.status === "start-config") {
             set({ test: true });
-            set({ runTest: true });
-            set({ duration: event.data.duration});
+            set({ duration: event.data.config.duration});
+            set({ startconfigData: data });
+          }
+          if (data.status === "process") {
+            const processData : RequestFormData = {duration_ms: data.duration_ms, http_status: data.http_status}; 
+            set((state) => ({
+              processData: state.processData
+                ? [...state.processData, processData]
+                : [processData],
+            }));
+            
           }
 
-          if (data.status === "final-metrics") {
+          if (data.status === "final_metrics") {
             set({ test: false });
+            set({ finalMetrics: data });
+            set({processData: null});
           }
           console.log(event.data);
         } catch {
@@ -118,4 +136,4 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
       }
     },
   };
-})
+});

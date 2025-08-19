@@ -1,30 +1,23 @@
 "use client";
 
-import { useWebSocketStore } from '@/contexts/socket/websocketStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
 export function TestTimer() {
-    const { test, duration } = useWebSocketStore();
-    const [seconds, setSeconds] = useState(duration);
+  const { test, duration } = useWebSocketStore();
+  const [seconds, setSeconds] = useState(duration);
+  useEffect(() => {
+    setSeconds(duration);
 
-    if(!test)return null;
+    const interval = setInterval(() => {
+      setSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
 
-    useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    return () => clearInterval(interval);
+  }, [test, duration]);
 
-    if (test) {
-      interval = setInterval(() => {
-        setSeconds((prev) => {
-            if (prev > 0) return prev - 1;
-            return 0;
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [test]);
+  if (!test) return null;
 
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -32,11 +25,15 @@ export function TestTimer() {
     const secs = totalSeconds % 60;
 
     if (hours > 0) {
-      return `${String(hours).padStart(2, "0")}:${String(
-        minutes
-      ).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+        2,
+        "0"
+      )}:${String(secs).padStart(2, "0")}`;
     }
-    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(
+      2,
+      "0"
+    )}`;
   };
 
   if (!test) return null;
@@ -46,5 +43,4 @@ export function TestTimer() {
       Time: {formatTime(seconds)}
     </div>
   );
-
 }

@@ -1,42 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
-import { useSidebar } from "@/components/ui/sidebar";
-
-import { DataTable } from "./table/data-table";
-<<<<<<< HEAD
 import { AbortButton } from "@/components/abortButton";
 import { TestTimer } from "@/components/testTimer";
-=======
->>>>>>> a7c8bc4 (Feat: table desing)
+import { useSidebar } from "@/components/ui/sidebar";
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
+
+import { NotChargeResponse } from "./not.charge.response";
+import { DataTable } from "./table/data-table";
 
 interface Props {
   response: any;
 }
 
 export function ResponseChargeSheet({ response }: Props) {
-  const test = true;
-  const panelRef = useRef<HTMLDivElement>(null);
+  const { processData, test } = useWebSocketStore();
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
 
+  const panelRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const columns = [
-    { accessorKey: "duration", header: "Duration" },
-    { accessorKey: "status", header: "Status" },
+    { accessorKey: "duration_ms", header: "Duration" },
+    { accessorKey: "http_status", header: "Status" },
   ];
 
-  const mockData = [
-    { duration: 131, status: "200" },
-    { duration: 312, status: "200" },
-    { duration: 25, status: "500" },
-    { duration: 64, status: "200" },
-  ];
-
-  const togglePanel = () => setIsOpen(!isOpen);
+  const togglePanel = () => setIsOpen((prev) => !prev);
 
   useEffect(() => {
     setIsOpen(response !== undefined);
   }, [response]);
+
+  useEffect(() => {
+    if (test) {
+      setIsOpen(true);
+    }
+  }, [test]);
 
   return (
     <div className="relative">
@@ -60,13 +60,29 @@ export function ResponseChargeSheet({ response }: Props) {
         <div className="h-0.5 bg-separators/25" />
 
         {isOpen && (
-          <div className="h-full overflow-y-auto">
-            <div className="flex justify-end gap-4 items-center w-full p-4">
-              <AbortButton></AbortButton>
-              <TestTimer></TestTimer>
-            </div>
-
-            <div className="p-2">{test && <DataTable columns={columns} data={mockData} />}</div>
+          <div ref={scrollRef} className="h-full overflow-y-auto">
+            {test ? (
+              <>
+                <div className="flex justify-end gap-4 items-center w-full px-4 py-1">
+                  <AbortButton />
+                  <TestTimer />
+                </div>
+                <div className="p-2">
+                  <DataTable
+                    columns={columns}
+                    data={(processData ?? []).map((item: any) => ({
+                      ...item,
+                      status:
+                        item.status !== undefined
+                          ? String(item.status)
+                          : undefined,
+                    }))}
+                  />
+                </div>
+              </>
+            ) : (
+              <NotChargeResponse />
+            )}
           </div>
         )}
       </div>

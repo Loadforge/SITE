@@ -16,6 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
+import { ConfirmModal } from "@/components/confirmationModal/ConfirmModal";
 import { ResponseChargeSheet } from "@/components/project/chargeResponse/charge.response.sheet";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
@@ -28,8 +29,6 @@ import { RequestAdvancedService } from "@/services/request/advanced.request.serv
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
 import { SendService } from "@/services/send.service";
-import { ConfirmModal } from "@/components/confirmationModal/ConfirmModal";
-import { ResponseChargeSheet } from "@/components/project/chargeResponse/charge.response.sheet";
 
 export function ProjectPage() {
   const { t } = useTranslation();
