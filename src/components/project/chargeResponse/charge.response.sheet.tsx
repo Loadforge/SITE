@@ -4,8 +4,11 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { useSidebar } from "@/components/ui/sidebar";
 
 import { DataTable } from "./table/data-table";
+<<<<<<< HEAD
 import { AbortButton } from "@/components/abortButton";
 import { TestTimer } from "@/components/testTimer";
+=======
+>>>>>>> a7c8bc4 (Feat: table desing)
 
 interface Props {
   response: any;
