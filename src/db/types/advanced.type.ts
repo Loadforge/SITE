@@ -4,6 +4,4 @@ export interface RequestAdvanced {
   runTest: boolean;
   concurrency: number;
   duration: number;
-  timeoutEnabled: boolean;
-  timeout: number; 
 }

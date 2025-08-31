@@ -6,12 +6,24 @@ import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
 export function TestTimer() {
   const { test, duration } = useWebSocketStore();
-  const [seconds, setSeconds] = useState(duration);
+  const [seconds, setSeconds] = useState<number>(0);
+
   useEffect(() => {
-    setSeconds(duration);
+    if (!test || typeof duration !== "number" || duration <= 0) {
+      setSeconds(0);
+      return;
+    }
+
+    setSeconds(duration); 
 
     const interval = setInterval(() => {
-      setSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+      setSeconds((prev) => {
+        if (prev <= 0) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -30,13 +42,9 @@ export function TestTimer() {
         "0"
       )}:${String(secs).padStart(2, "0")}`;
     }
-    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(
-      2,
-      "0"
-    )}`;
-  };
 
-  if (!test) return null;
+    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
 
   return (
     <div className="text-md text-muted-foreground bg-accent-foreground p-2 rounded-md">

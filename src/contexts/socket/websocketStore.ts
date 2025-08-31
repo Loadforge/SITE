@@ -73,7 +73,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
           if (data.status === "start-config") {
             set({ test: true });
-            set({ duration: event.data.config.duration});
+            set({ duration: parseInt(data.config.duration)});
             set({ startconfigData: data });
           }
           if (data.status === "process") {
@@ -87,7 +87,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
             set({ test: true, runTest: true, duration: data.duration });
           }
 
-          if (data.status === "final_metrics") {
+          if (data.status === "final_metrics" || data.status === "aborted") {
             set({ test: false });
             set({ finalMetrics: data });
             set({processData: null});

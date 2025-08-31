@@ -1,10 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
-
-import { toast } from "sonner";
-
-import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
 import { Toaster } from "./components/ui/sonner";
 
@@ -12,11 +8,9 @@ import { ThemeProvider } from "./contexts/theme/theme";
 import { openDb } from "./db/initialize.db";
 import { Router } from "./router";
 import { SocketConnector } from "./socket.connector";
-
+import { TestExecutionToast } from "./components/chargeToastRunning/charge.toast.running";
 
 export function App() {
-  const toastId = "test-execution-toast";
-  const { test } = useWebSocketStore();
   const [isMobile, setIsMobile] = useState(false);
   const theme: "light" | "dark" | "system" = "system";
   const { t } = useTranslation();
@@ -41,30 +35,6 @@ export function App() {
     init();
   }, []);
 
-  useEffect(() => {
-    if (test === true) {
-      toast.custom(
-        () => (
-          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-md p-4 w-[300px] shadow">
-            <p className="font-medium text-sm">
-              {" "}
-              Teste de carga em execução...
-            </p>
-          </div>
-        ),
-        {
-          id: toastId,
-          position: "top-right",
-          duration: Infinity,
-        }
-      );
-    }
-
-    if (test === false) {
-      toast.dismiss(toastId);
-    }
-  }, [test]);
-
   return (
     <ThemeProvider defaultTheme={theme}>
       <BrowserRouter>
@@ -88,6 +58,7 @@ export function App() {
           theme={theme}
           closeButton
         />
+        <TestExecutionToast/>
       </BrowserRouter>
     </ThemeProvider>
   );

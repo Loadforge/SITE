@@ -43,7 +43,7 @@ export function AdvancedReq({ id }: Props) {
       setAdvanced(data);
     });
   }, [id]);
-  
+
   useEffect(() => {
     if (advanced) {
       setRunTest(advanced.runTest);
@@ -102,42 +102,6 @@ export function AdvancedReq({ id }: Props) {
           disabled={!advanced.runTest}
         />
       </div>
-
-      <div className="flex items-center gap-3">
-        <Checkbox
-          id="timeout-enabled"
-          checked={advanced.timeoutEnabled}
-          onCheckedChange={(checked) =>
-            handleUpdate("timeoutEnabled", checked === true)
-          }
-          disabled={!advanced.runTest}
-        />
-        <Label
-          htmlFor="timeout-enabled"
-          title="Ativa ou desativa o timeout para as requisições."
-        >
-          Enable Timeout
-        </Label>
-      </div>
-
-      {advanced.timeoutEnabled && advanced.runTest && (
-        <div className="flex flex-col gap-1">
-          <Label
-            htmlFor="timeout"
-            title="Tempo limite em milissegundos para cada requisição ser concluída antes de ser cancelada."
-          >
-            Timeout (ms)
-          </Label>
-          <Input
-            id="timeout"
-            type="number"
-            min={1}
-            value={advanced.timeout}
-            onChange={(e) => handleUpdate("timeout", Number(e.target.value))}
-            disabled={!advanced.runTest}
-          />
-        </div>
-      )}
     </div>
   );
 }

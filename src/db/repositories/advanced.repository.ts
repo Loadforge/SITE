@@ -24,8 +24,6 @@ export class AdvancedRepository {
       runTest: false,
       concurrency: 0,
       duration: 0,
-      timeoutEnabled: false,
-      timeout: 0,
     };
 
     await store.add(advanced);
