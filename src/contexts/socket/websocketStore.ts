@@ -27,6 +27,21 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
   const savedToken = connectionStorage.getToken();
   const savedUri = connectionStorage.getUri();
 
+  let processBuffer: RequestFormData[] = [];
+  let processTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const flushProcess = () => {
+    if (processBuffer.length > 0) {
+      set((state) => ({
+        processData: state.processData
+          ? [...state.processData, ...processBuffer]
+          : [...processBuffer],
+      }));
+      set({ test: true, runTest: true });
+      processBuffer = [];
+    }
+  };
+
   return {
     socket: null,
     isConnected: false,
@@ -73,32 +88,39 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
           if (data.status === "start-config") {
             set({ test: true });
-            set({ duration: parseInt(data.config.duration)});
+            set({ duration: data.config.duration });
+            console.log("Duração do teste:", data.config.duration);
             set({ startconfigData: data });
           }
+
           if (data.status === "process") {
-            const processData : RequestFormData = {duration_ms: data.duration_ms, http_status: data.http_status}; 
-            set((state) => ({
-              processData: state.processData
-                ? [...state.processData, processData]
-                : [processData],
-            }));
-            
-            set({ test: true, runTest: true, duration: data.duration });
+            const processData: RequestFormData = {
+              duration_ms: data.duration_ms,
+              http_status: data.http_status,
+            };
+
+            // acumula no buffer
+            processBuffer.push(processData);
+
+            // agenda flush a cada 300ms
+            if (!processTimer) {
+              processTimer = setTimeout(() => {
+                flushProcess();
+                processTimer = null;
+              }, 300);
+            }
           }
 
           if (data.status === "final_metrics" || data.status === "aborted") {
+            flushProcess(); // garante flush final
             set({ test: false });
             set({ finalMetrics: data });
-            set({processData: null});
+            set({ processData: null });
           }
 
           console.log(event.data);
         } catch {
-          console.warn(
-            "Mensagem recebida não está no formato JSON:",
-            event.data
-          );
+          console.warn("Mensagem recebida não está no formato JSON:", event.data);
           toast.warning("Mensagem recebida inválida.");
         }
       };
@@ -118,7 +140,13 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     disconnect: () => {
       get().socket?.close();
       connectionStorage.clearAll();
-      set({ socket: null, isConnected: false, isConnecting: false, token: null, uri: null });
+      set({
+        socket: null,
+        isConnected: false,
+        isConnecting: false,
+        token: null,
+        uri: null,
+      });
       toast.info("Conexão encerrada");
     },
 
