@@ -28,6 +28,12 @@ export async function openDb() {
 
       const advancedStore = db.createObjectStore("advanced", { keyPath: "id" });
       advancedStore.createIndex("requestIndex", "requestId");
+
+      const configTestStore = db.createObjectStore("configTest", { keyPath: "id" });
+      configTestStore.createIndex("requestIndex", "requestId");
+
+      const metricsTestStore = db.createObjectStore("metricsTest", { keyPath: "id" });
+      metricsTestStore.createIndex("requestIndex", "requestId");
     },
   });
 
