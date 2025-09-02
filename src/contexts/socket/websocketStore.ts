@@ -21,6 +21,7 @@ type WebSocketStore = {
   processData: RequestFormData[] | null;
   finalMetrics: any | null;
   isConnecting: boolean;
+  reconnect: () => void;
 };
 
 export const useWebSocketStore = create<WebSocketStore>((set, get) => {
@@ -56,6 +57,16 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     processData: null,
     finalMetrics: null,
     isConnecting: false,
+    
+    reconnect() {
+      const token = connectionStorage.getToken();
+      const uri = connectionStorage.getUri();
+      if (token && uri) {
+        get().connect(uri, token);
+      } else {
+        toast.error("Token ou URI ausente. Não foi possível reconectar.");
+      }
+    },
 
     connect: (baseUrl, token) => {
       if (get().isConnected || get().isConnecting) return;
@@ -99,10 +110,8 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
               http_status: data.http_status,
             };
 
-            // acumula no buffer
             processBuffer.push(processData);
 
-            // agenda flush a cada 300ms
             if (!processTimer) {
               processTimer = setTimeout(() => {
                 flushProcess();
@@ -112,7 +121,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
           }
 
           if (data.status === "final_metrics" || data.status === "aborted") {
-            flushProcess(); // garante flush final
+            flushProcess();
             set({ test: false });
             set({ finalMetrics: data });
             set({ processData: null });
@@ -120,7 +129,10 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
           console.log(event.data);
         } catch {
-          console.warn("Mensagem recebida não está no formato JSON:", event.data);
+          console.warn(
+            "Mensagem recebida não está no formato JSON:",
+            event.data
+          );
           toast.warning("Mensagem recebida inválida.");
         }
       };
