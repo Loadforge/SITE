@@ -11,8 +11,6 @@ export function TestTimer() {
   useEffect(() => {
     if (!test || typeof duration !== "number" || duration <= 0) {
       setSeconds(0);
-      console.log(test,  typeof duration, duration);
-      console.log("Timer stopped or invalid duration");
       return;
     }
 

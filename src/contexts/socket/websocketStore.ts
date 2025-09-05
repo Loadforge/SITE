@@ -102,17 +102,12 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
           if (data.status === "start-config") {
             set({ test: true });
             set({ duration: data.config.duration });
-            console.log("Duração do teste:", data.config.duration);
             set({ startconfigData: data });
             RequestConfigTestService.createOrUpdateConfigTest(
               data.config.request_id,
               data.config
             )
-              .then(() => {
-                console.log(
-                  "Configuração do teste salva/atualizada com sucesso."
-                );
-              })
+              .then(() => {})
               .catch((error) => {
                 toast.error(
                   "Erro ao salvar/atualizar a configuração do teste:",
@@ -144,13 +139,12 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
             set({ processData: null });
             try {
               RequestMetricsTestService.createOrUpdateMetricsTest(
-              data.request_id,
-              data
-            );
+                data.request_id,
+                data
+              );
             } catch (error) {
-              console.log(error)
+              console.log(error);
             }
-            
           }
 
           console.log(event.data);
@@ -192,7 +186,6 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
       const sock = get().socket;
       if (sock?.readyState === WebSocket.OPEN) {
         sock.send(JSON.stringify(text));
-        toast.success("Mensagem enviada");
       } else {
         toast.error("Não conectado ao WebSocket");
       }
