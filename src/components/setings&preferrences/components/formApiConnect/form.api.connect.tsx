@@ -6,14 +6,19 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { connectionStorage } from "@/storages/connectionStorage";
 import { apiConnectSchema } from "@/validators";
-
 
 type FormValues = {
   apiUri: string;
@@ -22,9 +27,9 @@ type FormValues = {
 
 type TypeProps = {
   onClose: () => void;
-}
-export function FormApiConnect({onClose}:TypeProps) {
-  const {t}= useTranslation
+};
+export function FormApiConnect({ onClose }: TypeProps) {
+  const { t } = useTranslation();
   const [showToken, setShowToken] = useState(false);
   const { isConnected, connect, disconnect } = useWebSocketStore();
   const hasRun = useRef(false);
@@ -45,19 +50,19 @@ export function FormApiConnect({onClose}:TypeProps) {
       apiToken: savedToken ?? "",
     });
   }, [form]);
-  
-  useEffect(()=>{
-    if(isConnected && hasRun.current){
+
+  useEffect(() => {
+    if (isConnected && hasRun.current) {
       hasRun.current = false;
       onClose();
     }
-  },[isConnected]);
+  }, [isConnected]);
 
   function onSubmit(values: FormValues) {
-    if(!isConnected){
+    if (!isConnected) {
       connect(values.apiUri, values.apiToken);
       hasRun.current = true;
-    }else{
+    } else {
       disconnect();
     }
   }
@@ -112,7 +117,7 @@ export function FormApiConnect({onClose}:TypeProps) {
         />
 
         <Button type="submit" className="w-full">
-          {isConnected ? t('connected') : t('disconnected')} 
+          {isConnected ? t("connected") : t("disconnected")}
         </Button>
       </form>
     </Form>

@@ -147,7 +147,6 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
             }
           }
 
-          console.log(event.data);
         } catch {
           console.warn(
             "Mensagem recebida não está no formato JSON:",
