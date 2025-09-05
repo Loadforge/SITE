@@ -23,6 +23,7 @@ import { SetUrl } from "@/components/setUrl/seturl";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Project } from "@/db/types";
 import { ConfigTest } from "@/db/types/config.type";
+import { MetricsTest } from "@/db/types/metrics.type";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
@@ -31,6 +32,7 @@ import { RequestConfigTestService } from "@/services/request/config.request.serv
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
 import { SendService } from "@/services/send.service";
+import test from "node:test";
 
 export function ProjectPage() {
   const { t } = useTranslation();
@@ -39,7 +41,6 @@ export function ProjectPage() {
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [configTest, setConfigTest] = useState<ConfigTest>();
   const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
 
   const [requests, setRequests] = useState<Request[]>([]);
@@ -91,13 +92,7 @@ export function ProjectPage() {
     );
   }, [selectedRequest, setRunTest]);
 
-  useEffect(() => {
-    RequestConfigTestService.getConfigTestByRequestId(
-      selectedRequest?.id || ""
-    ).then((config) => {
-      setConfigTest(config);
-    });
-  }, [selectedRequest]);
+  
 
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
@@ -296,7 +291,7 @@ export function ProjectPage() {
             </TabsContent>
           </Tabs>
           <ResponseSheet response={response} />
-          <ResponseChargeSheet response={response} configTest={configTest} />
+          <ResponseChargeSheet response={response} selectedRequest={selectedRequest}/>
         </div>
       )}
       <ConfirmModal

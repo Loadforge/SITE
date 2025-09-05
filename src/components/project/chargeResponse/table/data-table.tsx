@@ -36,7 +36,6 @@ export function DataTable<
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // scroll para o final quando novos dados chegam
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -45,7 +44,6 @@ export function DataTable<
 
   return (
     <div className="bg-background shadow-sm border border-border max-h-80">
-      {/* Header fixo */}
       <div>
         <Table>
           <TableHeader className="bg-background border-b border-border">
@@ -58,7 +56,10 @@ export function DataTable<
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -67,7 +68,6 @@ export function DataTable<
         </Table>
       </div>
 
-      {/* Corpo rolável */}
       <div ref={scrollRef} className="max-h-64 overflow-y-auto">
         <Table>
           <TableBody>
@@ -76,7 +76,9 @@ export function DataTable<
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`${i % 2 === 0 ? "bg-background" : "bg-muted/10"} hover:bg-muted/30 transition-colors`}
+                  className={`${
+                    i % 2 === 0 ? "bg-background" : "bg-muted/10"
+                  } hover:bg-muted/30 transition-colors`}
                 >
                   {row.getVisibleCells().map((cell) => {
                     const columnId = cell.column.id;
@@ -88,12 +90,19 @@ export function DataTable<
                       >
                         {columnId === "http_status" ? (
                           <HttpStatuBadge
-                            code={typeof value === "number" ? value : Number(value) || 0}
+                            code={
+                              typeof value === "number"
+                                ? value
+                                : Number(value) || 0
+                            }
                           />
                         ) : columnId === "duration_ms" ? (
                           <span>{String(value)} ms</span>
                         ) : (
-                          flexRender(cell.column.columnDef.cell, cell.getContext())
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )
                         )}
                       </TableCell>
                     );
@@ -102,7 +111,10 @@ export function DataTable<
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground"
+                >
                   No results.
                 </TableCell>
               </TableRow>

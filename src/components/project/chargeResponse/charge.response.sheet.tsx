@@ -6,18 +6,21 @@ import { TestTimer } from "@/components/testTimer";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
+import { Request } from "@/db/types";
 import { ConfigTest } from "@/db/types/config.type";
+import { RequestConfigTestService } from "@/services/request/config.request.service";
 
+import { Metrics } from "./metrics/metrics";
 import { NotChargeResponse } from "./not.charge.response";
 import { DataTable } from "./table/data-table";
 
 interface Props {
-  response: any;
-  configTest?: ConfigTest;
+  selectedRequest?: Request | null;
 }
 
-export function ResponseChargeSheet({ response, configTest }: Props) {
+export function ResponseChargeSheet({ selectedRequest }: Props) {
   const { processData, test } = useWebSocketStore();
+  const [configTest, setConfigTest] = useState<ConfigTest>();
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
 
@@ -29,11 +32,17 @@ export function ResponseChargeSheet({ response, configTest }: Props) {
     { accessorKey: "http_status", header: "Status" },
   ];
 
-  const togglePanel = () => setIsOpen((prev) => !prev);
-
   useEffect(() => {
-    setIsOpen(response !== undefined);
-  }, [response]);
+    if (!selectedRequest?.id) return;
+    RequestConfigTestService.getConfigTestByRequestId(
+      selectedRequest?.id || ""
+    ).then((config) => {
+      setConfigTest(config);
+      setIsOpen(!!config);
+    });
+  }, [selectedRequest, test]);
+
+  const togglePanel = () => setIsOpen((prev) => !prev);
 
   useEffect(() => {
     if (test) {
@@ -64,16 +73,16 @@ export function ResponseChargeSheet({ response, configTest }: Props) {
 
         {isOpen && (
           <div ref={scrollRef} className="h-full overflow-y-auto">
-            {test ? (
+            {configTest ? (
               <>
-                <div className="flex justify-between items-center w-full px-4 py-1">
-                  <div className="flex items-center gap-6 text-sm font-medium text-separators">
-                    <span className="text-text font-bold">Users:</span>{" "}
+                <div className="flex justify-between items-center w-full border-b border-text/25 px-4 py-1">
+                  <div className="flex items-center gap-6 text-sm font-medium   min-h-10">
+                    <span className="font-bold">Users:</span>{" "}
                     {configTest?.concurrency}
-                    <span className="text-text font-bold">Duration:</span>{" "}
+                    <span className=" font-bold">Duration:</span>{" "}
                     {configTest?.duration}s
                     {configTest?.hardware_info && (
-                      <span className="text-text font-bold">
+                      <span className="font-bold">
                         CPU: {configTest.hardware_info.cpu_cores} | RAM:{" "}
                         {configTest.hardware_info.free_ram_mb}/
                         {configTest.hardware_info.total_ram_mb} MB
@@ -87,16 +96,20 @@ export function ResponseChargeSheet({ response, configTest }: Props) {
                   </div>
                 </div>
                 <div className="p-2">
-                  <DataTable
-                    columns={columns}
-                    data={(processData ?? []).map((item: any) => ({
-                      ...item,
-                      status:
-                        item.status !== undefined
-                          ? String(item.status)
-                          : undefined,
-                    }))}
-                  />
+                  {test ? (
+                    <DataTable
+                      columns={columns}
+                      data={(processData ?? []).map((item: any) => ({
+                        ...item,
+                        status:
+                          item.status !== undefined
+                            ? String(item.status)
+                            : undefined,
+                      }))}
+                    />
+                  ) : (
+                    <Metrics selectedRequest={selectedRequest || undefined}/>
+                  )}
                 </div>
               </>
             ) : (
