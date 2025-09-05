@@ -1,13 +1,13 @@
-import { useTranslation } from 'react-i18next';
-import { Button } from "../ui/button";
-import { ConfirmModal } from "@/components/confirmationModal/ConfirmModal";
 import { useState } from 'react';
+
+import { ConfirmModal } from "@/components/confirmationModal/ConfirmModal";
 import { useWebSocketStore } from '@/contexts/socket/websocketStore';
+
+import { Button } from "../ui/button";
 
 export function AbortButton() {
 const { test, sendMessage } = useWebSocketStore();    
 const [isModalOpen, setIsModalOpen] = useState(false);
-const { t } = useTranslation();
 
 if(!test) return null;
 

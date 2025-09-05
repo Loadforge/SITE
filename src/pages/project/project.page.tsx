@@ -22,17 +22,13 @@ import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Project } from "@/db/types";
-import { ConfigTest } from "@/db/types/config.type";
-import { MetricsTest } from "@/db/types/metrics.type";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 import { RequestAdvancedService } from "@/services/request/advanced.request.service";
-import { RequestConfigTestService } from "@/services/request/config.request.service";
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
 import { SendService } from "@/services/send.service";
-import test from "node:test";
 
 export function ProjectPage() {
   const { t } = useTranslation();
@@ -91,8 +87,6 @@ export function ProjectPage() {
       }
     );
   }, [selectedRequest, setRunTest]);
-
-  
 
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
@@ -291,7 +285,7 @@ export function ProjectPage() {
             </TabsContent>
           </Tabs>
           <ResponseSheet response={response} />
-          <ResponseChargeSheet response={response} selectedRequest={selectedRequest}/>
+          <ResponseChargeSheet selectedRequest={selectedRequest} />
         </div>
       )}
       <ConfirmModal
