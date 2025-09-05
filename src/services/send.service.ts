@@ -68,12 +68,12 @@ export class SendService {
     }
 
     return {
+      request_id: requestId,
       name: request.title,
       target: request.url,
       method: request.method,
       concurrency: advanced?.concurrency ?? 1,
       duration: advanced?.duration ?? 10,
-      timeout: advanced?.timeout ?? undefined,
       body: parsedBody,
       auth: parsedAuth,
       query_params:

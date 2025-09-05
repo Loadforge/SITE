@@ -22,10 +22,12 @@ import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Project } from "@/db/types";
+import { ConfigTest } from "@/db/types/config.type";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
 import { RequestAdvancedService } from "@/services/request/advanced.request.service";
+import { RequestConfigTestService } from "@/services/request/config.request.service";
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
 import { SendService } from "@/services/send.service";
@@ -37,8 +39,9 @@ export function ProjectPage() {
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [configTest, setConfigTest] = useState<ConfigTest>();
   const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
-  
+
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
@@ -87,6 +90,14 @@ export function ProjectPage() {
       }
     );
   }, [selectedRequest, setRunTest]);
+
+  useEffect(() => {
+    RequestConfigTestService.getConfigTestByRequestId(
+      selectedRequest?.id || ""
+    ).then((config) => {
+      setConfigTest(config);
+    });
+  }, [selectedRequest]);
 
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
@@ -285,17 +296,17 @@ export function ProjectPage() {
             </TabsContent>
           </Tabs>
           <ResponseSheet response={response} />
-          <ResponseChargeSheet response={response}  />
-
+          <ResponseChargeSheet response={response} configTest={configTest} />
         </div>
       )}
       <ConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleRunTest} 
-        title={"Executar teste de carga"} 
+        onConfirm={handleRunTest}
+        title={"Executar teste de carga"}
         message={"Deseja iniciar o teste de carga com a configuração atual?"}
-        confirmLabel="Executar"/>
+        confirmLabel="Executar"
+      />
     </ProjectPageLayout>
   );
 }

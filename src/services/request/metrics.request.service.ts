@@ -9,4 +9,11 @@ export class RequestMetricsTestService {
   ): Promise<MetricsTest> {
     return this.repository.getMetricsTestByRequestId(requestId);
   }
+
+  static async createOrUpdateMetricsTest(
+    requestId: string,
+    metrics: MetricsTest
+  ): Promise<void> {
+    return this.repository.createMetricsTest(requestId, metrics);
+  }
 }

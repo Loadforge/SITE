@@ -6,14 +6,17 @@ import { TestTimer } from "@/components/testTimer";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 
+import { ConfigTest } from "@/db/types/config.type";
+
 import { NotChargeResponse } from "./not.charge.response";
 import { DataTable } from "./table/data-table";
 
 interface Props {
   response: any;
+  configTest?: ConfigTest;
 }
 
-export function ResponseChargeSheet({ response }: Props) {
+export function ResponseChargeSheet({ response, configTest }: Props) {
   const { processData, test } = useWebSocketStore();
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useSidebar();
@@ -63,9 +66,25 @@ export function ResponseChargeSheet({ response }: Props) {
           <div ref={scrollRef} className="h-full overflow-y-auto">
             {test ? (
               <>
-                <div className="flex justify-end gap-4 items-center w-full px-4 py-1">
-                  <AbortButton />
-                  <TestTimer />
+                <div className="flex justify-between items-center w-full px-4 py-1">
+                  <div className="flex items-center gap-6 text-sm font-medium text-separators">
+                    <span className="text-text font-bold">Users:</span>{" "}
+                    {configTest?.concurrency}
+                    <span className="text-text font-bold">Duration:</span>{" "}
+                    {configTest?.duration}s
+                    {configTest?.hardware_info && (
+                      <span className="text-text font-bold">
+                        CPU: {configTest.hardware_info.cpu_cores} | RAM:{" "}
+                        {configTest.hardware_info.free_ram_mb}/
+                        {configTest.hardware_info.total_ram_mb} MB
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <AbortButton />
+                    <TestTimer />
+                  </div>
                 </div>
                 <div className="p-2">
                   <DataTable

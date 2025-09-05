@@ -1,6 +1,6 @@
 export interface MetricsTest {
   id?: string;
-  requestId?: string;
+  requestId: string;
   concurrency: number;
   duration_secs: number;
   failed_requests: number;

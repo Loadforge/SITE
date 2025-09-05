@@ -1,4 +1,5 @@
 export type DslConfig = {
+  request_id: string;
   name: string;
   target: string;
   method: HttpMethod;

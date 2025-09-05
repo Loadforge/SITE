@@ -1,9 +1,9 @@
 export interface ConfigTest {
   id?: string;
-  requestId?: string;
+  requestId: string;
   concurrency: number;
   duration: number;
-  hardwareInfos: HardwareInfos;
+  hardware_info: HardwareInfos;
 }
 
 export interface HardwareInfos {

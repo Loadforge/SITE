@@ -17,19 +17,24 @@ export class ConfigRepository {
     const db = await this.getDb();
     const tx = db.transaction("configTest", "readwrite");
     const store = tx.objectStore("configTest");
-    const index = store.index("requestId");
+    const index = store.index("requestIndex");
 
-    const existing = await index.get(requestId);
+    let existing: ConfigTest | undefined;
+    try {
+      existing = await index.get(requestId);
+    } catch {
+      console.warn("Index requestIndex not found, creating new record.");
+    }
 
     const configTest: ConfigTest = {
       id: existing?.id ?? crypto.randomUUID(),
       requestId,
       concurrency: config.concurrency,
       duration: config.duration,
-      hardwareInfos: {
-        cpu_cores: config.hardwareInfos.cpu_cores,
-        free_ram_mb: config.hardwareInfos.free_ram_mb,
-        total_ram_mb: config.hardwareInfos.total_ram_mb,
+      hardware_info: {
+        cpu_cores: config.hardware_info.cpu_cores,
+        free_ram_mb: config.hardware_info.free_ram_mb,
+        total_ram_mb: config.hardware_info.total_ram_mb,
       },
     };
 

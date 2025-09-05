@@ -1,8 +1,10 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 
+import { RequestConfigTestService } from "@/services/request/config.request.service";
 import { connectionStorage } from "@/storages/connectionStorage";
 import { RequestFormData } from "@/validators";
+import { RequestMetricsTestService } from "@/services/request/metrics.request.service";
 
 type WebSocketStore = {
   socket: WebSocket | null;
@@ -57,7 +59,7 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
     processData: null,
     finalMetrics: null,
     isConnecting: false,
-    
+
     reconnect() {
       const token = connectionStorage.getToken();
       const uri = connectionStorage.getUri();
@@ -102,6 +104,21 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
             set({ duration: data.config.duration });
             console.log("Duração do teste:", data.config.duration);
             set({ startconfigData: data });
+            RequestConfigTestService.createOrUpdateConfigTest(
+              data.config.request_id,
+              data.config
+            )
+              .then(() => {
+                console.log(
+                  "Configuração do teste salva/atualizada com sucesso."
+                );
+              })
+              .catch((error) => {
+                toast.error(
+                  "Erro ao salvar/atualizar a configuração do teste:",
+                  error
+                );
+              });
           }
 
           if (data.status === "process") {
@@ -125,6 +142,10 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
             set({ test: false });
             set({ finalMetrics: data });
             set({ processData: null });
+            RequestMetricsTestService.createOrUpdateMetricsTest(
+              data.metrics.request_id,
+              data.metrics
+            );
           }
 
           console.log(event.data);
