@@ -197,8 +197,8 @@ export function Metrics({ selectedRequest }: Props) {
           <CardContent>
             <div className="space-y-2">
               {Object.entries(metrics.status_counts).map(([status, count]) => (
-                <div key={status} className="flex justify-between">
-                  <HttpStatuBadge code={Number(status)} />:
+                <div key={status} className="flex justify-start gap-2">
+                  Status <HttpStatuBadge code={Number(status)} />:
                   <span className="font-medium">{count}</span>
                 </div>
               ))}

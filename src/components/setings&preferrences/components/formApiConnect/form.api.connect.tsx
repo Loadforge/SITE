@@ -3,6 +3,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -11,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { connectionStorage } from "@/storages/connectionStorage";
 import { apiConnectSchema } from "@/validators";
+
 
 type FormValues = {
   apiUri: string;
@@ -21,6 +24,7 @@ type TypeProps = {
   onClose: () => void;
 }
 export function FormApiConnect({onClose}:TypeProps) {
+  const {t}= useTranslation
   const [showToken, setShowToken] = useState(false);
   const { isConnected, connect, disconnect } = useWebSocketStore();
   const hasRun = useRef(false);
@@ -108,7 +112,7 @@ export function FormApiConnect({onClose}:TypeProps) {
         />
 
         <Button type="submit" className="w-full">
-          {isConnected ? "Desconectar" : "Conectar"}
+          {isConnected ? t('connected') : t('disconnected')} 
         </Button>
       </form>
     </Form>
