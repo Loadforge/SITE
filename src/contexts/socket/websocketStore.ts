@@ -146,6 +146,9 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
               console.log(error);
             }
           }
+          if (data.status === "error") {
+            toast.error(data.message || "Erro desconhecido do Executor");
+          }
 
         } catch {
           console.warn(
