@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface Props {
   code: number;
-  status: string;
+  status?: string;
 }
 
 export function HttpStatuBadge({ code, status }: Props) {
@@ -31,7 +31,7 @@ export function HttpStatuBadge({ code, status }: Props) {
         border: `1px solid ${color}`,
       }}
     >
-      {code} {status.toUpperCase()}
+      {code} {status?.toUpperCase()}
     </Badge>
   );
 }

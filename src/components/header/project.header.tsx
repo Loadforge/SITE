@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useTranslation } from "react-i18next"; 
+import { useTranslation } from "react-i18next";
 import * as FaIcons from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -7,18 +7,20 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/contexts";
 import { Project } from "@/db/types";
 
+import { connectionStorage } from "@/storages/connectionStorage";
+
 import LogoDefault from "../../assets/Logo.svg";
 import LogoBlack from "../../assets/Logo_black.svg";
 
 import { BugButton } from "../bugButton";
 import { HelpButton } from "../help";
+import { ConnectionBadge } from "../statusbadge";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui";
-
 
 interface Props {
   project: Project;
@@ -31,31 +33,44 @@ export function ProjectHeader({
   handleProjectRename,
   handleProjectIconChange,
 }: Props) {
-  const { t } = useTranslation(); 
-
-  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
-  const { theme } = useTheme();
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+
   const Logo = theme === "light" ? LogoBlack : LogoDefault;
 
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(project.title);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [IconComponent, setIconComponent] = useState<React.ElementType | null>(null);
+  const [hasCredentials, setHasCredentials] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (
-      project.icon &&
-      typeof project.icon === "string" &&
-      project.icon in FaIcons
-    ) {
+    if (project.icon && typeof project.icon === "string" && project.icon in FaIcons) {
       setIconComponent(() => FaIcons[project.icon as keyof typeof FaIcons]);
     }
   }, [project.icon]);
 
-  const handleBackToHome = () => {
-    navigate("/");
-  };
+  useEffect(() => {
+    setHasCredentials(connectionStorage.has());
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleBackToHome = () => navigate("/");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(e.target.value);
@@ -68,35 +83,13 @@ export function ProjectHeader({
     }
   };
 
-  const handleTitleClick = () => {
-    setIsEditing(true);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
+  const handleTitleClick = () => setIsEditing(true);
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   const handleIconChange = (iconName: string) => {
     handleProjectIconChange(project.id, iconName);
     setIsDropdownOpen(false);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <header className="bg-background-secondary border-b border-separators/25 text-text flex items-center h-14 justify-between top-0 left-0 w-full px-4">
@@ -121,10 +114,7 @@ export function ProjectHeader({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span
-                  className="text-4xl text-text cursor-pointer"
-                  onClick={toggleDropdown}
-                >
+                <span className="text-4xl text-text cursor-pointer" onClick={toggleDropdown}>
                   {React.createElement(IconComponent)}
                 </span>
               </TooltipTrigger>
@@ -183,6 +173,7 @@ export function ProjectHeader({
       </div>
 
       <div className="flex gap-10">
+        {hasCredentials && <ConnectionBadge />}
         <BugButton />
         <HelpButton />
         <img

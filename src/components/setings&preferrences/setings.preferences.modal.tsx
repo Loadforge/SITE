@@ -62,7 +62,7 @@ export function SettingsPreferencesModal({
           </SettingsPreferencesTabsContent>
 
           <SettingsPreferencesTabsContent value="settings">
-            <SettingsTab />
+            <SettingsTab onClose={onClose}/>
           </SettingsPreferencesTabsContent>
         </SettingsPreferencesTabs>
       </div>

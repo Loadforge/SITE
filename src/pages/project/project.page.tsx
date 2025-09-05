@@ -16,20 +16,28 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
+import { ConfirmModal } from "@/components/confirmationModal/ConfirmModal";
+import { ResponseChargeSheet } from "@/components/project/chargeResponse/charge.response.sheet";
 import { ResponseSheet } from "@/components/project/response";
 import { SetUrl } from "@/components/setUrl/seturl";
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Project } from "@/db/types";
 import { Method, Request } from "@/db/types/request.type";
 import { ProjectPageLayout } from "@/layouts";
 import { ProjectService } from "@/services/project/project.service";
+import { RequestAdvancedService } from "@/services/request/advanced.request.service";
 import { RequestService } from "@/services/request/request.service";
 import { ResponseService } from "@/services/request/response.service";
+import { SendService } from "@/services/send.service";
 
 export function ProjectPage() {
   const { t } = useTranslation();
+  const { runTest, sendMessage, isConnected, setRunTest } = useWebSocketStore();
   const [project, setProject] = useState<Project>({} as Project);
   const [response, setResponse] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
 
   const [requests, setRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
@@ -67,6 +75,18 @@ export function ProjectPage() {
       }
     }
   }, [requests, projectId]);
+
+  useEffect(() => {
+    if (!selectedRequest) return;
+
+    RequestAdvancedService.getAdvancedByRequestId(selectedRequest.id).then(
+      (advanced) => {
+        if (advanced) {
+          setRunTest(advanced.runTest);
+        }
+      }
+    );
+  }, [selectedRequest, setRunTest]);
 
   const handleProjectRename = (id: string, newTitle: string) => {
     ProjectService.rename(id, newTitle)
@@ -173,22 +193,36 @@ export function ProjectPage() {
   }
 
   function handleSendResponse(requestId: string) {
+    if (runTest) {
+      if (!isConnected) {
+        toast.error("Executor desconectado");
+        return;
+      }
+
+      setPendingRequestId(requestId);
+      setIsModalOpen(true);
+      return;
+    }
+
     setIsLoading(true);
-    ResponseService.sendRequest(requestId)
-      .then((response) => {
-        setResponse(response);
-      })
+    SendService.sendRequest(requestId)
+      .then((response) => setResponse(response))
       .catch((error) => {
         toast.error(
           `${t("request.send.error")}: ${error.message || t("error.unknown")}`
         );
         console.error("Erro ao enviar requisição:", error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .finally(() => setIsLoading(false));
   }
+  function handleRunTest() {
+    if (!pendingRequestId) return;
 
+    SendService.getConfigByRequestId(pendingRequestId).then((request) => {
+      sendMessage(request);
+    });
+    setIsModalOpen(false);
+  }
   useEffect(() => {
     if (!selectedRequest) return;
     ResponseService.getResponse(selectedRequest.id).then((res) => {
@@ -244,15 +278,24 @@ export function ProjectPage() {
               <BodyReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="advanced">
-              <AdvancedReq />
+              <AdvancedReq id={selectedRequest.id} />
             </TabsContent>
             <TabsContent value="docs">
               <DocsReq id={selectedRequest.id} />
             </TabsContent>
           </Tabs>
           <ResponseSheet response={response} />
+          <ResponseChargeSheet selectedRequest={selectedRequest} />
         </div>
       )}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleRunTest}
+        title={"Executar teste de carga"}
+        message={"Deseja iniciar o teste de carga com a configuração atual?"}
+        confirmLabel="Executar"
+      />
     </ProjectPageLayout>
   );
 }

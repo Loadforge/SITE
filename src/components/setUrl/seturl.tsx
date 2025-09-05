@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Method, Request } from "@/db/types";
 import { RequestService } from "@/services/request/request.service";
 
@@ -33,6 +34,7 @@ export function SetUrl({
 }: Props) {
   const [request, setRequest] = useState<Request>();
   const { t } = useTranslation();
+  const { test } = useWebSocketStore();
 
   useEffect(() => {
     RequestService.getById(id)
@@ -95,7 +97,7 @@ export function SetUrl({
       <Button
         className="w-25 font-bold text-xl flex items-center justify-center gap-2"
         onClick={() => handleSendResponse(id)}
-        disabled={loading}
+        disabled={!!loading || test}
       >
         {loading ? (
           <>
