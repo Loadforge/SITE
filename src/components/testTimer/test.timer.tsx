@@ -49,7 +49,7 @@ export function TestTimer() {
   };
 
   return (
-    <div className="text-md text-muted-foreground bg-accent-foreground p-2 rounded-md">
+    <div className="text-md text-text bg-text-foreground p-2 rounded-md">
       Time: {formatTime(seconds)}
     </div>
   );
