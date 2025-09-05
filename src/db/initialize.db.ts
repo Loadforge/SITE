@@ -25,6 +25,15 @@ export async function openDb() {
 
       const responseStore = db.createObjectStore("response", { keyPath: "id" });
       responseStore.createIndex("requestIndex", "requestId");
+
+      const advancedStore = db.createObjectStore("advanced", { keyPath: "id" });
+      advancedStore.createIndex("requestIndex", "requestId");
+
+      const configTestStore = db.createObjectStore("configTest", { keyPath: "id" });
+      configTestStore.createIndex("requestIndex", "requestId");
+
+      const metricsTestStore = db.createObjectStore("metricsTest", { keyPath: "id" });
+      metricsTestStore.createIndex("requestIndex", "requestId");
     },
   });
 

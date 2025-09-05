@@ -1,9 +1,11 @@
 {
+  "connected": "Conectado",
+  "disconnected": "Desconectado",
   "Bug_Report": "Reportar um Bug",
   "Settings_Preferences": "Configurações e Preferências",
   "Docs": "Documentação",
   "basic": "Básico",
-  "advanced": "Completo",
+  "advanced": "Avançado",
   "New_Project": "Novo Projeto",
   "Import_Project": "Importar Projeto",
   "Preferences": "Preferências",

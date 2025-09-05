@@ -1,114 +1,115 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash, FaSyncAlt } from "react-icons/fa";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ApiConnectFormData, apiConnectSchema } from "@/validators";
+import { Label } from "@/components/ui/label";
 
-export function FormApiConnect() {
+import { useWebSocketStore } from "@/contexts/socket/websocketStore";
+import { connectionStorage } from "@/storages/connectionStorage";
+import { apiConnectSchema } from "@/validators";
+
+type FormValues = {
+  apiUri: string;
+  apiToken: string;
+};
+
+type TypeProps = {
+  onClose: () => void;
+}
+export function FormApiConnect({onClose}:TypeProps) {
   const [showToken, setShowToken] = useState(false);
-
-  const form = useForm<ApiConnectFormData>({
+  const { isConnected, connect, disconnect } = useWebSocketStore();
+  const hasRun = useRef(false);
+  const form = useForm<FormValues>({
     resolver: yupResolver(apiConnectSchema),
     defaultValues: {
-      apiUri: "https://localhost:8080/",
-      apiToken: "token",
-      keepConnected: true,
-      autoSync: true,
+      apiUri: "",
+      apiToken: "",
     },
   });
 
-  function onSubmit(values: ApiConnectFormData) {
-    console.log("Dados enviados:", values);
+  useEffect(() => {
+    const savedUri = connectionStorage.getUri();
+    const savedToken = connectionStorage.getToken();
+
+    form.reset({
+      apiUri: savedUri ?? "",
+      apiToken: savedToken ?? "",
+    });
+  }, [form]);
+  
+  useEffect(()=>{
+    if(isConnected && hasRun.current){
+      hasRun.current = false;
+      onClose();
+    }
+  },[isConnected]);
+
+  function onSubmit(values: FormValues) {
+    if(!isConnected){
+      connect(values.apiUri, values.apiToken);
+      hasRun.current = true;
+    }else{
+      disconnect();
+    }
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-5 text-text p-1"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="apiUri"
           render={({ field }) => (
-            <FormItem className="gap-5">
-              <FormLabel className="text-lg font-bold">Api URI</FormLabel>
+            <FormItem>
+              <Label htmlFor="apiUri">API URI</Label>
               <FormControl>
-                <Input {...field} className="w-3/4 border-separators/50" />
+                <Input
+                  {...field}
+                  placeholder="https://example.com"
+                  disabled={isConnected}
+                />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="apiToken"
           render={({ field }) => (
-            <FormItem className="gap-5">
-              <FormLabel className="text-lg font-bold">Api Token</FormLabel>
-              <div className="relative w-3/4">
+            <FormItem>
+              <Label htmlFor="apiToken">Token</Label>
+              <div className="relative">
                 <FormControl>
                   <Input
                     {...field}
-                    className="pr-10 border-separators/50"
                     type={showToken ? "text" : "password"}
+                    placeholder="Seu token secreto"
+                    disabled={isConnected}
                   />
                 </FormControl>
-                <div
-                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-primary"
-                  onClick={() => setShowToken(!showToken)}
+                <button
+                  type="button"
+                  onClick={() => setShowToken((prev) => !prev)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
                 >
-                  {showToken ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                </div>
+                  {showToken ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
+              <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="keepConnected"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <FormLabel className="text-lg font-bold">
-                Keep connected
-              </FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="border-primary"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="autoSync"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <FormLabel className="text-lg font-bold flex items-center gap-1">
-                Auto Sync <FaSyncAlt size={12} />
-              </FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="border-primary"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+
+        <Button type="submit" className="w-full">
+          {isConnected ? "Desconectar" : "Conectar"}
+        </Button>
       </form>
     </Form>
   );

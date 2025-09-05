@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 
+import { TestExecutionToast } from "./components/chargeToastRunning/charge.toast.running";
 import { Toaster } from "./components/ui/sonner";
+
 import { ThemeProvider } from "./contexts/theme/theme";
 import { openDb } from "./db/initialize.db";
 import { Router } from "./router";
+import { SocketConnector } from "./socket.connector";
 
 export function App() {
   const [isMobile, setIsMobile] = useState(false);
   const theme: "light" | "dark" | "system" = "system";
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   useEffect(() => {
     const init = async () => {
@@ -45,6 +48,9 @@ export function App() {
             </div>
           </div>
         )}
+
+        <SocketConnector />
+
         <Router />
         <Toaster
           position="bottom-left"
@@ -52,6 +58,7 @@ export function App() {
           theme={theme}
           closeButton
         />
+        <TestExecutionToast/>
       </BrowserRouter>
     </ThemeProvider>
   );
