@@ -1,6 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { HttpStatuBadge } from "@/components/badge/http.badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWebSocketStore } from "@/contexts/socket/websocketStore";
 import { Request } from "@/db/types";
@@ -197,9 +198,7 @@ export function Metrics({ selectedRequest }: Props) {
             <div className="space-y-2">
               {Object.entries(metrics.status_counts).map(([status, count]) => (
                 <div key={status} className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    {status}:
-                  </span>
+                  <HttpStatuBadge code={Number(status)} />:
                   <span className="font-medium">{count}</span>
                 </div>
               ))}

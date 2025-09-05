@@ -43,84 +43,99 @@ export function DataTable<
   }, [data]);
 
   return (
-    <div className="bg-background shadow-sm border border-border max-h-80">
-      <div>
-        <Table>
-          <TableHeader className="bg-background border-b border-border">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className="px-4 py-3 text-left text-sm font-semibold text-foreground border-r border-border last:border-r-0"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-        </Table>
-      </div>
-
-      <div ref={scrollRef} className="max-h-64 overflow-y-auto">
-        <Table>
-          <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row, i) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className={`${
-                    i % 2 === 0 ? "bg-background" : "bg-muted/10"
-                  } hover:bg-muted/30 transition-colors`}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    const columnId = cell.column.id;
-                    const value = cell.getValue();
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className="px-4 py-2 text-sm text-foreground border-r border-b border-border last:border-r-0"
-                      >
-                        {columnId === "http_status" ? (
-                          <HttpStatuBadge
-                            code={
-                              typeof value === "number"
-                                ? value
-                                : Number(value) || 0
-                            }
-                          />
-                        ) : columnId === "duration_ms" ? (
-                          <span>{String(value)} ms</span>
-                        ) : (
-                          flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )
-                        )}
-                      </TableCell>
-                    );
-                  })}
+    <div className="rounded-lg border border-border bg-background shadow-sm overflow-hidden max-h-[32rem] flex flex-col">
+      <div className="relative overflow-x-auto">
+        <div className="sticky top-0 z-10 bg-background border-b border-border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className="px-4 py-3.5 text-left text-sm font-medium text-foreground/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+          </Table>
+        </div>
+
+        <div
+          ref={scrollRef}
+          className="overflow-y-auto max-h-[28rem] divide-y divide-border"
+        >
+          <Table>
+            <TableBody className="divide-y divide-border">
+              {table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="group hover:bg-muted/20 transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const columnId = cell.column.id;
+                      const value = cell.getValue();
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className="px-4 py-3 text-sm text-foreground/90 group-hover:text-foreground"
+                        >
+                          {columnId === "http_status" ? (
+                            <div className="w-fit">
+                              <HttpStatuBadge
+                                code={
+                                  typeof value === "number"
+                                    ? value
+                                    : Number(value) || 0
+                                }
+                              />
+                            </div>
+                          ) : columnId === "duration_ms" ? (
+                            <span className="font-mono text-sm">
+                              {String(value)} ms
+                            </span>
+                          ) : (
+                            <div className="truncate max-w-[200px]">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-48 text-center text-muted-foreground/70"
+                  >
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <span className="text-foreground/60 text-base font-medium">
+                        No data available
+                      </span>
+                      <p className="text-sm text-muted-foreground">
+                        Try adjusting your filters or check back later
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
