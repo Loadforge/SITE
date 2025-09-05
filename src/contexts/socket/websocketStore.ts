@@ -2,9 +2,9 @@ import { toast } from "sonner";
 import { create } from "zustand";
 
 import { RequestConfigTestService } from "@/services/request/config.request.service";
+import { RequestMetricsTestService } from "@/services/request/metrics.request.service";
 import { connectionStorage } from "@/storages/connectionStorage";
 import { RequestFormData } from "@/validators";
-import { RequestMetricsTestService } from "@/services/request/metrics.request.service";
 
 type WebSocketStore = {
   socket: WebSocket | null;
@@ -142,10 +142,15 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
             set({ test: false });
             set({ finalMetrics: data });
             set({ processData: null });
-            RequestMetricsTestService.createOrUpdateMetricsTest(
-              data.metrics.request_id,
-              data.metrics
+            try {
+              RequestMetricsTestService.createOrUpdateMetricsTest(
+              data.request_id,
+              data
             );
+            } catch (error) {
+              console.log(error)
+            }
+            
           }
 
           console.log(event.data);

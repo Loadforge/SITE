@@ -20,7 +20,7 @@ export class MetricsRepository {
     const db = await this.getDb();
     const tx = db.transaction("metricsTest", "readwrite");
     const store = tx.objectStore("metricsTest");
-    const index = store.index("requestId");
+    const index = store.index("requestIndex");
 
     const existing = await index.get(requestId);
 
