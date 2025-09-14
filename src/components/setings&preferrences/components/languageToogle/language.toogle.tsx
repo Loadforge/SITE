@@ -14,10 +14,13 @@ export function LanguageToggle() {
 
   const [lang, setLang] = useState<string>("");
 
+  // Use short language codes to match our i18n config and folder structure
   const languageLabels: Record<string, string> = {
-    "en-US": "English",
-    "pt-BR": "Português(BR)",
+    en: "English",
+    pt: "Português(BR)",
   };
+
+  const normalizeLang = (lng: string) => (lng?.toLowerCase().startsWith("pt") ? "pt" : "en");
 
   const handleLanguageChange = (label: string) => {
     const selectedCode = Object.entries(languageLabels).find(
@@ -35,12 +38,10 @@ export function LanguageToggle() {
     const storedLang = localStorage.getItem("appLanguage");
     const browserLang = navigator.language;
 
-    const initialLang = storedLang || browserLang;
-    const matchedLang =
-      initialLang.startsWith("pt") ? "pt-BR" : "en-US";
+    const matchedShort = normalizeLang(storedLang || browserLang);
 
-    i18n.changeLanguage(matchedLang);
-    setLang(languageLabels[matchedLang]);
+    i18n.changeLanguage(matchedShort);
+    setLang(languageLabels[matchedShort]);
   }, []);
 
   return (
