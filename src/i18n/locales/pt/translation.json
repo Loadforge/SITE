@@ -1,4 +1,6 @@
 {
+  "connecting": "Conectar",
+  "disconnecting": "Desconectar",
   "connected": "Conectado",
   "disconnected": "Desconectado",
   "Bug_Report": "Reportar um Bug",

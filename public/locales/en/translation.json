@@ -1,4 +1,6 @@
 {
+  "connecting": "Connect",
+  "disconnecting": "Disconnect",
   "connected": "Connected",
   "disconnected": "Disconnected",
   "Bug_Report": "Report a Bug",
@@ -119,6 +121,4 @@
     "reorderProjects": "Error reordering projects",
     "reorderProjectsToast": "Failed to reorder projects. Please try again!"
   }
-  
-
 }

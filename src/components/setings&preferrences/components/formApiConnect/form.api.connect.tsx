@@ -35,13 +35,10 @@ export function FormApiConnect({ onClose }: TypeProps) {
   const hasRun = useRef(false);
   const form = useForm<FormValues>({
     resolver: yupResolver(apiConnectSchema),
-    defaultValues: {
-      apiUri: "",
-      apiToken: "",
-    },
   });
 
   useEffect(() => {
+    if (!isConnected) return;
     const savedUri = connectionStorage.getUri();
     const savedToken = connectionStorage.getToken();
 
@@ -49,7 +46,7 @@ export function FormApiConnect({ onClose }: TypeProps) {
       apiUri: savedUri ?? "",
       apiToken: savedToken ?? "",
     });
-  }, [form]);
+  }, [form, isConnected]);
 
   useEffect(() => {
     if (isConnected && hasRun.current) {
@@ -117,7 +114,7 @@ export function FormApiConnect({ onClose }: TypeProps) {
         />
 
         <Button type="submit" className="w-full">
-          {isConnected ? t("connected") : t("disconnected")}
+          {isConnected ? t("disconnecting") : t("connecting")}
         </Button>
       </form>
     </Form>

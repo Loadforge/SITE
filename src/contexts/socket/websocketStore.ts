@@ -149,7 +149,6 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
           if (data.status === "error") {
             toast.error(data.message || "Erro desconhecido do Executor");
           }
-
         } catch {
           console.warn(
             "Mensagem recebida não está no formato JSON:",
@@ -173,7 +172,6 @@ export const useWebSocketStore = create<WebSocketStore>((set, get) => {
 
     disconnect: () => {
       get().socket?.close();
-      connectionStorage.clearAll();
       set({
         socket: null,
         isConnected: false,
